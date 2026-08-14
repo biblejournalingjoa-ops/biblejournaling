@@ -752,7 +752,7 @@ function renderMain(){
       </div>
       <div class="right-group">
         <button class="icon-btn" data-action="go-groups" title="${T('groupsNavTitle')}">${ICON.groups}</button>
-        <button class="icon-btn ${state.loggedIn?'active':''}" data-action="go-login">${state.loggedIn?ICON.personCheck:ICON.person}</button>
+        <button class="icon-btn ${state.loggedIn?'active':''}" data-action="go-login">${state.loggedIn && state.user && state.user.photoUrl ? `<img src="${escapeHtml(state.user.photoUrl)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : (state.loggedIn?ICON.personCheck:ICON.person)}</button>
       </div>
     </div>
     <div class="year-block">
@@ -769,16 +769,27 @@ function renderLogin(){
   if(state.loggedIn && state.user){
     const name = state.user.name ? escapeHtml(state.user.name) : '';
     const email = state.user.email ? escapeHtml(state.user.email) : '';
+    const username = state.user.username ? escapeHtml(state.user.username) : email;
+    const nickname = state.user.nickname ? escapeHtml(state.user.nickname) : name;
+    const photoUrl = state.user.photoUrl ? escapeHtml(state.user.photoUrl) : '';
+    const avatar = photoUrl
+      ? `<img src="${photoUrl}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">`
+      : `<div style="width:64px;height:64px;border-radius:50%;background:var(--paper);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);">${ICON.personCheck}</div>`;
     return `
       <button class="back-fab" data-action="go-main">${ICON.back}</button>
       <div class="screen-center">
         <div class="login-mark">
+          <div style="display:flex;justify-content:center;margin-bottom:10px;">${avatar}</div>
           <div class="eyebrow">${T('loginWelcome')}</div>
           <h2>${name || email}</h2>
         </div>
         <div class="field">
-          <label>${T('emailLabel')}</label>
-          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink);">${email}</div>
+          <label>${T('usernameLabel')}</label>
+          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink);">${username}</div>
+        </div>
+        <div class="field">
+          <label>${T('nicknameLabel')}</label>
+          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink);">${nickname}</div>
         </div>
         <button class="btn btn-primary" data-action="do-logout">${T('logout')}</button>
       </div>
@@ -1631,7 +1642,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
           termsConsent:true, privacyConsent:true, consentAgreedAt:new Date().toISOString(),
         }).catch(err=>console.error('Firestore save failed:', err));
       }
-      state.user = { name:fullProfile.name, email:fullProfile.email, photoUrl:fullProfile.photoUrl };
+      state.user = { name:fullProfile.name, email:fullProfile.email, photoUrl:fullProfile.photoUrl, username:fullProfile.username, nickname:fullProfile.nickname };
       state.loggedIn = true;
       saveAuth();
       state.screen = 'main';
