@@ -307,6 +307,7 @@ let state = {
   screen:'main',            // main | login | signup | chapters | daily | groups | group-room | settings
   purchased:[1,2,3,4,5], // all 5 Pentateuch books are free/unlocked
   loggedIn:false,
+  user:null,                // { name, email, photoUrl } of the signed-in user
   activeMonth:null,         // month whose calendar is open
   activeChapter:null,       // chapter number selected within the current book
   activeTab:'bible',        // bible | content | thought
@@ -614,6 +615,10 @@ async function loadAll(){
     if(l) state.loggedIn = JSON.parse(l.value).loggedIn;
   }catch(e){}
   try{
+    const up = await window.storage.get('user-profile');
+    if(up && up.value) state.user = JSON.parse(up.value);
+  }catch(e){}
+  try{
     const g = await window.storage.get('groups-data');
     groups = g ? JSON.parse(g.value) : seedGroups();
   }catch(e){
@@ -761,6 +766,24 @@ function renderMain(){
 
 /* ---------------- login screen ---------------- */
 function renderLogin(){
+  if(state.loggedIn && state.user){
+    const name = state.user.name ? escapeHtml(state.user.name) : '';
+    const email = state.user.email ? escapeHtml(state.user.email) : '';
+    return `
+      <button class="back-fab" data-action="go-main">${ICON.back}</button>
+      <div class="screen-center">
+        <div class="login-mark">
+          <div class="eyebrow">${T('loginWelcome')}</div>
+          <h2>${name || email}</h2>
+        </div>
+        <div class="field">
+          <label>${T('emailLabel')}</label>
+          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink);">${email}</div>
+        </div>
+        <button class="btn btn-primary" data-action="do-logout">${T('logout')}</button>
+      </div>
+    `;
+  }
   return `
     <button class="back-fab" data-action="go-main">${ICON.back}</button>
     <div class="screen-center">
@@ -1501,6 +1524,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     if(!(window.__firebaseAuth && window.__firebaseAuth.ready)){ showToast(T('toastFirebaseNotSet')); return; }
     window.__firebaseAuth.signInWithEmail(email, password).then(profile=>{
       window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
+      state.user = { name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
       state.loggedIn = true;
       saveAuth();
       state.screen = 'main';
@@ -1518,6 +1542,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
         if(window.__firebaseDB && window.__firebaseDB.ready){
           window.__firebaseDB.saveUserProfile(profile.uid, { name:profile.name, email:profile.email, photoUrl:profile.photoUrl, provider:'google' }).catch(()=>{});
         }
+        state.user = { name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
         state.loggedIn = true;
         saveAuth();
         state.screen = 'main';
@@ -1538,6 +1563,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
         if(window.__firebaseDB && window.__firebaseDB.ready){
           window.__firebaseDB.saveUserProfile(profile.uid, { name:profile.name, email:profile.email, photoUrl:profile.photoUrl, provider:'kakao' }).catch(()=>{});
         }
+        state.user = { name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
         state.loggedIn = true;
         saveAuth();
         state.screen = 'main';
@@ -1605,6 +1631,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
           termsConsent:true, privacyConsent:true, consentAgreedAt:new Date().toISOString(),
         }).catch(err=>console.error('Firestore save failed:', err));
       }
+      state.user = { name:fullProfile.name, email:fullProfile.email, photoUrl:fullProfile.photoUrl };
       state.loggedIn = true;
       saveAuth();
       state.screen = 'main';
@@ -1618,7 +1645,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     });
   }
   else if(action==='do-logout'){
-    state.loggedIn=false; saveAuth(); state.screen='main'; render(); showToast(T('toastLogout'));
+    state.loggedIn=false; state.user=null; saveAuth(); state.screen='main'; render(); showToast(T('toastLogout'));
     if(window.__firebaseAuth && window.__firebaseAuth.ready){ window.__firebaseAuth.signOutOfGoogle().catch(()=>{}); }
   }
   else if(action==='open-settings'){ state.screen='settings'; render(); }

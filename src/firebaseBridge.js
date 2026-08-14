@@ -3,14 +3,14 @@
   // Authentication > Sign-in method에서 이메일/비밀번호, Google을 사용 설정하세요.
   // Firestore Database를 만드세요 (users 컬렉션에 회원 프로필을 저장합니다).
   import {
-    GoogleAuthProvider, OAuthProvider, signInWithPopup,
+    OAuthProvider, signInWithPopup,
     createUserWithEmailAndPassword, signInWithEmailAndPassword,
     updateProfile, onAuthStateChanged, signOut
   } from "firebase/auth";
   import {
     doc, setDoc, getDoc, serverTimestamp
   } from "firebase/firestore";
-  import { auth, db } from "./firebase.js";
+  import { auth, db, googleProvider } from "./firebase.js";
 
   function toProfile(u){
     return { uid:u.uid, name:u.displayName, email:u.email, photoUrl:u.photoURL };
@@ -21,8 +21,7 @@
     ready: !!auth,
     signInWithGoogle: async ()=>{
       if(!auth) throw new Error('firebase-not-configured');
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, googleProvider);
       return toProfile(result.user);
     },
     signInWithKakao: async ()=>{
