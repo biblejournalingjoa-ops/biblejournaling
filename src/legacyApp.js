@@ -738,7 +738,7 @@ function renderMain(){
     const bg = locked ? '' : `style="background:${BOOK_ROW_COLORS[i%BOOK_ROW_COLORS.length]}"`;
     return `
     <button class="book-row ${locked?'locked':'colored'}" ${bg} data-action="${locked?'open-purchase':'open-chapters'}" data-month="${m}">
-      <span class="book-row-name">${b.ko} <span class="book-row-en">${b.en}</span></span>
+      <span class="book-row-name">${state.lang==='en' ? b.en : `${b.ko} <span class="book-row-en">${b.en}</span>`}</span>
       ${locked ? ICON.lock : ICON.chevRight}
     </button>`;
   }).join('');
