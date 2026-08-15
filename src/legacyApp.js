@@ -959,7 +959,6 @@ function renderSettingsScreen(){
           <div class="setting-item">${T('account')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-guide">${T('guideMenu')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-contact">${T('contact')} <span class="arrow">${ICON.chevRight}</span></div>
-          <div class="setting-item" data-action="do-logout">${T('logout')} <span class="arrow">${ICON.chevRight}</span></div>
         </div>
       </div>
     </div>
