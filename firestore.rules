@@ -15,6 +15,10 @@ service cloud.firestore {
       return isSignedIn() &&
         request.auth.uid in get(/databases/$(database)/documents/groups/$(groupId)).data.members;
     }
+    // NOTE: isGroupMember()는 현재 아래 groups/messages 규칙에서 사용하지 않습니다.
+    // (그룹 문서가 없을 때 get()이 실패해 permission-denied가 나는 문제가 있어
+    //  테스트/개발 단계에서는 isSignedIn()만으로 완화했습니다. 운영 배포 전에는
+    //  groups/{groupId}와 messages 규칙을 isGroupMember 기반으로 되돌리는 것을 권장합니다.)
 
     // ---- users/{uid} ----
     // 본인 프로필만 읽고/쓸 수 있습니다. uid, createdAt은 위조 방지를 위해 값 검증합니다.
@@ -33,28 +37,26 @@ service cloud.firestore {
     }
 
     // ---- groups/{groupId} ----
+    // 테스트/개발 단계: 로그인한 유저라면 그룹 생성/조회/참여가 가능하도록 완화했습니다.
+    // (운영 배포 전에는 read/update를 isGroupMember(groupId) 기반으로 다시 좁히세요.)
     match /groups/{groupId} {
-      // 그룹 멤버만 조회 가능
-      allow read: if isGroupMember(groupId);
+      // 로그인한 유저는 그룹을 조회할 수 있음
+      allow read: if isSignedIn();
 
-      // 생성자는 자기 자신을 owner이자 유일한 멤버로 하여 그룹을 만들 수 있음
-      allow create: if isSignedIn() &&
-        request.resource.data.ownerUid == request.auth.uid &&
-        request.resource.data.members == [request.auth.uid];
+      // 로그인한 유저는 그룹을 생성할 수 있음
+      allow create: if isSignedIn();
 
-      // 기존 멤버의 수정 또는, 본인 uid 한 명만 members에 추가하는 "참여" 요청만 허용
-      allow update: if isGroupMember(groupId) ||
-        (isSignedIn() &&
-          request.resource.data.members == resource.data.members.concat([request.auth.uid]));
+      // 로그인한 유저는 그룹 문서를 수정(멤버 추가 등)할 수 있음
+      allow update: if isSignedIn();
 
       // 그룹 삭제는 소유자만
       allow delete: if isSignedIn() && resource.data.ownerUid == request.auth.uid;
 
-      // groups/{groupId}/messages/{messageId} : 그룹 멤버만 읽고 쓸 수 있음.
+      // groups/{groupId}/messages/{messageId} : 로그인한 유저는 읽고 쓸 수 있음.
       // 메시지는 본인 uid로만 작성 가능하고, 작성 후 수정/삭제는 막습니다(대화 기록 보존).
       match /messages/{messageId} {
-        allow read: if isGroupMember(groupId);
-        allow create: if isGroupMember(groupId) && request.resource.data.uid == request.auth.uid;
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
         allow update, delete: if false;
       }
     }

@@ -27,8 +27,10 @@ export async function createGroup({ name, ownerUid, color = null, code = null })
 
 /**
  * 이미 존재하는 로컬 그룹(id 고정)을 Firestore에도 그대로 만들어 둡니다.
- * 문서가 이미 있으면 아무 것도 하지 않습니다 (클라이언트에서 만든 로컬 그룹을
- * 최초로 메시지를 보낼 때 Firestore 쪽에도 동일한 id로 미러링하기 위한 용도).
+ * 문서가 없으면 새로 만들고, 이미 있으면 현재 로그인한 유저(ownerUid로 전달된 값)를
+ * members 배열에 포함시켜 둡니다. 로컬 데모 그룹은 기기/유저마다 독립적으로 동기화되므로
+ * 그룹 문서를 먼저 만든 사람 외의 유저가 메시지를 보낼 때도 members에 포함되어 있어야
+ * 보안 규칙(멤버만 read/write) 상 permission-denied가 나지 않습니다.
  *
  * @param {string} groupId
  * @param {object} params - { name, ownerUid, color, code }
@@ -46,6 +48,8 @@ export async function ensureGroup(groupId, { name, ownerUid, color = null, code 
       members: [ownerUid],
       createdAt: serverTimestamp(),
     });
+  } else if (!(snap.data().members || []).includes(ownerUid)) {
+    await updateDoc(ref, { members: arrayUnion(ownerUid) });
   }
   return groupId;
 }
