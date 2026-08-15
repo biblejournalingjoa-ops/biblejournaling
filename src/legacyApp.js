@@ -129,10 +129,10 @@ const STRINGS = {
     dailyCap:(name)=>`${name}의 말씀 여정`,
     navBible:'성경', navContent:'내용 질문 기록', navThought:'생각 질문 기록',
     todayReading:'오늘의 말씀', chapterNote:'본문은 이해를 돕기 위한 요약 예시입니다.',
-    chapterInfoBtn:'장 배경 설명 보기',
-    chapterInfoTitle:(book,ch)=>`${book} ${ch}장 배경 설명`,
+    chapterInfoBtn:'배경 설명 보기',
+    chapterInfoTitle:(book)=>`${book} 배경 설명`,
     chapterInfoEmptyTitle:'준비 중이에요',
-    chapterInfoEmptyBody:'이 장의 배경 설명은 곧 추가될 예정이에요.',
+    chapterInfoEmptyBody:'이 책의 배경 설명은 곧 추가될 예정이에요.',
     qPlaceholder:'생각한 답을 적어보세요',
     verseLabel:'나에게 주신 말씀 한 구절', versePh:'예: 출애굽기 8:10',
     passageLabel:'본문 내용', passagePh:'오늘 본문의 흐름을 요약해 보세요',
@@ -222,10 +222,10 @@ const STRINGS = {
     dailyCap:(name)=>`${name} journey`,
     navBible:'Bible', navContent:'Content Qs', navThought:'Reflection',
     todayReading:"Today's reading", chapterNote:'This passage is a summarized sample for demo purposes.',
-    chapterInfoBtn:'View chapter background',
-    chapterInfoTitle:(book,ch)=>`Background: ${book} ${ch}`,
+    chapterInfoBtn:'View background',
+    chapterInfoTitle:(book)=>`Background: ${book}`,
     chapterInfoEmptyTitle:'Coming soon',
-    chapterInfoEmptyBody:"Background notes for this chapter will be added soon.",
+    chapterInfoEmptyBody:"Background notes for this book will be added soon.",
     qPlaceholder:'Write your answer here',
     verseLabel:'A verse given to me', versePh:'e.g. Exodus 8:10',
     passageLabel:'Passage summary', passagePh:'Summarize the flow of today\u2019s passage',
@@ -1365,6 +1365,7 @@ function renderChapterGrid(){
         <div class="cap">${T('calCap')}</div>
         <h2>${bookName(m)}</h2>
       </div>
+      <button class="icon-btn" data-action="open-chapter-info" title="${T('chapterInfoBtn')}">${ICON.info}</button>
     </div>
     <div class="settings-body" style="padding-top:6px;">
       <p class="terms-sub" style="margin-bottom:14px;">${T('chapterGridSub')}</p>
@@ -1418,7 +1419,6 @@ function renderBibleTab(){
           <div class="cap">${T('todayReading')}</div>
           <h3>${bookName(state.activeMonth)} ${state.activeChapter}${state.lang==='en'?'':'장'}</h3>
         </div>
-        <button class="chapter-info-btn" data-action="open-chapter-info" title="${T('chapterInfoBtn')}">${ICON.info}</button>
       </div>
       <div class="verse-list">${verses}</div>
     </div>
@@ -1431,7 +1431,7 @@ function renderChapterInfoSheet(){
   <div class="overlay" data-action="close-chapter-info">
     <div class="sheet" data-action="noop">
       <div class="sheet-handle"></div>
-      <div class="modal-title">${T('chapterInfoTitle', bookName(state.activeMonth), state.activeChapter)}</div>
+      <div class="modal-title">${T('chapterInfoTitle', bookName(state.activeMonth))}</div>
       <div class="guide-empty" style="padding:30px 4px 10px;">
         <div class="guide-empty-icon">${ICON.info}</div>
         <div class="guide-empty-title">${T('chapterInfoEmptyTitle')}</div>
