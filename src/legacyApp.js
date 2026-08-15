@@ -649,6 +649,7 @@ async function loadAll(){
     const up = await window.storage.get('user-profile');
     if(up && up.value) state.user = JSON.parse(up.value);
   }catch(e){}
+  subscribeToAuthUser();
   try{
     const g = await window.storage.get('groups-data');
     groups = g ? JSON.parse(g.value) : seedGroups();
@@ -684,6 +685,33 @@ function savePurchased(){
 }
 function saveAuth(){
   window.storage.set('auth-state', JSON.stringify({loggedIn:state.loggedIn}), false).catch(()=>{});
+}
+/* Firebase Auth의 실제 로그인 상태(onAuthStateChanged)를 구독해, 로컬 캐시(user-profile)가
+   비어있거나 오래된 경우(예: 카카오 로그인 후 아이디/닉네임이 빈칸으로 저장된 과거 세션)에도
+   currentUser와 Firestore users/{uid} 문서 값으로 프로필 화면을 다시 채워줍니다. */
+function subscribeToAuthUser(){
+  if(!(window.__firebaseAuth && window.__firebaseAuth.ready)) return;
+  window.__firebaseAuth.onChange(async (profile)=>{
+    if(!profile) return;
+    let merged = { ...state.user, ...profile };
+    if(window.__firebaseDB && window.__firebaseDB.ready){
+      try{
+        const doc = await window.__firebaseDB.getUserProfile(profile.uid);
+        if(doc){
+          merged = { ...merged, ...doc };
+          merged.uid = profile.uid;
+          merged.name = doc.name || profile.name || merged.name;
+          merged.email = doc.email || profile.email || merged.email;
+          merged.photoUrl = doc.photoUrl || profile.photoUrl || merged.photoUrl;
+        }
+      }catch(e){}
+    }
+    state.user = merged;
+    state.loggedIn = true;
+    window.storage.set('user-profile', JSON.stringify(state.user), false).catch(()=>{});
+    saveAuth();
+    if(groupsLoaded) render();
+  });
 }
 function saveGroups(){
   window.storage.set('groups-data', JSON.stringify(groups), false).catch(()=>{});
@@ -813,10 +841,14 @@ function renderMain(){
 /* ---------------- login screen ---------------- */
 function renderLogin(){
   if(state.loggedIn && state.user){
+    // 카카오 등 일부 로그인은 동의 항목에 따라 이메일/닉네임이 비어올 수 있으므로,
+    // 값이 없을 때는 uid까지 순서대로 대체해 화면이 완전히 빈칸으로 보이지 않게 합니다.
+    const rawUsername = state.user.username || state.user.email || state.user.uid || '';
+    const rawNickname = state.user.nickname || state.user.name || state.user.uid || '';
     const name = state.user.name ? escapeHtml(state.user.name) : '';
     const email = state.user.email ? escapeHtml(state.user.email) : '';
-    const username = state.user.username ? escapeHtml(state.user.username) : email;
-    const nickname = state.user.nickname ? escapeHtml(state.user.nickname) : name;
+    const username = escapeHtml(rawUsername);
+    const nickname = escapeHtml(rawNickname);
     const photoUrl = state.user.photoUrl ? escapeHtml(state.user.photoUrl) : '';
     const avatar = photoUrl
       ? `<img src="${photoUrl}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">`
