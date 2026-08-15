@@ -3,7 +3,7 @@
   // Authentication > Sign-in method에서 이메일/비밀번호, Google을 사용 설정하세요.
   // Firestore Database를 만드세요 (users 컬렉션에 회원 프로필을 저장합니다).
   import {
-    OAuthProvider, signInWithPopup,
+    OAuthProvider, signInWithPopup, getAdditionalUserInfo,
     createUserWithEmailAndPassword, signInWithEmailAndPassword,
     updateProfile, onAuthStateChanged, signOut
   } from "firebase/auth";
@@ -42,13 +42,33 @@
       if(!auth) throw new Error('firebase-not-configured');
       // Kakao isn't a built-in Firebase provider. This uses Firebase's generic OIDC
       // provider support, since Kakao Login supports OpenID Connect. You must:
-      //  1) Enable "OpenID Connect" as a custom provider in Firebase Console > Authentication
-      //     > Sign-in method, and name it "oidc.kakao".
-      //  2) Register a Kakao Login (OIDC) app in Kakao Developers and fill in the
-      //     client ID/secret and issuer URL Firebase asks for.
+      //  1) In Firebase Console > Authentication > Sign-in method, add a provider of
+      //     type "OpenID Connect" and name it "oidc.kakao".
+      //  2) Client ID = Kakao REST API key (see VITE_KAKAO_REST_API_KEY in .env),
+      //     Issuer URL = https://kauth.kakao.com. Client secret only if enabled in
+      //     Kakao Developers > 카카오 로그인 > 보안 (Client Secret 활성화).
+      //  3) In Kakao Developers, the registered Redirect URI must point to Firebase's
+      //     own auth handler: https://<authDomain>/__/auth/handler.
       const provider = new OAuthProvider('oidc.kakao');
       const result = await signInWithPopup(auth, provider);
       const profile = toProfile(result.user);
+      // Kakao's OIDC id_token reports the display name as "nickname" and the photo as
+      // "picture", not the standard "name" claim, so Firebase can't auto-fill
+      // displayName/photoURL. Fall back to the raw claims via getAdditionalUserInfo.
+      if(!profile.name || !profile.photoUrl){
+        const info = getAdditionalUserInfo(result);
+        const kakaoProfile = info && info.profile;
+        if(kakaoProfile){
+          if(!profile.name && kakaoProfile.nickname) profile.name = kakaoProfile.nickname;
+          if(!profile.photoUrl && kakaoProfile.picture) profile.photoUrl = kakaoProfile.picture;
+        }
+        if(profile.name || profile.photoUrl){
+          updateProfile(result.user, {
+            displayName: profile.name || null,
+            photoURL: profile.photoUrl || null,
+          }).catch(()=>{});
+        }
+      }
       saveUserOnAuth(profile, 'kakao');
       return profile;
     },
