@@ -459,7 +459,7 @@ function buildThoughtSnapshotHTML(key){
   const val = (v)=> (v && v.trim()) ? `<div class="snap-value">${escapeHtml(v)}</div>` : `<div class="snap-value empty">${noAnswer}</div>`;
   const askQ = t.askIndex!==null ? ASK_QUESTIONS[t.askIndex] : (state.lang==='en' ? 'No question selected' : '선택한 질문이 없어요');
   const thanksRows = (t.thanks||[]).filter(v=>v && v.trim()).map((v,i)=>`
-    <div class="snap-thanks-row"><div class="num">${i+1}</div><div style="font-size:13px">${escapeHtml(v)}</div></div>
+    <div class="snap-thanks-row"><div class="num">${i+1}</div><div style="font-size:calc(13px * var(--fs-scale))">${escapeHtml(v)}</div></div>
   `).join('') || `<div class="snap-value empty">${noAnswer}</div>`;
 
   return `
@@ -785,11 +785,11 @@ function renderLogin(){
         </div>
         <div class="field">
           <label>${T('usernameLabel')}</label>
-          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink);">${username}</div>
+          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:calc(14px * var(--fs-scale));color:var(--ink);">${username}</div>
         </div>
         <div class="field">
           <label>${T('nicknameLabel')}</label>
-          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink);">${nickname}</div>
+          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:calc(14px * var(--fs-scale));color:var(--ink);">${nickname}</div>
         </div>
         <button class="btn btn-primary" data-action="do-logout">${T('logout')}</button>
       </div>
@@ -834,7 +834,7 @@ function renderSignupScreen(){
         <div class="eyebrow">${T('loginTitle')}</div>
         <h2>${T('signupTitle')}</h2>
       </div>
-      <p class="terms-sub" style="text-align:center;margin-bottom:18px;font-size:12.5px;color:var(--ink-soft);">${T('signupSub')}</p>
+      <p class="terms-sub" style="text-align:center;margin-bottom:18px;font-size:calc(12.5px * var(--fs-scale));color:var(--ink-soft);">${T('signupSub')}</p>
 
       <div class="field">
         <label>${T('nameLabel')}</label>
