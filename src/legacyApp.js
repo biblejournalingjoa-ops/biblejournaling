@@ -410,6 +410,19 @@ function pushMyMessage(g, msg){
   g.messages.push(msg);
   saveGroups();
   scheduleReadTicks(g, msg);
+  syncMessageToFirestore(g, msg);
+}
+function syncMessageToFirestore(g, msg){
+  if(msg.type!=='text' || !msg.text) return; // 이미지/시스템 메시지는 Firestore 규칙상 본인 계정으로만 기록할 수 있는 텍스트만 미러링합니다
+  if(!(state.user && state.user.uid)) return;
+  const fdb = window.__firebaseDB;
+  if(!fdb || !fdb.ready || typeof fdb.sendMessage !== 'function') return;
+  const ensure = typeof fdb.ensureGroup === 'function'
+    ? fdb.ensureGroup(g.id, { name:g.name, ownerUid:state.user.uid, color:g.color, code:g.code })
+    : Promise.resolve();
+  ensure
+    .then(()=> fdb.sendMessage(g.id, { uid: state.user.uid, name: state.user.nickname || state.user.name || null, text: msg.text }))
+    .catch(err=>console.error('Firestore chat save failed:', err));
 }
 
 function blankEntry(){
@@ -677,9 +690,24 @@ function saveGroups(){
 }
 function saveAnswersDebounced(){
   clearTimeout(saveTimer);
+  const book = state.activeMonth ? bookName(state.activeMonth) : null;
+  const chapter = state.activeChapter;
+  const entry = (state.activeMonth && state.activeChapter) ? getEntry(ckey(state.activeMonth, state.activeChapter)) : null;
   saveTimer = setTimeout(()=>{
     window.storage.set('journal-entries', JSON.stringify(journalData), false).catch(()=>{});
+    syncJournalToFirestore(book, chapter, entry);
   }, 450);
+}
+function syncJournalToFirestore(book, chapter, entry){
+  if(!entry || !book || !chapter) return;
+  if(!(state.user && state.user.uid)) return;
+  const fdb = window.__firebaseDB;
+  if(!fdb || !fdb.ready || typeof fdb.saveJournalEntry !== 'function') return;
+  fdb.saveJournalEntry(state.user.uid, {
+    book, chapter,
+    contentAnswers: entry.content,
+    thoughtAnswers: entry.thought,
+  }).catch(err=>console.error('Firestore journal save failed:', err));
 }
 
 /* ---------------- helpers ---------------- */
@@ -1553,7 +1581,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     if(!(window.__firebaseAuth && window.__firebaseAuth.ready)){ showToast(T('toastFirebaseNotSet')); return; }
     window.__firebaseAuth.signInWithEmail(email, password).then(profile=>{
       window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
-      state.user = { name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
+      state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
       state.loggedIn = true;
       saveAuth();
       state.screen = 'main';
@@ -1569,7 +1597,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       window.__firebaseAuth.signInWithGoogle().then(profile=>{
         // users/{uid} 저장은 firebaseBridge.js가 로그인 성공 시 자동으로 처리합니다.
         window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
-        state.user = { name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
+        state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
         state.loggedIn = true;
         saveAuth();
         state.screen = 'main';
@@ -1588,7 +1616,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       window.__firebaseAuth.signInWithKakao().then(profile=>{
         // users/{uid} 저장은 firebaseBridge.js가 로그인 성공 시 자동으로 처리합니다.
         window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
-        state.user = { name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
+        state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
         state.loggedIn = true;
         saveAuth();
         state.screen = 'main';
@@ -1655,7 +1683,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     }).then(profile=>{
       const fullProfile = { ...profile, name, birth, username, nickname };
       window.storage.set('user-profile', JSON.stringify(fullProfile), false).catch(()=>{});
-      state.user = { name:fullProfile.name, email:fullProfile.email, photoUrl:fullProfile.photoUrl, username:fullProfile.username, nickname:fullProfile.nickname };
+      state.user = { uid:fullProfile.uid, name:fullProfile.name, email:fullProfile.email, photoUrl:fullProfile.photoUrl, username:fullProfile.username, nickname:fullProfile.nickname };
       state.loggedIn = true;
       saveAuth();
       state.screen = 'main';
