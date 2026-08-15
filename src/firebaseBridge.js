@@ -50,12 +50,13 @@
       //  3) In Kakao Developers, the registered Redirect URI must point to Firebase's
       //     own auth handler: https://<authDomain>/__/auth/handler.
       const provider = new OAuthProvider('oidc.kakao');
-      // Firebase's generic OIDC provider only requests the "openid" scope by default.
-      // Without explicitly requesting Kakao's consent-item scopes, the id_token comes
-      // back with just `sub` and no nickname/email/picture claims at all — which is
-      // why those fields were showing up empty. These scope names must also be turned
-      // on as consent items in Kakao Developers > 카카오 로그인 > 동의항목.
-      provider.addScope('account_email');
+      // Only request scopes that are actually turned on as consent items in Kakao
+      // Developers > 카카오 로그인 > 동의항목. Requesting account_email (or anything
+      // else not enabled there) makes Kakao's auth server reject the request outright
+      // with KOE205 "Invalid Request / Unset consent item(s)" instead of just omitting
+      // the claim, so don't add scopes here without enabling the matching consent item
+      // in Kakao Developers first. Email intentionally isn't requested; the profile
+      // screen already falls back to uid when email is unavailable.
       provider.addScope('profile_nickname');
       provider.addScope('profile_image');
       const result = await signInWithPopup(auth, provider);
