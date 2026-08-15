@@ -1567,10 +1567,8 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   else if(action==='do-google-login'){
     if(window.__firebaseAuth && window.__firebaseAuth.ready){
       window.__firebaseAuth.signInWithGoogle().then(profile=>{
+        // users/{uid} 저장은 firebaseBridge.js가 로그인 성공 시 자동으로 처리합니다.
         window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
-        if(window.__firebaseDB && window.__firebaseDB.ready){
-          window.__firebaseDB.saveUserProfile(profile.uid, { name:profile.name, email:profile.email, photoUrl:profile.photoUrl, provider:'google' }).catch(()=>{});
-        }
         state.user = { name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
         state.loggedIn = true;
         saveAuth();
@@ -1588,10 +1586,8 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   else if(action==='do-kakao-login'){
     if(window.__firebaseAuth && window.__firebaseAuth.ready){
       window.__firebaseAuth.signInWithKakao().then(profile=>{
+        // users/{uid} 저장은 firebaseBridge.js가 로그인 성공 시 자동으로 처리합니다.
         window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
-        if(window.__firebaseDB && window.__firebaseDB.ready){
-          window.__firebaseDB.saveUserProfile(profile.uid, { name:profile.name, email:profile.email, photoUrl:profile.photoUrl, provider:'kakao' }).catch(()=>{});
-        }
         state.user = { name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
         state.loggedIn = true;
         saveAuth();
@@ -1651,15 +1647,14 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       showToast(T('toastFirebaseNotSet'));
       return;
     }
-    window.__firebaseAuth.signUpWithEmail(email, pw, name).then(profile=>{
+    // birth/username/nickname/약관 동의 정보는 signUpWithEmail의 extraProfile로 전달하면
+    // firebaseBridge.js가 users/{uid} 문서를 만들 때 함께 저장합니다.
+    window.__firebaseAuth.signUpWithEmail(email, pw, name, {
+      birth, username, nickname,
+      termsConsent:true, privacyConsent:true, consentAgreedAt:new Date().toISOString(),
+    }).then(profile=>{
       const fullProfile = { ...profile, name, birth, username, nickname };
       window.storage.set('user-profile', JSON.stringify(fullProfile), false).catch(()=>{});
-      if(window.__firebaseDB && window.__firebaseDB.ready){
-        window.__firebaseDB.saveUserProfile(profile.uid, {
-          name, email, birth, username, nickname, provider:'password',
-          termsConsent:true, privacyConsent:true, consentAgreedAt:new Date().toISOString(),
-        }).catch(err=>console.error('Firestore save failed:', err));
-      }
       state.user = { name:fullProfile.name, email:fullProfile.email, photoUrl:fullProfile.photoUrl, username:fullProfile.username, nickname:fullProfile.nickname };
       state.loggedIn = true;
       saveAuth();
