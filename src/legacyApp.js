@@ -76,6 +76,24 @@ const ASK_QUESTIONS = [
   '주님, 지금 제게 무엇을 말씀하십니까?',
 ];
 
+const ASK_QUESTIONS_EN = [
+  'Lord, what is on Your heart for me today?',
+  'Is there sin, pride, or fear that I am overlooking?',
+  'What truth do You want to show me today?',
+  'Who is someone You want me to love today?',
+  'What is something I need to stop doing?',
+  'What is one small step You want me to take today?',
+  'Is there direction You are giving me for my family, ministry, or work/study?',
+  'How do You see the problem that worries me?',
+  'What burden do You want me to lay down today?',
+  'What comfort do You want to speak to me?',
+  'Lord, what are You saying to me right now?',
+];
+
+function getAskQuestions(){
+  return state.lang === 'en' ? ASK_QUESTIONS_EN : ASK_QUESTIONS;
+}
+
 /* ---------------- i18n ---------------- */
 const STRINGS = {
   ko:{
@@ -457,7 +475,7 @@ function buildThoughtSnapshotHTML(key){
   const t = entry.thought;
   const noAnswer = state.lang==='en' ? 'Not written yet' : '아직 작성하지 않았어요';
   const val = (v)=> (v && v.trim()) ? `<div class="snap-value">${escapeHtml(v)}</div>` : `<div class="snap-value empty">${noAnswer}</div>`;
-  const askQ = t.askIndex!==null ? ASK_QUESTIONS[t.askIndex] : (state.lang==='en' ? 'No question selected' : '선택한 질문이 없어요');
+  const askQ = t.askIndex!==null ? getAskQuestions()[t.askIndex] : (state.lang==='en' ? 'No question selected' : '선택한 질문이 없어요');
   const thanksRows = (t.thanks||[]).filter(v=>v && v.trim()).map((v,i)=>`
     <div class="snap-thanks-row"><div class="num">${i+1}</div><div style="font-size:calc(13px * var(--fs-scale))">${escapeHtml(v)}</div></div>
   `).join('') || `<div class="snap-value empty">${noAnswer}</div>`;
@@ -1458,8 +1476,9 @@ function renderContentTab(ds){
 function renderThoughtTab(ds){
   const entry = getEntry(ds);
   const t = entry.thought;
-  const askQ = t.askIndex!==null ? ASK_QUESTIONS[t.askIndex] : T('askPlaceholderQ');
-  const askList = ASK_QUESTIONS.map((q,i)=>`
+  const askQuestions = getAskQuestions();
+  const askQ = t.askIndex!==null ? askQuestions[t.askIndex] : T('askPlaceholderQ');
+  const askList = askQuestions.map((q,i)=>`
     <div class="ask-item ${t.askIndex===i?'selected':''}" data-action="pick-ask" data-index="${i}">${q}</div>
   `).join('');
 
