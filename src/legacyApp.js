@@ -841,14 +841,9 @@ function renderMain(){
 /* ---------------- login screen ---------------- */
 function renderLogin(){
   if(state.loggedIn && state.user){
-    // 카카오 등 일부 로그인은 동의 항목에 따라 이메일/닉네임이 비어올 수 있으므로,
+    // 카카오 등 일부 로그인은 동의 항목에 따라 닉네임이 비어올 수 있으므로,
     // 값이 없을 때는 uid까지 순서대로 대체해 화면이 완전히 빈칸으로 보이지 않게 합니다.
-    const rawUsername = state.user.username || state.user.email || state.user.uid || '';
-    const rawNickname = state.user.nickname || state.user.name || state.user.uid || '';
-    const name = state.user.name ? escapeHtml(state.user.name) : '';
-    const email = state.user.email ? escapeHtml(state.user.email) : '';
-    const username = escapeHtml(rawUsername);
-    const nickname = escapeHtml(rawNickname);
+    const nickname = escapeHtml(state.user.nickname || state.user.name || state.user.uid || '');
     const photoUrl = state.user.photoUrl ? escapeHtml(state.user.photoUrl) : '';
     const avatar = photoUrl
       ? `<img src="${photoUrl}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">`
@@ -859,11 +854,7 @@ function renderLogin(){
         <div class="login-mark">
           <div style="display:flex;justify-content:center;margin-bottom:10px;">${avatar}</div>
           <div class="eyebrow">${T('loginWelcome')}</div>
-          <h2>${name || email}</h2>
-        </div>
-        <div class="field">
-          <label>${T('usernameLabel')}</label>
-          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:calc(14px * var(--fs-scale));color:var(--ink);">${username}</div>
+          <h2>${nickname}</h2>
         </div>
         <div class="field">
           <label>${T('nicknameLabel')}</label>
