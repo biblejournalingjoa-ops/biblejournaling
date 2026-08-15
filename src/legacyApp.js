@@ -350,6 +350,7 @@ let state = {
   signupConsent:false,      // privacy consent checkbox on the signup screen
   signupConsentOpen:false,  // whether the consent detail text is expanded
   prevScreen:'main',        // where to return to when leaving settings
+  loadingCount:0,           // >0 while any global async op (auth/Firestore/etc) is in flight
 };
 
 const YEAR = 2026;
@@ -599,6 +600,7 @@ let toastTimer=null, saveTimer=null;
 
 /* ---------------- persistence ---------------- */
 async function loadAll(){
+  showLoading();
   try{
     const p = await window.storage.get('purchased-months');
     if(p) state.purchased = JSON.parse(p.value);
@@ -672,7 +674,7 @@ async function loadAll(){
     if(nf) notifSettings = Object.assign(notifSettings, JSON.parse(nf.value));
   }catch(e){}
   groupsLoaded = true;
-  render();
+  hideLoading();
 }
 function savePrefs(){
   window.storage.set('app-prefs', JSON.stringify({fontSize:state.fontSize, lang:state.lang, theme:state.theme}), false).catch(()=>{});
@@ -696,7 +698,7 @@ function subscribeToAuthUser(){
     let merged = { ...state.user, ...profile };
     if(window.__firebaseDB && window.__firebaseDB.ready){
       try{
-        const doc = await window.__firebaseDB.getUserProfile(profile.uid);
+        const doc = await withLoading(window.__firebaseDB.getUserProfile(profile.uid));
         if(doc){
           merged = { ...merged, ...doc };
           merged.uid = profile.uid;
@@ -754,6 +756,31 @@ function todayLabel(){
 }
 
 /* ---------------- render root ---------------- */
+/* ---------------- global loading overlay ----------------
+   앱 어디서든(Firebase Auth, Firestore 조회/저장, 기타 비동기 통신) showLoading()/hideLoading()을
+   호출해 같은 오버레이를 켜고 끌 수 있습니다. 중첩 호출을 고려해 카운터로 관리하므로,
+   동시에 여러 요청이 걸려 있어도 모두 끝나야 사라집니다. withLoading(promise)는 이 두 호출을
+   promise 앞뒤로 자동 연결해 주는 헬퍼입니다. */
+function showLoading(){
+  state.loadingCount++;
+  render();
+}
+function hideLoading(){
+  state.loadingCount = Math.max(0, state.loadingCount - 1);
+  render();
+}
+function withLoading(promise){
+  showLoading();
+  return promise.finally(()=> hideLoading());
+}
+function renderLoadingOverlay(){
+  if(state.loadingCount<=0) return '';
+  return `
+    <div class="loading-overlay">
+      <div class="loading-card"><div class="loading-ring"></div></div>
+    </div>
+  `;
+}
 function render(){
   const shell = document.getElementById('shell');
   shell.className = 'fs-' + state.fontSize + ' theme-' + state.theme;
@@ -782,7 +809,7 @@ function render(){
   if(state.notifDayOpen) overlays += renderNotifDaySheet();
   if(state.pageShare) overlays += renderPageShareSheet();
 
-  app.innerHTML = html + overlays + `<div class="toast" id="toast"></div>`;
+  app.innerHTML = html + overlays + renderLoadingOverlay() + `<div class="toast" id="toast"></div>`;
 
   if(state.screen==='daily' && state.activeTab==='bible' && state.highlightVerse){
     requestAnimationFrame(()=>{
@@ -1602,7 +1629,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     const password = val('login-password');
     if(!email || !password){ showToast(T('toastFillAll')); return; }
     if(!(window.__firebaseAuth && window.__firebaseAuth.ready)){ showToast(T('toastFirebaseNotSet')); return; }
-    window.__firebaseAuth.signInWithEmail(email, password).then(profile=>{
+    withLoading(window.__firebaseAuth.signInWithEmail(email, password)).then(profile=>{
       window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
       state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
       state.loggedIn = true;
@@ -1617,7 +1644,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='do-google-login'){
     if(window.__firebaseAuth && window.__firebaseAuth.ready){
-      window.__firebaseAuth.signInWithGoogle().then(profile=>{
+      withLoading(window.__firebaseAuth.signInWithGoogle()).then(profile=>{
         // users/{uid} 저장은 firebaseBridge.js가 로그인 성공 시 자동으로 처리합니다.
         window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
         state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
@@ -1636,7 +1663,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='do-kakao-login'){
     if(window.__firebaseAuth && window.__firebaseAuth.ready){
-      window.__firebaseAuth.signInWithKakao().then(profile=>{
+      withLoading(window.__firebaseAuth.signInWithKakao()).then(profile=>{
         // users/{uid} 저장은 firebaseBridge.js가 로그인 성공 시 자동으로 처리합니다.
         window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
         state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
@@ -1700,10 +1727,10 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     }
     // birth/username/nickname/약관 동의 정보는 signUpWithEmail의 extraProfile로 전달하면
     // firebaseBridge.js가 users/{uid} 문서를 만들 때 함께 저장합니다.
-    window.__firebaseAuth.signUpWithEmail(email, pw, name, {
+    withLoading(window.__firebaseAuth.signUpWithEmail(email, pw, name, {
       birth, username, nickname,
       termsConsent:true, privacyConsent:true, consentAgreedAt:new Date().toISOString(),
-    }).then(profile=>{
+    })).then(profile=>{
       const fullProfile = { ...profile, name, birth, username, nickname };
       window.storage.set('user-profile', JSON.stringify(fullProfile), false).catch(()=>{});
       state.user = { uid:fullProfile.uid, name:fullProfile.name, email:fullProfile.email, photoUrl:fullProfile.photoUrl, username:fullProfile.username, nickname:fullProfile.nickname };
