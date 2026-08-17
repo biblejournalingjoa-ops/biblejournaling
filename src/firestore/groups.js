@@ -2,7 +2,7 @@
 // 문서 경로: groups/{groupId}
 import {
   collection, doc, addDoc, setDoc, getDoc, getDocs,
-  updateDoc, arrayUnion, query, where, orderBy, serverTimestamp,
+  updateDoc, arrayUnion, arrayRemove, query, where, orderBy, serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase.js";
 
@@ -56,6 +56,12 @@ export async function ensureGroup(groupId, { name, ownerUid, color = null, code 
 
 export async function addGroupMember(groupId, uid) {
   await updateDoc(doc(db, "groups", groupId), { members: arrayUnion(uid) });
+}
+
+/** 그룹 나가기: 내 uid만 members 배열에서 제거합니다. 메시지나 다른 멤버는 건드리지 않습니다. */
+export async function removeGroupMember(groupId, uid) {
+  if (!groupId || !uid) throw new Error("removeGroupMember: groupId and uid are required");
+  await updateDoc(doc(db, "groups", groupId), { members: arrayRemove(uid) });
 }
 
 export async function getGroup(groupId) {

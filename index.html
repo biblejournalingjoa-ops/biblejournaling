@@ -30,6 +30,7 @@
   --badge-blue:#3F5670;
   --badge-gold:#B8791F;
   --bubble-them:#FFFFFF;
+  --danger:#B3413A;
 }
 #shell.theme-dark{
   --bg:#1C1A18;
@@ -51,6 +52,7 @@
   --shadow-sm:0 4px 14px rgba(0,0,0,.3);
   --surface-strong:#3F5670;
   --bubble-them:#4C5F78;
+  --danger:#E2695F;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 input::placeholder, textarea::placeholder{color:var(--ink-faint);opacity:1;}
@@ -312,6 +314,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .modal-actions{display:flex;gap:10px;}
 .modal-actions .btn{flex:1;}
 .btn-cancel{background:var(--bg);color:var(--ink-soft);}
+.btn-danger{background:var(--danger);color:#fff;margin-top:6px;}
 
 .plan-options{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
 .plan-option{
@@ -535,6 +538,33 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 }
 .empty-groups .emoji{font-size:calc(30px * var(--fs-scale));margin-bottom:10px;}
 .empty-groups p{font-size:calc(12.5px * var(--fs-scale));line-height:1.6;}
+
+/* ---------- group info (participants) ---------- */
+.group-info-body{flex:1;min-height:0;overflow-y:auto;padding:10px 20px 24px;display:flex;flex-direction:column;}
+.group-info-summary{text-align:center;padding:14px 0 22px;}
+.group-avatar-lg{
+  width:64px;height:64px;border-radius:50%;margin:0 auto 12px;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  font-family:'Noto Serif KR',serif;font-weight:700;font-size:calc(24px * var(--fs-scale));
+}
+.gi-name{font-family:'Noto Serif KR',serif;font-size:calc(18px * var(--fs-scale));font-weight:700;}
+.gi-count{font-size:calc(12.5px * var(--fs-scale));color:var(--ink-soft);margin-top:4px;}
+.member-list{background:var(--paper);border-radius:14px;box-shadow:var(--shadow-sm);padding:2px 14px;margin-bottom:24px;}
+.member-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+.member-row:last-child{border-bottom:none;}
+.member-avatar{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;overflow:hidden;
+  background:var(--bg);color:var(--ink-faint);
+  display:flex;align-items:center;justify-content:center;
+}
+.member-avatar img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+.member-avatar svg{width:20px;height:20px;}
+.member-name{font-size:calc(13.5px * var(--fs-scale));font-weight:600;}
+.member-you{color:var(--ink-faint);font-weight:500;font-size:calc(11.5px * var(--fs-scale));}
+.member-list-status{padding:18px 4px;text-align:center;color:var(--ink-soft);font-size:calc(12.5px * var(--fs-scale));}
+.member-list-status.error{color:var(--danger);}
+.group-info-actions{display:flex;flex-direction:column;gap:10px;margin-top:auto;}
+.group-info-actions .btn{margin-top:0;}
 
 /* ---------- group chat room ---------- */
 .room-header{

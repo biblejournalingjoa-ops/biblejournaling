@@ -248,6 +248,15 @@ const STRINGS = {
     noGroupsYet:'아직 만든 채팅방이 없어요',
     toastShareUnsupported:'이 기기·브라우저에서는 바로 공유가 지원되지 않아 이미지를 다운로드했어요. 카카오톡에서 직접 첨부해 주세요.',
     toastDownloadDone:'이미지가 다운로드되었어요',
+    groupInfoParticipants:(n)=>`참여자 ${n}명`,
+    chatEnterBtn:'채팅하기', leaveGroupBtn:'그룹 나가기',
+    leaveConfirmTitle:'정말 이 그룹에서 나가시겠어요?',
+    leaveConfirmBody:'그룹을 나가면 더 이상 이 채팅방의 메시지를 볼 수 없습니다.',
+    leaveConfirmBtn:'그룹 나가기',
+    toastLeftGroup:'그룹에서 나갔어요',
+    toastLeaveFailed:'그룹 나가기에 실패했어요. 다시 시도해 주세요',
+    toastMembersLoadFailed:'참여자 정보를 불러오지 못했어요',
+    memberFallbackName:'팀원', youTag:'(나)', loadingLabel:'불러오는 중...',
   },
   en:{
     yearTag:'Bible Journaling', yearSub:'One journal a month, twelve months walking with the Word',
@@ -361,6 +370,15 @@ const STRINGS = {
     noGroupsYet:"You haven't created a chat room yet",
     toastShareUnsupported:"Direct sharing isn't supported on this device/browser, so the image was downloaded instead. Please attach it in KakaoTalk yourself.",
     toastDownloadDone:'Image downloaded',
+    groupInfoParticipants:(n)=>`${n} participant${n===1?'':'s'}`,
+    chatEnterBtn:'Chat', leaveGroupBtn:'Leave group',
+    leaveConfirmTitle:'Leave this group?',
+    leaveConfirmBody:"Once you leave, you won't be able to see this chat room's messages anymore.",
+    leaveConfirmBtn:'Leave group',
+    toastLeftGroup:'You left the group',
+    toastLeaveFailed:'Failed to leave the group. Please try again',
+    toastMembersLoadFailed:'Could not load participants',
+    memberFallbackName:'Member', youTag:'(You)', loadingLabel:'Loading...',
   },
   ja:{
     yearTag:'Bible Journaling', yearSub:'月に1冊、御言葉と共に歩む12か月',
@@ -474,6 +492,15 @@ const STRINGS = {
     noGroupsYet:'まだ作成したチャットルームがありません',
     toastShareUnsupported:'この端末・ブラウザでは直接共有がサポートされていないため、画像をダウンロードしました。カカオトークで直接添付してください。',
     toastDownloadDone:'画像がダウンロードされました',
+    groupInfoParticipants:(n)=>`参加者 ${n}人`,
+    chatEnterBtn:'チャットする', leaveGroupBtn:'グループを退出',
+    leaveConfirmTitle:'本当にこのグループから退出しますか?',
+    leaveConfirmBody:'退出すると、このチャットルームのメッセージはもう見られなくなります。',
+    leaveConfirmBtn:'グループを退出',
+    toastLeftGroup:'グループから退出しました',
+    toastLeaveFailed:'退出に失敗しました。もう一度お試しください',
+    toastMembersLoadFailed:'参加者情報を読み込めませんでした',
+    memberFallbackName:'メンバー', youTag:'(自分)', loadingLabel:'読み込み中...',
   },
   th:{
     yearTag:'Bible Journaling', yearSub:'หนึ่งเดือนหนึ่งเล่ม เดินไปกับพระวจนะตลอดสิบสองเดือน',
@@ -587,6 +614,15 @@ const STRINGS = {
     noGroupsYet:'ยังไม่มีห้องแชทที่สร้างไว้',
     toastShareUnsupported:'อุปกรณ์/เบราว์เซอร์นี้ไม่รองรับการแบ่งปันโดยตรง จึงดาวน์โหลดภาพให้แทน กรุณาแนบไฟล์ใน KakaoTalk ด้วยตนเอง',
     toastDownloadDone:'ดาวน์โหลดภาพแล้ว',
+    groupInfoParticipants:(n)=>`ผู้เข้าร่วม ${n} คน`,
+    chatEnterBtn:'แชท', leaveGroupBtn:'ออกจากกลุ่ม',
+    leaveConfirmTitle:'ต้องการออกจากกลุ่มนี้จริงหรือไม่?',
+    leaveConfirmBody:'เมื่อออกจากกลุ่มแล้ว คุณจะไม่สามารถดูข้อความในห้องแชทนี้ได้อีก',
+    leaveConfirmBtn:'ออกจากกลุ่ม',
+    toastLeftGroup:'ออกจากกลุ่มแล้ว',
+    toastLeaveFailed:'ออกจากกลุ่มไม่สำเร็จ กรุณาลองอีกครั้ง',
+    toastMembersLoadFailed:'ไม่สามารถโหลดข้อมูลผู้เข้าร่วมได้',
+    memberFallbackName:'สมาชิก', youTag:'(ฉัน)', loadingLabel:'กำลังโหลด...',
   },
 };
 function T(key, ...args){
@@ -631,7 +667,7 @@ const ICON = {
 
 /* ---------------- state ---------------- */
 let state = {
-  screen:'loading',         // loading | main | login | signup | chapters | daily | groups | group-room | settings
+  screen:'loading',         // loading | main | login | signup | chapters | daily | groups | group-info | group-room | settings
   purchased:[1,2,3,4,5], // all 5 Pentateuch books are free/unlocked
   loggedIn:false,
   user:null,                // { name, email, photoUrl } of the signed-in user
@@ -643,6 +679,10 @@ let state = {
   selectedPlan:'year',      // year | month  (chosen inside purchase modal)
   askOpen:false,
   activeGroupId:null,       // group room currently open
+  groupInfoMembers:null,    // [{uid,name,photoUrl}] for the open group-info screen; null while loading
+  groupInfoError:false,     // true if the participant list failed to load from Firestore
+  leaveConfirmOpen:false,   // whether the "leave group" confirm dialog is open
+  leaveBusy:false,          // true while a leave-group request is in flight
   createGroupOpen:false,
   inviteGroupId:null,       // group id whose invite sheet is open
   shareGroupId:null,        // group id whose share-picker sheet is open
@@ -738,6 +778,56 @@ function syncMessageToFirestore(g, msg){
   ensure
     .then(()=> fdb.sendMessage(g.id, { uid: state.user.uid, name: state.user.nickname || state.user.name || null, text: msg.text }))
     .catch(err=>console.error('Firestore chat save failed:', err));
+}
+
+/* Loads the group-info screen's participant list from Firestore (groups/{id}.members,
+   with each member's users/{uid} profile for nickname + photo). Also makes sure the
+   group document exists and includes the current user, so a group that was only ever
+   created locally still has real member data to show and to leave later. */
+function loadGroupMembers(groupId){
+  state.groupInfoMembers = null;
+  state.groupInfoError = false;
+  const fdb = window.__firebaseDB;
+  if(!fdb || !fdb.ready || !(state.user && state.user.uid)){
+    state.groupInfoError = true;
+    state.groupInfoMembers = [];
+    render();
+    return;
+  }
+  const g = getGroup(groupId);
+  const ensure = typeof fdb.ensureGroup === 'function'
+    ? fdb.ensureGroup(groupId, { name: g ? g.name : '', ownerUid: state.user.uid, color: g ? g.color : null, code: g ? g.code : null })
+    : Promise.resolve();
+
+  withLoading(
+    ensure
+      .then(()=> fdb.getGroup(groupId))
+      .then(async (doc)=>{
+        const uids = (doc && doc.members && doc.members.length) ? doc.members : [state.user.uid];
+        const members = await Promise.all(uids.map(async (uid)=>{
+          try{
+            const u = await fdb.getUserProfile(uid);
+            return {
+              uid,
+              name: (u && (u.nickname || u.name)) || T('memberFallbackName'),
+              photoUrl: (u && u.photoUrl) || null,
+            };
+          }catch(err){
+            console.error('Failed to load member profile:', uid, err);
+            return { uid, name: T('memberFallbackName'), photoUrl: null };
+          }
+        }));
+        if(state.activeGroupId===groupId) state.groupInfoMembers = members;
+      })
+  ).catch(err=>{
+    console.error('Failed to load group members:', err);
+    if(state.activeGroupId===groupId){
+      state.groupInfoError = true;
+      state.groupInfoMembers = [];
+    }
+  }).finally(()=>{
+    if(state.screen==='group-info') render();
+  });
 }
 
 function blankEntry(){
@@ -1213,6 +1303,7 @@ function render(){
   else if(state.screen==='chapters') html = renderChapterGrid();
   else if(state.screen==='daily') html = renderDaily();
   else if(state.screen==='groups') html = renderGroupsList();
+  else if(state.screen==='group-info') html = renderGroupInfo();
   else if(state.screen==='group-room') html = renderGroupRoom();
   else if(state.screen==='settings') html = renderSettingsScreen();
   else if(state.screen==='contact') html = renderContactScreen();
@@ -1232,6 +1323,7 @@ function render(){
   if(state.pageShare) overlays += renderPageShareSheet();
   if(state.donateModal) overlays += renderDonateModal();
   if(state.languageModal) overlays += renderLanguageModal();
+  if(state.leaveConfirmOpen) overlays += renderLeaveConfirmModal();
 
   app.innerHTML = html + overlays + renderLoadingOverlay() + `<div class="toast" id="toast"></div>`;
 
@@ -1717,6 +1809,67 @@ function renderGroupsList(){
       `}
     </div>
   `;
+}
+
+/* ---------------- group info (participants) ---------------- */
+function renderGroupInfo(){
+  const g = getGroup(state.activeGroupId);
+  if(!g){
+    return `<div class="groups-header"><button class="icon-btn" data-action="go-groups">${ICON.back}</button></div>`;
+  }
+  const members = state.groupInfoMembers;
+  const count = members ? members.length : (g.memberCount || 1);
+
+  let membersHtml;
+  if(members === null){
+    membersHtml = `<div class="member-list-status">${T('loadingLabel')}</div>`;
+  } else if(members.length === 0){
+    membersHtml = state.groupInfoError
+      ? `<div class="member-list-status error">${T('toastMembersLoadFailed')}</div>`
+      : '';
+  } else {
+    membersHtml = members.map(m=>`
+      <div class="member-row">
+        <div class="member-avatar">${m.photoUrl ? `<img src="${escapeHtml(m.photoUrl)}" alt="">` : ICON.person}</div>
+        <div class="member-name">${escapeHtml(m.name)}${state.user && state.user.uid===m.uid ? ` <span class="member-you">${T('youTag')}</span>` : ''}</div>
+      </div>
+    `).join('');
+  }
+
+  return `
+    <div class="groups-header">
+      <button class="icon-btn" data-action="go-groups">${ICON.back}</button>
+      <div class="titles">
+        <div class="cap">Together</div>
+        <h2>${escapeHtml(g.name)}</h2>
+      </div>
+    </div>
+    <div class="group-info-body">
+      <div class="group-info-summary">
+        <div class="group-avatar-lg" style="background:${g.color}">${escapeHtml(g.name.slice(0,1))}</div>
+        <div class="gi-name">${escapeHtml(g.name)}</div>
+        <div class="gi-count">${T('groupInfoParticipants', count)}</div>
+      </div>
+      <div class="member-list">${membersHtml}</div>
+      <div class="group-info-actions">
+        <button class="btn btn-primary" data-action="open-group-chat">${T('chatEnterBtn')}</button>
+        <button class="btn btn-danger" data-action="open-leave-confirm">${T('leaveGroupBtn')}</button>
+      </div>
+    </div>
+  `;
+}
+function renderLeaveConfirmModal(){
+  return `
+  <div class="overlay center" data-action="close-leave-confirm">
+    <div class="modal-card" data-action="noop">
+      <div class="modal-title">${T('leaveConfirmTitle')}</div>
+      <p class="modal-sub">${T('leaveConfirmBody')}</p>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" data-action="close-leave-confirm" ${state.leaveBusy?'disabled':''}>${T('cancel')}</button>
+        <button class="btn btn-danger" data-action="confirm-leave-group" ${state.leaveBusy?'disabled':''}>${T('leaveConfirmBtn')}</button>
+      </div>
+    </div>
+  </div>`;
 }
 
 /* ---------------- group chat room ---------------- */
@@ -2506,8 +2659,54 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='open-group'){
     state.activeGroupId = el.dataset.id;
+    state.screen='group-info';
+    state.groupInfoMembers = null;
+    state.groupInfoError = false;
+    render();
+    loadGroupMembers(state.activeGroupId);
+  }
+  else if(action==='open-group-chat'){
     state.screen='group-room';
     render();
+  }
+  else if(action==='open-leave-confirm'){
+    state.leaveConfirmOpen = true;
+    render();
+  }
+  else if(action==='close-leave-confirm'){
+    if(state.leaveBusy) return;
+    state.leaveConfirmOpen = false;
+    render();
+  }
+  else if(action==='confirm-leave-group'){
+    if(state.leaveBusy) return;
+    const groupId = state.activeGroupId;
+    const fdb = window.__firebaseDB;
+    if(!groupId || !fdb || !fdb.ready || !(state.user && state.user.uid) || typeof fdb.removeGroupMember !== 'function'){
+      state.leaveConfirmOpen = false;
+      render();
+      showToast(T('toastLeaveFailed'));
+      return;
+    }
+    state.leaveBusy = true;
+    render();
+    withLoading(fdb.removeGroupMember(groupId, state.user.uid)).then(()=>{
+      groups = groups.filter(gr=>gr.id!==groupId);
+      saveGroups();
+      state.leaveBusy = false;
+      state.leaveConfirmOpen = false;
+      state.activeGroupId = null;
+      state.groupInfoMembers = null;
+      state.groupInfoError = false;
+      state.screen = 'groups';
+      render();
+      showToast(T('toastLeftGroup'));
+    }).catch(err=>{
+      console.error('Failed to leave group:', err);
+      state.leaveBusy = false;
+      render();
+      showToast(T('toastLeaveFailed'));
+    });
   }
   else if(action==='open-create-group'){
     state.createGroupOpen = true;
