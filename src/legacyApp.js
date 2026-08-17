@@ -123,7 +123,7 @@ const STRINGS = {
     submitSignup:'가입하기',
     toastFillAll:'모든 항목을 입력해 주세요', toastNeedConsent:'개인정보 수집에 동의해 주세요',
     toastSignupDone:'회원가입이 완료되었습니다',
-    notif:'알림 설정', account:'계정 정보', contact:'문의하기', logout:'로그아웃', donate:'후원하기',
+    notif:'알림 설정', contact:'문의하기', logout:'로그아웃', donate:'후원하기',
     notifTitle:'알림 설정', notifSub:'요일을 선택해서 묵상 알림 시간을 설정해 보세요.',
     dayMon:'월요일', dayTue:'화요일', dayWed:'수요일', dayThu:'목요일', dayFri:'금요일',
     notifOff:'알림 꺼짐',
@@ -234,7 +234,7 @@ const STRINGS = {
     submitSignup:'Create account',
     toastFillAll:'Please fill in every field', toastNeedConsent:'Please agree to the privacy consent',
     toastSignupDone:'Sign-up complete',
-    notif:'Notifications', account:'Account', contact:'Contact us', logout:'Log out', donate:'Support us',
+    notif:'Notifications', contact:'Contact us', logout:'Log out', donate:'Support us',
     notifTitle:'Notifications', notifSub:'Choose a weekday to set a reflection reminder time.',
     dayMon:'Monday', dayTue:'Tuesday', dayWed:'Wednesday', dayThu:'Thursday', dayFri:'Friday',
     notifOff:'Off',
@@ -1265,7 +1265,6 @@ function renderSettingsScreen(){
       <div class="settings-group">
         <div class="settings-list">
           <div class="setting-item" data-action="go-notifications">${T('notif')} <span class="arrow">${ICON.chevRight}</span></div>
-          <div class="setting-item">${T('account')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-guide">${T('guideMenu')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-contact">${T('contact')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="open-donate">${T('donate')} 💖 <span class="arrow">${ICON.chevRight}</span></div>
