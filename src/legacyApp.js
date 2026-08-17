@@ -172,6 +172,14 @@ const STRINGS = {
     toastWeakPassword:'비밀번호는 6자 이상으로 입력해 주세요',
     toastSignupFailed:'회원가입에 실패했어요. 다시 시도해 주세요',
     toastFirebaseNotSet:'Firebase 설정이 아직 연결되지 않았어요 (firebaseConfig를 입력해 주세요)',
+    nicknameModalTitle:'닉네임 수정', saveBtn:'저장',
+    toastNicknameEmpty:'닉네임을 입력해 주세요',
+    toastNicknameSaved:'닉네임이 변경되었습니다',
+    toastNicknameSaveFailed:'닉네임 저장에 실패했어요. 다시 시도해 주세요',
+    avatarModalTitle:'프로필 사진 변경', avatarModalSub:'선택한 사진으로 프로필 이미지를 바꿀까요?',
+    toastAvatarInvalidType:'이미지 파일만 선택할 수 있어요',
+    toastAvatarSaved:'프로필 사진이 변경되었습니다',
+    toastAvatarSaveFailed:'프로필 사진 업로드에 실패했어요. 다시 시도해 주세요',
     toastPurchaseYear:'1년 전체 이용권 구매가 완료되었습니다', toastPurchaseMonth:(name)=>`${name} 노트 구매가 완료되었습니다`,
     toastNeedPurchase:(name)=>`${name} 저널을 먼저 구매해 주세요`,
     sharePickTitle:'무엇을 공유할까요?', sharePickSub:'오늘 작성한 기록을 이미지로 만들어 공유해요.',
@@ -269,6 +277,14 @@ const STRINGS = {
     toastWeakPassword:'Password must be at least 6 characters',
     toastSignupFailed:'Sign-up failed. Please try again',
     toastFirebaseNotSet:'Firebase is not configured yet (please add your firebaseConfig)',
+    nicknameModalTitle:'Edit nickname', saveBtn:'Save',
+    toastNicknameEmpty:'Please enter a nickname',
+    toastNicknameSaved:'Nickname updated',
+    toastNicknameSaveFailed:'Could not save your nickname. Please try again',
+    avatarModalTitle:'Change profile photo', avatarModalSub:'Use this photo as your new profile picture?',
+    toastAvatarInvalidType:'Please choose an image file',
+    toastAvatarSaved:'Profile photo updated',
+    toastAvatarSaveFailed:'Could not upload the photo. Please try again',
     toastPurchaseYear:'Full year pass unlocked', toastPurchaseMonth:(name)=>`${name} journal unlocked`,
     toastNeedPurchase:(name)=>`Unlock the ${name} journal first`,
     sharePickTitle:'What would you like to share?', sharePickSub:"Turn today's entry into an image and share it.",
@@ -310,6 +326,7 @@ const ICON = {
   chat:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v11H8l-4 4V5z"/><path d="M8 9h8M8 12h5"/></svg>`,
   heart:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20s-7.5-4.6-9.8-9.2C.7 7.3 2.4 4 5.9 4c2 0 3.4 1 6.1 4 2.7-3 4.1-4 6.1-4 3.5 0 5.2 3.3 3.7 6.8C19.5 15.4 12 20 12 20z"/></svg>`,
   pencil:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 20l.9-3.9L15.6 5.4a1.5 1.5 0 012.1 0l1.9 1.9a1.5 1.5 0 010 2.1L9 20.1 4 20z"/><path d="M13.5 7.5l3 3"/></svg>`,
+  camera:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 8.5A1.5 1.5 0 015.5 7H8l1-2h6l1 2h2.5A1.5 1.5 0 0120 8.5v9A1.5 1.5 0 0118.5 19h-13A1.5 1.5 0 014 17.5v-9z"/><circle cx="12" cy="13" r="3.2"/></svg>`,
   flame:`<svg viewBox="0 0 24 24" fill="#F2660F"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.963 2.286a.75.75 0 00-1.071-.136 9.742 9.742 0 00-3.539 6.176 7.547 7.547 0 01-1.705-1.715.75.75 0 00-1.152-.082A9 9 0 1015.68 4.534a7.46 7.46 0 01-2.717-2.248zM15.75 14.25a3.75 3.75 0 11-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 011.925-3.545 3.75 3.75 0 013.255 3.717z"/></svg>`,
   linkArrow:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 16l8-8M9 7h6v6"/></svg>`,
   chevDown:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>`,
@@ -359,6 +376,8 @@ let state = {
   signupConsentOpen:false,  // whether the consent detail text is expanded
   prevScreen:'main',        // where to return to when leaving settings
   loadingCount:0,           // >0 while any global async op (auth/Firestore/etc) is in flight
+  nicknameModal:false,      // whether the nickname-edit modal (on the profile screen) is open
+  avatarModal:null,         // { previewUrl, blob } while a newly picked profile photo awaits confirmation
 };
 
 const YEAR = 2026;
@@ -802,6 +821,66 @@ function showToast(msg){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
 }
+/* Resizes/re-encodes a picked image client-side before upload, so profile photos never
+   ship the original (often multi-MB) file to Storage. Longest side is capped at 512px
+   and re-encoded as JPEG, which keeps typical profile photos well under ~150KB. */
+function resizeImageFile(file, maxSize=512, quality=0.85){
+  return new Promise((resolve, reject)=>{
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if(width > maxSize || height > maxSize){
+        if(width >= height){ height = Math.round(height * maxSize / width); width = maxSize; }
+        else { width = Math.round(width * maxSize / height); height = maxSize; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(blob=>{
+        if(!blob) reject(new Error('image-encode-failed'));
+        else resolve(blob);
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('image-load-failed')); };
+    img.src = url;
+  });
+}
+
+/* Hidden file input used by the profile screen's "change photo" button. It lives outside
+   #app (a sibling of it inside #shell) so it survives the innerHTML re-renders in render(). */
+function setupAvatarFileInput(){
+  if(document.getElementById('avatar-file-input')) return;
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.id = 'avatar-file-input';
+  input.accept = 'image/*';
+  input.style.display = 'none';
+  input.addEventListener('change', async ()=>{
+    const file = input.files && input.files[0];
+    input.value = '';
+    if(!file) return;
+    if(!file.type || !file.type.startsWith('image/')){
+      showToast(T('toastAvatarInvalidType'));
+      return;
+    }
+    try{
+      const blob = await resizeImageFile(file);
+      if(state.avatarModal) URL.revokeObjectURL(state.avatarModal.previewUrl);
+      state.avatarModal = { previewUrl: URL.createObjectURL(blob), blob };
+      render();
+    }catch(e){
+      console.error('Profile image resize failed:', e);
+      showToast(T('toastAvatarSaveFailed'));
+    }
+  });
+  document.getElementById('shell').appendChild(input);
+}
+setupAvatarFileInput();
+
 function todayLabel(){
   const d = new Date();
   const days=['일','월','화','수','목','금','토'];
@@ -854,6 +933,8 @@ function render(){
   else if(state.screen==='notifications') html = renderNotificationsScreen();
 
   let overlays = '';
+  if(state.nicknameModal) overlays += renderNicknameModal();
+  if(state.avatarModal) overlays += renderAvatarModal();
   if(state.purchaseModal) overlays += renderPurchaseModal();
   if(state.createGroupOpen) overlays += renderCreateGroupSheet();
   if(state.inviteGroupId) overlays += renderInviteSheet();
@@ -934,6 +1015,7 @@ function renderLogin(){
     // 카카오 등 일부 로그인은 동의 항목에 따라 닉네임이 비어올 수 있으므로,
     // 값이 없을 때는 uid까지 순서대로 대체해 화면이 완전히 빈칸으로 보이지 않게 합니다.
     const nickname = escapeHtml(state.user.nickname || state.user.name || state.user.uid || '');
+    const email = escapeHtml(state.user.email || '');
     const photoUrl = state.user.photoUrl ? escapeHtml(state.user.photoUrl) : '';
     const avatar = photoUrl
       ? `<img src="${photoUrl}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:center;display:block;">`
@@ -942,13 +1024,25 @@ function renderLogin(){
       <button class="back-fab" data-action="go-main">${ICON.back}</button>
       <div class="screen-center">
         <div class="login-mark">
-          <div style="display:flex;justify-content:center;margin-bottom:10px;">${avatar}</div>
+          <div style="display:flex;justify-content:center;margin-bottom:10px;">
+            <button class="avatar-btn" data-action="pick-avatar" title="${T('avatarModalTitle')}">
+              ${avatar}
+              <span class="avatar-edit-badge">${ICON.camera}</span>
+            </button>
+          </div>
           <div class="eyebrow">${T('loginWelcome')}</div>
           <h2>${nickname}</h2>
         </div>
         <div class="field">
           <label>${T('nicknameLabel')}</label>
-          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:calc(14px * var(--fs-scale));color:var(--ink);">${nickname}</div>
+          <div class="profile-nickname-row">
+            <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:calc(14px * var(--fs-scale));color:var(--ink);">${nickname}</div>
+            <button class="nickname-edit-btn" data-action="open-nickname-edit" title="${T('nicknameModalTitle')}">${ICON.pencil}</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>${T('emailLabel')}</label>
+          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:calc(14px * var(--fs-scale));color:var(--ink-soft);">${email}</div>
         </div>
         <button class="btn btn-primary" data-action="do-logout">${T('logout')}</button>
       </div>
@@ -1041,6 +1135,46 @@ function renderSignupScreen(){
       <button class="btn btn-primary" style="margin-top:16px;" data-action="confirm-signup">${T('submitSignup')}</button>
     </div>
   `;
+}
+
+/* ---------------- profile: nickname edit modal ---------------- */
+function renderNicknameModal(){
+  if(!state.nicknameModal || !state.user) return '';
+  const current = escapeHtml(state.user.nickname || state.user.name || '');
+  return `
+  <div class="overlay center" data-action="close-nickname-modal">
+    <div class="modal-card" data-action="noop">
+      <div class="modal-title">${T('nicknameModalTitle')}</div>
+      <div class="field">
+        <label>${T('nicknameLabel')}</label>
+        <input type="text" id="nickname-input" value="${current}" placeholder="${T('nicknamePh')}" maxlength="20">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" data-action="close-nickname-modal">${T('cancel')}</button>
+        <button class="btn btn-primary" data-action="save-nickname">${T('saveBtn')}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------------- profile: avatar preview modal ---------------- */
+function renderAvatarModal(){
+  const m = state.avatarModal;
+  if(!m) return '';
+  return `
+  <div class="overlay center" data-action="close-avatar-modal">
+    <div class="modal-card" data-action="noop">
+      <div class="modal-title">${T('avatarModalTitle')}</div>
+      <p class="modal-sub">${T('avatarModalSub')}</p>
+      <div style="display:flex;justify-content:center;margin-bottom:18px;">
+        <img src="${m.previewUrl}" alt="" style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:var(--shadow-sm);">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" data-action="close-avatar-modal">${T('cancel')}</button>
+        <button class="btn btn-primary" data-action="confirm-avatar">${T('saveBtn')}</button>
+      </div>
+    </div>
+  </div>`;
 }
 
 /* ---------------- purchase modal ---------------- */
@@ -1821,6 +1955,71 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     } else {
       finishLogout();
     }
+  }
+  else if(action==='pick-avatar'){
+    const input = document.getElementById('avatar-file-input');
+    if(input) input.click();
+  }
+  else if(action==='open-nickname-edit'){ state.nicknameModal = true; render(); }
+  else if(action==='close-nickname-modal'){ state.nicknameModal = false; render(); }
+  else if(action==='save-nickname'){
+    const input = document.getElementById('nickname-input');
+    const value = input ? input.value.trim() : '';
+    if(!value){ showToast(T('toastNicknameEmpty')); return; }
+    if(!state.user || !state.user.uid){ return; }
+    const uid = state.user.uid;
+    const tasks = [];
+    if(window.__firebaseDB && window.__firebaseDB.ready){
+      tasks.push(window.__firebaseDB.saveUserProfile(uid, { name: value, nickname: value }));
+    }
+    if(window.__firebaseAuth && window.__firebaseAuth.ready){
+      tasks.push(window.__firebaseAuth.updateUserProfile({ displayName: value }).catch(()=>{}));
+    }
+    withLoading(Promise.all(tasks)).then(()=>{
+      state.user = Object.assign({}, state.user, { name: value, nickname: value });
+      window.storage.set('user-profile', JSON.stringify(state.user), false).catch(()=>{});
+      state.nicknameModal = false;
+      render();
+      showToast(T('toastNicknameSaved'));
+    }).catch(err=>{
+      console.error('Nickname save failed:', err);
+      showToast(T('toastNicknameSaveFailed'));
+    });
+  }
+  else if(action==='close-avatar-modal'){
+    if(state.avatarModal) URL.revokeObjectURL(state.avatarModal.previewUrl);
+    state.avatarModal = null;
+    render();
+  }
+  else if(action==='confirm-avatar'){
+    if(!state.avatarModal || !state.user || !state.user.uid) return;
+    const uid = state.user.uid;
+    const { blob, previewUrl } = state.avatarModal;
+    if(!(window.__firebaseStorage && window.__firebaseStorage.ready)){
+      showToast(T('toastFirebaseNotSet'));
+      return;
+    }
+    withLoading(window.__firebaseStorage.uploadProfileImage(uid, blob).then(async (url)=>{
+      const tasks = [];
+      if(window.__firebaseDB && window.__firebaseDB.ready){
+        tasks.push(window.__firebaseDB.saveUserProfile(uid, { photoUrl: url }));
+      }
+      if(window.__firebaseAuth && window.__firebaseAuth.ready){
+        tasks.push(window.__firebaseAuth.updateUserProfile({ photoURL: url }).catch(()=>{}));
+      }
+      await Promise.all(tasks);
+      return url;
+    })).then(url=>{
+      state.user = Object.assign({}, state.user, { photoUrl: url });
+      window.storage.set('user-profile', JSON.stringify(state.user), false).catch(()=>{});
+      URL.revokeObjectURL(previewUrl);
+      state.avatarModal = null;
+      render();
+      showToast(T('toastAvatarSaved'));
+    }).catch(err=>{
+      console.error('Avatar upload failed:', err);
+      showToast(T('toastAvatarSaveFailed'));
+    });
   }
   else if(action==='open-settings'){ state.screen='settings'; render(); }
   else if(action==='go-contact'){ state.screen='contact'; render(); }

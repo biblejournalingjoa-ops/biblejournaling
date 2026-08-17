@@ -7,7 +7,8 @@
     createUserWithEmailAndPassword, signInWithEmailAndPassword,
     updateProfile, onAuthStateChanged, signOut
   } from "firebase/auth";
-  import { auth, db, googleProvider } from "./firebase.js";
+  import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+  import { auth, db, storage, googleProvider } from "./firebase.js";
   import * as firestoreApi from "./firestore/index.js";
   const { upsertUser, getUser } = firestoreApi;
 
@@ -17,15 +18,22 @@
 
   // 로그인 방식(구글/카카오/이메일)과 관계없이 로그인/회원가입에 성공하면
   // users/{uid} 문서를 자동으로 생성/갱신합니다. 실패해도 로그인 흐름은 막지 않습니다.
-  function saveUserOnAuth(profile, provider, extra = {}){
+  //
+  // name/photoUrl은 "최초 가입 시 기본값"으로만 채웁니다. 이미 Firestore에 값이 있다면
+  // (=사용자가 프로필 화면에서 직접 닉네임/사진을 바꾼 적이 있거나 이전에 로그인한 적이
+  // 있다면) 로그인할 때마다 구글/카카오 프로필 값으로 덮어쓰지 않습니다. 그렇지 않으면
+  // 사용자가 바꾼 값이 다음 로그인에서 구글/카카오 기본값으로 되돌아가 버립니다.
+  async function saveUserOnAuth(profile, provider, extra = {}){
     if(!db) return;
-    upsertUser(profile.uid, {
-      email: profile.email,
-      name: profile.name,
-      photoUrl: profile.photoUrl,
-      provider,
-      ...extra,
-    }).catch(err=>console.error('Firestore user save failed:', err));
+    try{
+      const existing = await getUser(profile.uid);
+      const payload = { email: profile.email, provider, ...extra };
+      if(!existing || !existing.name) payload.name = profile.name;
+      if(!existing || !existing.photoUrl) payload.photoUrl = profile.photoUrl;
+      await upsertUser(profile.uid, payload);
+    }catch(err){
+      console.error('Firestore user save failed:', err);
+    }
   }
 
   // Expose a small bridge so the app's plain <script> below (non-module) can call these.
@@ -107,6 +115,15 @@
         if(u) cb(toProfile(u));
         else cb(null);
       });
+    },
+    // 닉네임/프로필 사진을 사용자가 직접 변경할 때 사용합니다. Firebase Auth의
+    // displayName/photoURL도 함께 갱신해, 다른 기기·세션에서도 최신값이 보이게 합니다.
+    updateUserProfile: async ({ displayName, photoURL } = {})=>{
+      if(!auth || !auth.currentUser) throw new Error('firebase-not-configured');
+      const patch = {};
+      if(displayName !== undefined) patch.displayName = displayName;
+      if(photoURL !== undefined) patch.photoURL = photoURL;
+      await updateProfile(auth.currentUser, patch);
     }
   };
 
@@ -118,6 +135,21 @@
     saveUserProfile: (uid, data)=> upsertUser(uid, data),
     getUserProfile: (uid)=> getUser(uid),
     ...firestoreApi,
+  };
+
+  // 프로필 이미지는 Firebase Storage의 profile-images/{uid}/ 아래에 저장하고,
+  // 다운로드 URL만 users/{uid}.photoUrl에 기록합니다. storage.rules에서
+  // 본인 uid 경로에만 쓰기가 가능하도록 제한합니다.
+  window.__firebaseStorage = {
+    ready: !!storage,
+    uploadProfileImage: async (uid, blob)=>{
+      if(!storage) throw new Error('firebase-not-configured');
+      if(!uid || !blob) throw new Error('uploadProfileImage: uid and blob are required');
+      const path = `profile-images/${uid}/${Date.now()}.jpg`;
+      const ref = storageRef(storage, path);
+      await uploadBytes(ref, blob, { contentType: blob.type || 'image/jpeg' });
+      return await getDownloadURL(ref);
+    }
   };
 
   window.dispatchEvent(new Event('firebase-bridge-ready'));

@@ -234,6 +234,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .login-mark h2{
   font-family:'Noto Serif KR',serif;font-size:calc(24px * var(--fs-scale));margin:6px 0 0;font-weight:700;
 }
+.avatar-btn{position:relative;border-radius:50%;padding:0;line-height:0;}
+.avatar-edit-badge{
+  position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;
+  background:var(--surface-strong);color:#fff;display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-sm);border:2px solid var(--bg);
+}
+.avatar-edit-badge svg{width:11px;height:11px;}
+.profile-nickname-row{display:flex;align-items:center;gap:8px;}
+.profile-nickname-row > div{flex:1;}
+.nickname-edit-btn{
+  width:36px;height:36px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  color:var(--ink-soft);background:var(--paper);border:1px solid var(--line);
+}
+.nickname-edit-btn svg{width:15px;height:15px;}
 .field{margin-bottom:12px;}
 .field label{display:block;font-size:calc(11.5px * var(--fs-scale));color:var(--ink-soft);margin-bottom:5px;font-weight:500;}
 .field input{

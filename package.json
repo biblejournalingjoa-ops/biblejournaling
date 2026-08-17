@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy:rules": "firebase deploy --only firestore:rules,firestore:indexes"
+    "deploy:rules": "firebase deploy --only firestore:rules,firestore:indexes,storage:rules"
   },
   "repository": {
     "type": "git",
