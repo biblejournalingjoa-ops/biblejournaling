@@ -163,8 +163,12 @@ const STRINGS = {
     submitSignup:'가입하기',
     toastFillAll:'모든 항목을 입력해 주세요', toastNeedConsent:'개인정보 수집에 동의해 주세요',
     toastSignupDone:'회원가입이 완료되었습니다',
+<<<<<<< HEAD
     notif:'알림 설정', contact:'문의하기', logout:'로그아웃',
     dayUnit:'일', snapNoAnswerContent:'아직 작성한 답이 없어요', snapNoAnswerThought:'아직 작성하지 않았어요', snapNoQuestionSelected:'선택한 질문이 없어요',
+=======
+    notif:'알림 설정', contact:'문의하기', logout:'로그아웃', donate:'후원하기',
+>>>>>>> 5f7d94a166e9b489fa81cfbf889de6aaf832482a
     notifTitle:'알림 설정', notifSub:'요일을 선택해서 묵상 알림 시간을 설정해 보세요.',
     dayMon:'월요일', dayTue:'화요일', dayWed:'수요일', dayThu:'목요일', dayFri:'금요일',
     notifOff:'알림 꺼짐',
@@ -182,6 +186,12 @@ const STRINGS = {
     contactEmailNote:'버튼을 누르면 기본 이메일 앱이 열리고, 받는 사람이 자동으로 입력돼요.',
     contactMailSubject:'[말씀 묵상 저널] 문의드립니다',
     contactMailBody:'안녕하세요, 말씀 묵상 저널을 이용하다 문의드립니다.\n\n문의 내용:\n',
+    donateModalTitle:'바이블 저널링 후원하기',
+    donateDesc:'바이블 저널링 서비스의 지속적인 운영과 개발을 응원해 주세요. 소중한 후원금은 서비스 개선 및 서버 유지비로 사용됩니다. 감사합니다 🤍',
+    donateBankLabel:'은행', donateHolderLabel:'예금주', donateAccountLabel:'계좌번호',
+    donateBankName:'토스뱅크', donateHolderName:'박유나', donateAccountNumber:'1002-7159-7116',
+    copyAccountBtn:'계좌번호 복사하기', copyAccountDone:'복사 완료! ✓',
+    toastAccountCopied:'계좌번호가 복사되었습니다!',
     todayWord:'오늘', moveToday:'오늘로 이동', calLegend:'작성한 묵상 기록이 있는 날',
     calTitle:(name)=>`${name} 저널 캘린더`, calCap:'2026 · Bible Journal',
     chapterGridSub:'읽고 싶은 장을 선택해 주세요.',
@@ -269,8 +279,12 @@ const STRINGS = {
     submitSignup:'Create account',
     toastFillAll:'Please fill in every field', toastNeedConsent:'Please agree to the privacy consent',
     toastSignupDone:'Sign-up complete',
+<<<<<<< HEAD
     notif:'Notifications', contact:'Contact us', logout:'Log out',
     dayUnit:'d', snapNoAnswerContent:'No answer written yet', snapNoAnswerThought:'Not written yet', snapNoQuestionSelected:'No question selected',
+=======
+    notif:'Notifications', contact:'Contact us', logout:'Log out', donate:'Support us',
+>>>>>>> 5f7d94a166e9b489fa81cfbf889de6aaf832482a
     notifTitle:'Notifications', notifSub:'Choose a weekday to set a reflection reminder time.',
     dayMon:'Monday', dayTue:'Tuesday', dayWed:'Wednesday', dayThu:'Thursday', dayFri:'Friday',
     notifOff:'Off',
@@ -288,6 +302,12 @@ const STRINGS = {
     contactEmailNote:'Tapping this opens your default mail app with the recipient already filled in.',
     contactMailSubject:'[Bible Journal] Support request',
     contactMailBody:'Hello, I have a question about Bible Journal.\n\nDetails:\n',
+    donateModalTitle:'Support Bible Journal',
+    donateDesc:"Your support helps us keep Bible Journal running and growing. Every gift goes toward improving the service and covering server costs. Thank you 🤍",
+    donateBankLabel:'Bank', donateHolderLabel:'Account holder', donateAccountLabel:'Account number',
+    donateBankName:'Toss Bank', donateHolderName:'Yuna Park', donateAccountNumber:'1002-7159-7116',
+    copyAccountBtn:'Copy account number', copyAccountDone:'Copied! ✓',
+    toastAccountCopied:'Account number copied!',
     todayWord:'Today', moveToday:'Jump to today', calLegend:'Days with a saved reflection',
     calTitle:(name)=>`${name} calendar`, calCap:'2026 · Bible Journal',
     chapterGridSub:'Choose a chapter to read.',
@@ -632,6 +652,8 @@ let state = {
   loadingCount:0,           // >0 while any global async op (auth/Firestore/etc) is in flight
   nicknameModal:false,      // whether the nickname-edit modal (on the profile screen) is open
   avatarModal:null,         // { previewUrl, blob } while a newly picked profile photo awaits confirmation
+  donateModal:false,        // whether the donation/support-us modal is open
+  donateCopied:false,       // true briefly after the account number was copied, to flip the button label
 };
 
 const YEAR = 2026;
@@ -877,7 +899,7 @@ async function shareImageNative(dataUrl, filename, title){
   return false;
 }
 
-let toastTimer=null, saveTimer=null;
+let toastTimer=null, saveTimer=null, donateCopyTimer=null;
 
 /* ---------------- persistence ---------------- */
 async function loadAll(){
@@ -1197,6 +1219,7 @@ function render(){
   if(state.chapterInfoOpen) overlays += renderChapterInfoSheet();
   if(state.notifDayOpen) overlays += renderNotifDaySheet();
   if(state.pageShare) overlays += renderPageShareSheet();
+  if(state.donateModal) overlays += renderDonateModal();
 
   app.innerHTML = html + overlays + renderLoadingOverlay() + `<div class="toast" id="toast"></div>`;
 
@@ -1507,10 +1530,31 @@ function renderSettingsScreen(){
           <div class="setting-item" data-action="go-notifications">${T('notif')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-guide">${T('guideMenu')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-contact">${T('contact')} <span class="arrow">${ICON.chevRight}</span></div>
+          <div class="setting-item" data-action="open-donate">${T('donate')} 💖 <span class="arrow">${ICON.chevRight}</span></div>
         </div>
       </div>
     </div>
   `;
+}
+
+/* ---------------- donation modal ---------------- */
+function renderDonateModal(){
+  if(!state.donateModal) return '';
+  return `
+  <div class="overlay center" data-action="close-donate">
+    <div class="modal-card donate-card" data-action="noop">
+      <div class="donate-icon">💖</div>
+      <div class="modal-title">${T('donateModalTitle')}</div>
+      <p class="modal-sub">${T('donateDesc')}</p>
+      <div class="donate-account-card">
+        <div class="donate-row"><span class="donate-label">${T('donateBankLabel')}</span><span class="donate-value">${T('donateBankName')}</span></div>
+        <div class="donate-row"><span class="donate-label">${T('donateHolderLabel')}</span><span class="donate-value">${T('donateHolderName')}</span></div>
+        <div class="donate-row"><span class="donate-label">${T('donateAccountLabel')}</span><span class="donate-value">${T('donateAccountNumber')}</span></div>
+      </div>
+      <button class="btn donate-copy-btn ${state.donateCopied?'copied':''}" data-action="copy-donate-account">${state.donateCopied ? T('copyAccountDone') : T('copyAccountBtn')}</button>
+      <button class="btn btn-cancel" data-action="close-donate" style="margin-top:10px;">${T('cancel')}</button>
+    </div>
+  </div>`;
 }
 
 /* ---------------- contact screen ---------------- */
@@ -2300,6 +2344,19 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     openEmailContact('biblejournalingjoa@gmail.com', T('contactMailSubject'), T('contactMailBody'));
   }
   else if(action==='go-guide'){ state.screen='guide'; render(); }
+  else if(action==='open-donate'){ state.donateModal=true; state.donateCopied=false; render(); }
+  else if(action==='close-donate'){ state.donateModal=false; state.donateCopied=false; render(); }
+  else if(action==='copy-donate-account'){
+    const num = T('donateAccountNumber');
+    try{
+      navigator.clipboard && navigator.clipboard.writeText(num);
+    }catch(err){}
+    state.donateCopied = true;
+    render();
+    showToast(T('toastAccountCopied'));
+    clearTimeout(donateCopyTimer);
+    donateCopyTimer = setTimeout(()=>{ state.donateCopied=false; render(); }, 2000);
+  }
   else if(action==='go-notifications'){ state.screen='notifications'; render(); }
   else if(action==='open-notif-day'){
     state.notifDayOpen = el.dataset.day;
