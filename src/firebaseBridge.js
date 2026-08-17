@@ -186,7 +186,16 @@
       try{
         await uploadBytes(ref, blob, { contentType: blob.type || 'image/jpeg' });
       }catch(err){
-        console.error('[Profile] 이미지 업로드 실패', err && err.code, err);
+        // err.code is a machine-readable Storage error (e.g. 'storage/unauthorized' when
+        // storage.rules rejects the write, 'storage/unknown' when the bucket itself isn't
+        // provisioned/enabled in the Firebase console) - log it alongside err.message and
+        // the full object so a production failure is diagnosable from the console alone.
+        console.error('[Profile] 이미지 업로드 실패', {
+          code: err && err.code,
+          message: err && err.message,
+          serverResponse: err && err.customData && err.customData.serverResponse,
+          error: err,
+        });
         throw err;
       }
       console.log('[Profile] 이미지 업로드 완료');
@@ -195,7 +204,11 @@
       try{
         url = await getDownloadURL(ref);
       }catch(err){
-        console.error('[Profile] 다운로드 URL 가져오기 실패', err && err.code, err);
+        console.error('[Profile] 다운로드 URL 가져오기 실패', {
+          code: err && err.code,
+          message: err && err.message,
+          error: err,
+        });
         throw err;
       }
       console.log('[Profile] 다운로드 URL 가져오기 완료', url);
