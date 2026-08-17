@@ -26,7 +26,12 @@ export async function upsertUser(uid, data = {}) {
     payload.createdAt = serverTimestamp();
   }
 
-  await setDoc(ref, payload, { merge: true });
+  try {
+    await setDoc(ref, payload, { merge: true });
+  } catch (err) {
+    console.error('[Profile] Firestore users/{uid} 저장 실패', err && err.code, err);
+    throw err;
+  }
 }
 
 export async function getUser(uid) {

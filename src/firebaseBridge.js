@@ -145,10 +145,41 @@
     uploadProfileImage: async (uid, blob)=>{
       if(!storage) throw new Error('firebase-not-configured');
       if(!uid || !blob) throw new Error('uploadProfileImage: uid and blob are required');
+      // storage.rules only allows writes to profile-images/{uid}/... when
+      // request.auth.uid === uid. If the caller's uid (from app state) is stale
+      // or the user's session dropped, the upload would be silently rejected by
+      // the rules, so check the live auth state up front instead of relying on
+      // app state matching Firebase Auth.
+      if(!auth.currentUser){
+        console.error('[Profile] 업로드 중단: 로그인된 사용자(auth.currentUser)가 없습니다.');
+        throw new Error('auth/no-current-user');
+      }
+      if(auth.currentUser.uid !== uid){
+        console.error('[Profile] 업로드 중단: 전달된 uid가 현재 로그인 UID와 다릅니다.', { uid, currentUid: auth.currentUser.uid });
+        throw new Error('auth/uid-mismatch');
+      }
+
       const path = `profile-images/${uid}/${Date.now()}.jpg`;
       const ref = storageRef(storage, path);
-      await uploadBytes(ref, blob, { contentType: blob.type || 'image/jpeg' });
-      return await getDownloadURL(ref);
+
+      console.log('[Profile] 이미지 업로드 시작', { path, size: blob.size, type: blob.type });
+      try{
+        await uploadBytes(ref, blob, { contentType: blob.type || 'image/jpeg' });
+      }catch(err){
+        console.error('[Profile] 이미지 업로드 실패', err && err.code, err);
+        throw err;
+      }
+      console.log('[Profile] 이미지 업로드 완료');
+
+      let url;
+      try{
+        url = await getDownloadURL(ref);
+      }catch(err){
+        console.error('[Profile] 다운로드 URL 가져오기 실패', err && err.code, err);
+        throw err;
+      }
+      console.log('[Profile] 다운로드 URL 가져오기 완료', url);
+      return url;
     }
   };
 

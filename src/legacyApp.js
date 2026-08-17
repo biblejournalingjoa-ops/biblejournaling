@@ -1161,6 +1161,7 @@ function renderNicknameModal(){
 function renderAvatarModal(){
   const m = state.avatarModal;
   if(!m) return '';
+  const saving = !!m.saving;
   return `
   <div class="overlay center" data-action="close-avatar-modal">
     <div class="modal-card" data-action="noop">
@@ -1170,8 +1171,8 @@ function renderAvatarModal(){
         <img src="${m.previewUrl}" alt="" style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:var(--shadow-sm);">
       </div>
       <div class="modal-actions">
-        <button class="btn btn-cancel" data-action="close-avatar-modal">${T('cancel')}</button>
-        <button class="btn btn-primary" data-action="confirm-avatar">${T('saveBtn')}</button>
+        <button class="btn btn-cancel" data-action="close-avatar-modal" ${saving?'disabled':''}>${T('cancel')}</button>
+        <button class="btn btn-primary" data-action="confirm-avatar" ${saving?'disabled':''}>${T('saveBtn')}</button>
       </div>
     </div>
   </div>`;
@@ -1987,25 +1988,40 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     });
   }
   else if(action==='close-avatar-modal'){
+    // Ignore while a save is in flight so the blob/previewUrl a pending upload
+    // is still using can't be revoked out from under it.
+    if(state.avatarModal && state.avatarModal.saving) return;
     if(state.avatarModal) URL.revokeObjectURL(state.avatarModal.previewUrl);
     state.avatarModal = null;
     render();
   }
   else if(action==='confirm-avatar'){
     if(!state.avatarModal || !state.user || !state.user.uid) return;
+    if(state.avatarModal.saving) return; // 중복 클릭으로 업로드가 두 번 실행되는 것을 방지
     const uid = state.user.uid;
     const { blob, previewUrl } = state.avatarModal;
     if(!(window.__firebaseStorage && window.__firebaseStorage.ready)){
       showToast(T('toastFirebaseNotSet'));
       return;
     }
+    console.log('[Profile] 프로필 저장 시작 (아바타)', { uid });
+    state.avatarModal.saving = true;
+    render();
+
     withLoading(window.__firebaseStorage.uploadProfileImage(uid, blob).then(async (url)=>{
       const tasks = [];
       if(window.__firebaseDB && window.__firebaseDB.ready){
-        tasks.push(window.__firebaseDB.saveUserProfile(uid, { photoUrl: url }));
+        console.log('[Profile] 사용자 정보 저장 시작 (Firestore)');
+        tasks.push(
+          window.__firebaseDB.saveUserProfile(uid, { photoUrl: url })
+            .then(()=> console.log('[Profile] 사용자 정보 저장 완료 (Firestore)'))
+        );
       }
       if(window.__firebaseAuth && window.__firebaseAuth.ready){
-        tasks.push(window.__firebaseAuth.updateUserProfile({ photoURL: url }).catch(()=>{}));
+        tasks.push(
+          window.__firebaseAuth.updateUserProfile({ photoURL: url })
+            .catch(err=> console.error('[Profile] Firebase Auth photoURL 갱신 실패 (무시하고 계속 진행)', err))
+        );
       }
       await Promise.all(tasks);
       return url;
@@ -2015,9 +2031,12 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       URL.revokeObjectURL(previewUrl);
       state.avatarModal = null;
       render();
+      console.log('[Profile] 프로필 저장 성공 (아바타)');
       showToast(T('toastAvatarSaved'));
     }).catch(err=>{
-      console.error('Avatar upload failed:', err);
+      console.error('[Profile] 프로필 저장 실패 (아바타):', err && err.code, err);
+      if(state.avatarModal) state.avatarModal.saving = false;
+      render();
       showToast(T('toastAvatarSaveFailed'));
     });
   }
