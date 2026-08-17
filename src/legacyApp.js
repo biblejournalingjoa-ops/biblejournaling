@@ -1,15 +1,24 @@
 /* ---------------- data ---------------- */
 const BOOKS = [
-  { m:1, ko:'창세기', en:'Genesis' },
-  { m:2, ko:'출애굽기', en:'Exodus' },
-  { m:3, ko:'레위기', en:'Leviticus' },
-  { m:4, ko:'민수기', en:'Numbers' },
-  { m:5, ko:'신명기', en:'Deuteronomy' },
+  { m:1, ko:'창세기', en:'Genesis', ja:'創世記', th:'ปฐมกาล' },
+  { m:2, ko:'출애굽기', en:'Exodus', ja:'出エジプト記', th:'อพยพ' },
+  { m:3, ko:'레위기', en:'Leviticus', ja:'レビ記', th:'เลวีนิติ' },
+  { m:4, ko:'민수기', en:'Numbers', ja:'民数記', th:'กันดารวิถี' },
+  { m:5, ko:'신명기', en:'Deuteronomy', ja:'申命記', th:'เฉลยธรรมบัญญัติ' },
 ];
+function bookDisplayName(b){
+  return b[state.lang] || b.en || b.ko;
+}
 function bookName(m){
   const b = BOOKS.find(x=>x.m===m);
   if(!b) return '';
-  return state.lang==='en' ? b.en : b.ko;
+  return bookDisplayName(b);
+}
+function chapterLabel(name, c){
+  if(state.lang==='en') return `${name} ${c}`;
+  if(state.lang==='ja') return `${name} ${c}章`;
+  if(state.lang==='th') return `${name} บทที่ ${c}`;
+  return `${name} ${c}장`;
 }
 const CHAPTER_COUNTS = { 1:50, 2:40, 3:27, 4:36, 5:34 }; // Genesis, Exodus, Leviticus, Numbers, Deuteronomy
 function ckey(m, c){ return `${m}-${c}`; }
@@ -90,8 +99,39 @@ const ASK_QUESTIONS_EN = [
   'Lord, what are You saying to me right now?',
 ];
 
+const ASK_QUESTIONS_JA = [
+  '主よ、今日私に与えてくださる心の感動は何ですか?',
+  '私が見落としている罪、高ぶり、恐れはありますか?',
+  '主が今日私に知らせたい真理は何ですか?',
+  '私が今日愛すべき人は誰ですか?',
+  '私がやめるべきことは何ですか?',
+  '私が今日踏み出すべき小さな一歩は何ですか?',
+  '私の家庭、奉仕、仕事(学び)の中で示してくださる方向はありますか?',
+  '私が心配している問題を主はどのようにご覧になっていますか?',
+  '私が今日手放すべき荷物は何ですか?',
+  '主が私に語りたい慰めは何ですか?',
+  '主よ、今、私に何を語っておられますか?',
+];
+
+const ASK_QUESTIONS_TH = [
+  'พระเจ้าข้า วันนี้พระองค์ทรงสัมผัสใจข้าพระองค์เรื่องอะไร?',
+  'มีบาป ความหยิ่ง หรือความกลัวใดที่ข้าพระองค์มองข้ามไปหรือไม่?',
+  'ความจริงใดที่พระองค์ทรงอยากสำแดงแก่ข้าพระองค์ในวันนี้?',
+  'มีใครบ้างที่พระองค์อยากให้ข้าพระองค์รักในวันนี้?',
+  'มีสิ่งใดที่ข้าพระองค์ควรหยุดทำ?',
+  'ก้าวเล็กๆ ก้าวหนึ่งที่พระองค์อยากให้ข้าพระองค์ทำวันนี้คืออะไร?',
+  'มีทิศทางที่พระองค์กำลังทรงนำในเรื่องครอบครัว การรับใช้ หรือการงาน/การเรียนของข้าพระองค์หรือไม่?',
+  'พระองค์ทรงมองปัญหาที่ข้าพระองค์กังวลอยู่อย่างไร?',
+  'ภาระใดที่พระองค์อยากให้ข้าพระองค์วางลงในวันนี้?',
+  'คำปลอบประโลมใดที่พระองค์อยากตรัสกับข้าพระองค์?',
+  'พระเจ้าข้า ขณะนี้พระองค์กำลังตรัสอะไรกับข้าพระองค์?',
+];
+
 function getAskQuestions(){
-  return state.lang === 'en' ? ASK_QUESTIONS_EN : ASK_QUESTIONS;
+  if(state.lang==='en') return ASK_QUESTIONS_EN;
+  if(state.lang==='ja') return ASK_QUESTIONS_JA;
+  if(state.lang==='th') return ASK_QUESTIONS_TH;
+  return ASK_QUESTIONS;
 }
 
 /* ---------------- i18n ---------------- */
@@ -108,7 +148,7 @@ const STRINGS = {
     monthPlanName:'1권 노트 구매', monthPlanDesc:(name)=>`${name} 저널만 이용`, monthPlanPrice:'₩2,000',
     cancel:'취소', buyBtn:'구매하기',
     settingsTitle:'설정', fontSizeLabel:'글자 크기', fontSmall:'작게', fontDefault:'기본', fontLarge:'크게',
-    langLabel:'언어', langKo:'한국어', langEn:'English',
+    langLabel:'언어', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
     themeLabel:'다크 모드', themeLight:'라이트', themeDark:'다크',
     signupTitle:'회원가입', signupSub:'가입에 필요한 정보를 입력해 주세요.',
     nameLabel:'이름', namePh:'실명을 입력해 주세요',
@@ -123,7 +163,8 @@ const STRINGS = {
     submitSignup:'가입하기',
     toastFillAll:'모든 항목을 입력해 주세요', toastNeedConsent:'개인정보 수집에 동의해 주세요',
     toastSignupDone:'회원가입이 완료되었습니다',
-    notif:'알림 설정', account:'계정 정보', contact:'문의하기', logout:'로그아웃',
+    notif:'알림 설정', contact:'문의하기', logout:'로그아웃',
+    dayUnit:'일', snapNoAnswerContent:'아직 작성한 답이 없어요', snapNoAnswerThought:'아직 작성하지 않았어요', snapNoQuestionSelected:'선택한 질문이 없어요',
     notifTitle:'알림 설정', notifSub:'요일을 선택해서 묵상 알림 시간을 설정해 보세요.',
     dayMon:'월요일', dayTue:'화요일', dayWed:'수요일', dayThu:'목요일', dayFri:'금요일',
     notifOff:'알림 꺼짐',
@@ -213,7 +254,7 @@ const STRINGS = {
     monthPlanName:'Single book', monthPlanDesc:(name)=>`${name} journal only`, monthPlanPrice:'₩2,000',
     cancel:'Cancel', buyBtn:'Unlock',
     settingsTitle:'Settings', fontSizeLabel:'Text size', fontSmall:'Small', fontDefault:'Default', fontLarge:'Large',
-    langLabel:'Language', langKo:'한국어', langEn:'English',
+    langLabel:'Language', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
     themeLabel:'Dark mode', themeLight:'Light', themeDark:'Dark',
     signupTitle:'Sign up', signupSub:'Please fill in the details below to create your account.',
     nameLabel:'Full name', namePh:'Enter your legal name',
@@ -228,7 +269,8 @@ const STRINGS = {
     submitSignup:'Create account',
     toastFillAll:'Please fill in every field', toastNeedConsent:'Please agree to the privacy consent',
     toastSignupDone:'Sign-up complete',
-    notif:'Notifications', account:'Account', contact:'Contact us', logout:'Log out',
+    notif:'Notifications', contact:'Contact us', logout:'Log out',
+    dayUnit:'d', snapNoAnswerContent:'No answer written yet', snapNoAnswerThought:'Not written yet', snapNoQuestionSelected:'No question selected',
     notifTitle:'Notifications', notifSub:'Choose a weekday to set a reflection reminder time.',
     dayMon:'Monday', dayTue:'Tuesday', dayWed:'Wednesday', dayThu:'Thursday', dayFri:'Friday',
     notifOff:'Off',
@@ -305,6 +347,218 @@ const STRINGS = {
     noGroupsYet:"You haven't created a chat room yet",
     toastShareUnsupported:"Direct sharing isn't supported on this device/browser, so the image was downloaded instead. Please attach it in KakaoTalk yourself.",
     toastDownloadDone:'Image downloaded',
+  },
+  ja:{
+    yearTag:'Bible Journaling', yearSub:'月に1冊、御言葉と共に歩む12か月',
+    buyLabel:'購入する', todayNavTitle:'今日の黙想へ移動', groupsNavTitle:'一緒に分かち合う',
+    loginWelcome:'Welcome back', loginTitle:'聖書黙想ジャーナル',
+    emailLabel:'メールアドレス', pwLabel:'パスワード', emailPh:'you@example.com', pwPh:'パスワードを入力してください',
+    loginBtn:'ログイン', or:'または', googleLogin:'Googleアカウントでログイン', kakaoLogin:'カカオアカウントでログイン', signup:'新規登録',
+    purchaseTitle:(name)=>`${name} 聖書ジャーナリングノート`,
+    purchaseSub:'聖書を読み、内容の質問と黙想の質問がすべて含まれたジャーナルを購入して、今日の御言葉から始めましょう。',
+    yearPlanName:'年間全巻利用券', yearPlanBadge:'おすすめ', yearPlanDesc:'12か月分のジャーナルを一度に', yearPlanPrice:'₩19,000',
+    monthPlanName:'1冊ノート購入', monthPlanDesc:(name)=>`${name}ジャーナルのみ利用`, monthPlanPrice:'₩2,000',
+    cancel:'キャンセル', buyBtn:'購入する',
+    settingsTitle:'設定', fontSizeLabel:'文字サイズ', fontSmall:'小', fontDefault:'標準', fontLarge:'大',
+    langLabel:'言語', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    themeLabel:'ダークモード', themeLight:'ライト', themeDark:'ダーク',
+    signupTitle:'新規登録', signupSub:'登録に必要な情報を入力してください。',
+    nameLabel:'氏名', namePh:'本名を入力してください',
+    birthLabel:'生年月日', birthPh:'YYYY-MM-DD',
+    usernameLabel:'ユーザーID', usernamePh:'ログインに使用するID',
+    nicknameLabel:'ニックネーム', nicknamePh:'グループルームに表示される名前',
+    signupTermsLabel:'利用規約に同意する(必須)',
+    signupTermsBody:'聖書黙想ジャーナルが提供する聖書の閲覧、黙想の質問記録、グループ共有機能を利用するための基本規約です。不正利用防止のため、必要な場合はサービスの利用が制限されることがあります。',
+    signupConsentLabel:'個人情報の収集および利用に同意します(必須)',
+    signupConsentBody:'収集項目: 氏名、生年月日、ユーザーID、ニックネーム、パスワード(暗号化保存)\n収集・利用目的: 会員識別およびログイン、サービス提供\n保有期間: 退会時まで\n同意を拒否することができますが、拒否した場合は新規登録が制限されます。',
+    viewDetail:'表示', hideDetail:'閉じる',
+    submitSignup:'登録する',
+    toastFillAll:'すべての項目を入力してください', toastNeedConsent:'個人情報の収集に同意してください',
+    toastSignupDone:'登録が完了しました',
+    notif:'通知設定', contact:'お問い合わせ', logout:'ログアウト',
+    dayUnit:'日', snapNoAnswerContent:'まだ入力した答えがありません', snapNoAnswerThought:'まだ記入していません', snapNoQuestionSelected:'選択した質問がありません',
+    notifTitle:'通知設定', notifSub:'曜日を選んで黙想の通知時間を設定してみましょう。',
+    dayMon:'月曜日', dayTue:'火曜日', dayWed:'水曜日', dayThu:'木曜日', dayFri:'金曜日',
+    notifOff:'通知オフ',
+    notifOnLabel:'通知をオンにする',
+    notifTimeLabel:'通知時間',
+    notifSave:'保存',
+    notifDelete:'通知を切る',
+    contactTitle:'お問い合わせ',
+    guideMenu:'使い方ガイド',
+    guideTitle:'使い方ガイド',
+    guideEmptyTitle:'準備中です',
+    guideEmptyBody:'使い方ガイドのコンテンツは近日公開予定です。もうしばらくお待ちください。',
+    contactBody:'聖書黙想ジャーナルをご利用中に気になる点や不便な点がございましたら、いつでもお気軽にお問い合わせください。できるだけ早くご返信いたします。',
+    contactEmailBtn:'メールで問い合わせる',
+    contactEmailNote:'ボタンを押すと標準のメールアプリが開き、宛先が自動的に入力されます。',
+    contactMailSubject:'[聖書黙想ジャーナル] お問い合わせ',
+    contactMailBody:'こんにちは、聖書黙想ジャーナルについてお問い合わせいたします。\n\nお問い合わせ内容:\n',
+    todayWord:'今日', moveToday:'今日に移動', calLegend:'黙想記録がある日',
+    calTitle:(name)=>`${name} ジャーナルカレンダー`, calCap:'2026 · Bible Journal',
+    chapterGridSub:'読みたい章を選んでください。',
+    dailyCap:(name)=>`${name}の御言葉の旅`,
+    navBible:'聖書', navContent:'内容質問記録', navThought:'黙想質問記録',
+    todayReading:'今日の御言葉', chapterNote:'本文は理解を助けるための要約例です。',
+    chapterInfoBtn:'背景説明を見る',
+    chapterInfoTitle:(book)=>`${book} 背景説明`,
+    chapterInfoEmptyTitle:'準備中です',
+    chapterInfoEmptyBody:'この書の背景説明は近日追加予定です。',
+    qPlaceholder:'考えた答えを書いてみましょう',
+    verseLabel:'私に与えられた御言葉一節', versePh:'例: 出エジプト記8:10',
+    passageLabel:'本文の内容', passagePh:'今日の本文の流れをまとめてみましょう',
+    godIsLabel:'神はこのような方', godIsPh:'本文から見つけた神の性質',
+    askLabel:'神に尋ねる', askPlaceholderQ:'質問を選んでください',
+    heardLabel:'聞こえた声を記録する', heardPh:'黙想中に心に響いた声を書いてみましょう',
+    appLabel:'生活への適用', appPh:'今日の生活で実践すること一つ',
+    prayerLabel:'祈りの課題', prayerPh:'今日の祈りの課題を書いてみましょう',
+    thanksLabel:'今日の感謝', thanksPh:(i)=>`感謝なこと ${i}`, addThanks:'感謝を追加',
+    toastLogin:'ログインしました', toastLogout:'ログアウトしました',
+    toastGoogleFailed:'Googleログインに失敗しました。もう一度お試しください',
+    toastGoogleCancelled:'Googleログインをキャンセルしました',
+    toastPopupBlocked:'ポップアップがブロックされてログインできません。ポップアップブロックを解除して再度お試しください',
+    toastNetworkError:'ネットワーク接続をご確認ください',
+    toastLogoutFailed:'ログアウトに失敗しました。もう一度お試しください',
+    toastKakaoFailed:'カカオログインに失敗しました。もう一度お試しください',
+    toastEmailLoginFailed:'メールアドレスまたはパスワードが正しくありません',
+    toastEmailInUse:'すでに登録されているメールアドレスです',
+    toastWeakPassword:'パスワードは6文字以上で入力してください',
+    toastSignupFailed:'登録に失敗しました。もう一度お試しください',
+    toastFirebaseNotSet:'Firebaseの設定がまだ連携されていません(firebaseConfigを入力してください)',
+    nicknameModalTitle:'ニックネーム編集', saveBtn:'保存',
+    toastNicknameEmpty:'ニックネームを入力してください',
+    toastNicknameSaved:'ニックネームが変更されました',
+    toastNicknameSaveFailed:'ニックネームの保存に失敗しました。もう一度お試しください',
+    avatarModalTitle:'プロフィール写真の変更', avatarModalSub:'選択した写真をプロフィール画像に変更しますか?',
+    toastAvatarInvalidType:'画像ファイルのみ選択できます',
+    toastAvatarSaved:'プロフィール写真が変更されました',
+    toastAvatarSaveFailed:'プロフィール写真のアップロードに失敗しました。もう一度お試しください',
+    toastPurchaseYear:'年間全巻利用券の購入が完了しました', toastPurchaseMonth:(name)=>`${name}ノートの購入が完了しました`,
+    toastNeedPurchase:(name)=>`先に${name}ジャーナルを購入してください`,
+    sharePickTitle:'何を共有しますか?', sharePickSub:'今日書いた記録を画像にして共有します。',
+    shareContentName:'内容質問記録', shareContentDesc:'今日の本文についての質問と答え',
+    shareThoughtName:'黙想質問記録', shareThoughtDesc:'今日の黙想と祈り、感謝',
+    shareBothName:'両方共有', shareBothDesc:'内容質問と黙想質問の記録を一緒に送ります',
+    shareGenerating:'画像を作成しています...', shareDone:'黙想記録を共有しました', shareFailed:'画像を作成できませんでした。もう一度お試しください',
+    sharedImageCap:(kind,date)=>`${kind==='content'?'内容質問記録':'黙想質問記録'} · ${date}`,
+    pageShareBtn:'共有する',
+    pageShareTitle:'どこに共有しますか?',
+    shareToChatName:'アプリ内チャットルームに共有',
+    shareToChatDesc:'「一緒に分かち合う」チャットルームに送ります',
+    shareToKakaoName:'カカオトークに共有',
+    shareToKakaoDesc:'カカオトークなどインストール済みのアプリで共有します',
+    shareDownloadName:'画像としてダウンロード',
+    shareDownloadDesc:'端末に画像ファイルとして保存します',
+    pickGroupTitle:'送信先のチャットルームを選んでください',
+    noGroupsYet:'まだ作成したチャットルームがありません',
+    toastShareUnsupported:'この端末・ブラウザでは直接共有がサポートされていないため、画像をダウンロードしました。カカオトークで直接添付してください。',
+    toastDownloadDone:'画像がダウンロードされました',
+  },
+  th:{
+    yearTag:'Bible Journaling', yearSub:'หนึ่งเดือนหนึ่งเล่ม เดินไปกับพระวจนะตลอดสิบสองเดือน',
+    buyLabel:'ซื้อเลย', todayNavTitle:'ไปยังบทเฝ้าเดี่ยววันนี้', groupsNavTitle:'แบ่งปันด้วยกัน',
+    loginWelcome:'Welcome back', loginTitle:'สมุดบันทึกเฝ้าเดี่ยวพระคัมภีร์',
+    emailLabel:'อีเมล', pwLabel:'รหัสผ่าน', emailPh:'you@example.com', pwPh:'กรอกรหัสผ่านของคุณ',
+    loginBtn:'เข้าสู่ระบบ', or:'หรือ', googleLogin:'เข้าสู่ระบบด้วยบัญชี Google', kakaoLogin:'เข้าสู่ระบบด้วยบัญชี Kakao', signup:'สมัครสมาชิก',
+    purchaseTitle:(name)=>`สมุดบันทึกพระคัมภีร์ ${name}`,
+    purchaseSub:'ซื้อสมุดบันทึกที่มีทั้งการอ่านพระวจนะ คำถามเนื้อหา และคำถามเฝ้าเดี่ยว แล้วเริ่มต้นจากวันนี้เลย',
+    yearPlanName:'แพ็กเกจรายปีทั้งหมด', yearPlanBadge:'แนะนำ', yearPlanDesc:'สมุดบันทึกทั้ง 12 เดือนในครั้งเดียว', yearPlanPrice:'₩19,000',
+    monthPlanName:'ซื้อสมุดบันทึกเล่มเดียว', monthPlanDesc:(name)=>`ใช้ได้เฉพาะสมุดบันทึก ${name}`, monthPlanPrice:'₩2,000',
+    cancel:'ยกเลิก', buyBtn:'ซื้อเลย',
+    settingsTitle:'การตั้งค่า', fontSizeLabel:'ขนาดตัวอักษร', fontSmall:'เล็ก', fontDefault:'ปกติ', fontLarge:'ใหญ่',
+    langLabel:'ภาษา', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    themeLabel:'โหมดมืด', themeLight:'สว่าง', themeDark:'มืด',
+    signupTitle:'สมัครสมาชิก', signupSub:'กรุณากรอกข้อมูลที่จำเป็นสำหรับการสมัครสมาชิก',
+    nameLabel:'ชื่อ-นามสกุล', namePh:'กรุณากรอกชื่อจริง',
+    birthLabel:'วันเดือนปีเกิด', birthPh:'YYYY-MM-DD',
+    usernameLabel:'ชื่อผู้ใช้', usernamePh:'ชื่อผู้ใช้สำหรับเข้าสู่ระบบ',
+    nicknameLabel:'ชื่อเล่น', nicknamePh:'ชื่อที่จะแสดงในห้องกลุ่ม',
+    signupTermsLabel:'ยอมรับข้อตกลงการใช้บริการ (จำเป็น)',
+    signupTermsBody:'นี่คือข้อตกลงพื้นฐานสำหรับการใช้ฟีเจอร์การอ่านพระคัมภีร์ การบันทึกคำถามเฝ้าเดี่ยว และการแบ่งปันกลุ่มของสมุดบันทึกเฝ้าเดี่ยวพระคัมภีร์ การใช้บริการอาจถูกจำกัดหากตรวจพบการใช้งานที่ไม่เหมาะสม',
+    signupConsentLabel:'ยินยอมให้เก็บรวบรวมและใช้ข้อมูลส่วนบุคคล (จำเป็น)',
+    signupConsentBody:'ข้อมูลที่เก็บรวบรวม: ชื่อ-นามสกุล วันเดือนปีเกิด ชื่อผู้ใช้ ชื่อเล่น รหัสผ่าน (จัดเก็บแบบเข้ารหัส)\nวัตถุประสงค์: ยืนยันตัวตนสมาชิก การเข้าสู่ระบบ และการให้บริการ\nระยะเวลาจัดเก็บ: จนกว่าจะลบบัญชี\nคุณสามารถปฏิเสธได้ แต่การสมัครสมาชิกจะถูกจำกัดหากปฏิเสธ',
+    viewDetail:'ดูเพิ่มเติม', hideDetail:'ซ่อน',
+    submitSignup:'สมัครสมาชิก',
+    toastFillAll:'กรุณากรอกข้อมูลให้ครบทุกช่อง', toastNeedConsent:'กรุณายินยอมให้เก็บรวบรวมข้อมูลส่วนบุคคล',
+    toastSignupDone:'สมัครสมาชิกสำเร็จแล้ว',
+    notif:'ตั้งค่าการแจ้งเตือน', contact:'ติดต่อเรา', logout:'ออกจากระบบ',
+    dayUnit:' วัน', snapNoAnswerContent:'ยังไม่มีคำตอบที่บันทึกไว้', snapNoAnswerThought:'ยังไม่ได้บันทึก', snapNoQuestionSelected:'ยังไม่ได้เลือกคำถาม',
+    notifTitle:'ตั้งค่าการแจ้งเตือน', notifSub:'เลือกวันในสัปดาห์เพื่อตั้งเวลาแจ้งเตือนเฝ้าเดี่ยว',
+    dayMon:'วันจันทร์', dayTue:'วันอังคาร', dayWed:'วันพุธ', dayThu:'วันพฤหัสบดี', dayFri:'วันศุกร์',
+    notifOff:'ปิดการแจ้งเตือน',
+    notifOnLabel:'เปิดการแจ้งเตือน',
+    notifTimeLabel:'เวลาแจ้งเตือน',
+    notifSave:'บันทึก',
+    notifDelete:'ปิดการแจ้งเตือน',
+    contactTitle:'ติดต่อเรา',
+    guideMenu:'คู่มือการใช้งาน',
+    guideTitle:'คู่มือการใช้งาน',
+    guideEmptyTitle:'กำลังเตรียมการ',
+    guideEmptyBody:'เนื้อหาคู่มือการใช้งานจะเพิ่มเข้ามาเร็วๆ นี้ กรุณารอสักครู่',
+    contactBody:'หากมีคำถามหรือพบปัญหาขณะใช้งานสมุดบันทึกเฝ้าเดี่ยวพระคัมภีร์ สามารถติดต่อเราได้ตลอดเวลา เราจะตอบกลับให้เร็วที่สุด',
+    contactEmailBtn:'ติดต่อทางอีเมล',
+    contactEmailNote:'เมื่อกดปุ่มนี้ แอปอีเมลเริ่มต้นของคุณจะเปิดขึ้นพร้อมกรอกผู้รับให้อัตโนมัติ',
+    contactMailSubject:'[สมุดบันทึกเฝ้าเดี่ยวพระคัมภีร์] ติดต่อสอบถาม',
+    contactMailBody:'สวัสดีครับ/ค่ะ ผม/ดิฉันมีคำถามเกี่ยวกับสมุดบันทึกเฝ้าเดี่ยวพระคัมภีร์\n\nรายละเอียด:\n',
+    todayWord:'วันนี้', moveToday:'ไปยังวันนี้', calLegend:'วันที่มีบันทึกเฝ้าเดี่ยว',
+    calTitle:(name)=>`ปฏิทินสมุดบันทึก ${name}`, calCap:'2026 · Bible Journal',
+    chapterGridSub:'กรุณาเลือกบทที่ต้องการอ่าน',
+    dailyCap:(name)=>`เส้นทางพระวจนะของ ${name}`,
+    navBible:'พระคัมภีร์', navContent:'บันทึกคำถามเนื้อหา', navThought:'บันทึกคำถามเฝ้าเดี่ยว',
+    todayReading:'พระวจนะวันนี้', chapterNote:'เนื้อหานี้เป็นตัวอย่างสรุปเพื่อช่วยความเข้าใจ',
+    chapterInfoBtn:'ดูข้อมูลพื้นหลัง',
+    chapterInfoTitle:(book)=>`ข้อมูลพื้นหลัง: ${book}`,
+    chapterInfoEmptyTitle:'กำลังเตรียมการ',
+    chapterInfoEmptyBody:'ข้อมูลพื้นหลังของหนังสือเล่มนี้จะเพิ่มเข้ามาเร็วๆ นี้',
+    qPlaceholder:'ลองเขียนคำตอบที่คุณคิดไว้',
+    verseLabel:'ข้อพระคัมภีร์ที่ได้รับ', versePh:'เช่น อพยพ 8:10',
+    passageLabel:'สรุปเนื้อหาบทนี้', passagePh:'ลองสรุปเนื้อหาของบทนี้ในวันนี้',
+    godIsLabel:'พระเจ้าทรงเป็นเช่นนี้', godIsPh:'พระลักษณะของพระเจ้าที่พบในบทนี้',
+    askLabel:'ทูลถามพระเจ้า', askPlaceholderQ:'กรุณาเลือกคำถาม',
+    heardLabel:'บันทึกเสียงที่ได้ยิน', heardPh:'ลองเขียนสิ่งที่อยู่ในใจระหว่างเฝ้าเดี่ยว',
+    appLabel:'การนำไปใช้ในชีวิต', appPh:'สิ่งหนึ่งที่จะลงมือทำในวันนี้',
+    prayerLabel:'คำอธิษฐาน', prayerPh:'ลองเขียนคำอธิษฐานของวันนี้',
+    thanksLabel:'ขอบคุณพระเจ้าวันนี้', thanksPh:(i)=>`เรื่องที่ขอบคุณ ${i}`, addThanks:'เพิ่มเรื่องขอบคุณ',
+    toastLogin:'เข้าสู่ระบบแล้ว', toastLogout:'ออกจากระบบแล้ว',
+    toastGoogleFailed:'เข้าสู่ระบบด้วย Google ไม่สำเร็จ กรุณาลองอีกครั้ง',
+    toastGoogleCancelled:'ยกเลิกการเข้าสู่ระบบด้วย Google แล้ว',
+    toastPopupBlocked:'หน้าต่างป๊อปอัปถูกบล็อก ทำให้เข้าสู่ระบบไม่ได้ กรุณาอนุญาตป๊อปอัปแล้วลองอีกครั้ง',
+    toastNetworkError:'กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต',
+    toastLogoutFailed:'ออกจากระบบไม่สำเร็จ กรุณาลองอีกครั้ง',
+    toastKakaoFailed:'เข้าสู่ระบบด้วย Kakao ไม่สำเร็จ กรุณาลองอีกครั้ง',
+    toastEmailLoginFailed:'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
+    toastEmailInUse:'อีเมลนี้ถูกใช้สมัครสมาชิกไปแล้ว',
+    toastWeakPassword:'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร',
+    toastSignupFailed:'สมัครสมาชิกไม่สำเร็จ กรุณาลองอีกครั้ง',
+    toastFirebaseNotSet:'ยังไม่ได้ตั้งค่า Firebase (กรุณากรอก firebaseConfig)',
+    nicknameModalTitle:'แก้ไขชื่อเล่น', saveBtn:'บันทึก',
+    toastNicknameEmpty:'กรุณากรอกชื่อเล่น',
+    toastNicknameSaved:'เปลี่ยนชื่อเล่นแล้ว',
+    toastNicknameSaveFailed:'บันทึกชื่อเล่นไม่สำเร็จ กรุณาลองอีกครั้ง',
+    avatarModalTitle:'เปลี่ยนรูปโปรไฟล์', avatarModalSub:'ต้องการใช้รูปที่เลือกเป็นรูปโปรไฟล์ใหม่หรือไม่?',
+    toastAvatarInvalidType:'เลือกได้เฉพาะไฟล์รูปภาพเท่านั้น',
+    toastAvatarSaved:'เปลี่ยนรูปโปรไฟล์แล้ว',
+    toastAvatarSaveFailed:'อัปโหลดรูปโปรไฟล์ไม่สำเร็จ กรุณาลองอีกครั้ง',
+    toastPurchaseYear:'ซื้อแพ็กเกจรายปีทั้งหมดสำเร็จแล้ว', toastPurchaseMonth:(name)=>`ซื้อสมุดบันทึก ${name} สำเร็จแล้ว`,
+    toastNeedPurchase:(name)=>`กรุณาซื้อสมุดบันทึก ${name} ก่อน`,
+    sharePickTitle:'ต้องการแบ่งปันอะไร?', sharePickSub:'สร้างภาพจากบันทึกของวันนี้เพื่อแบ่งปัน',
+    shareContentName:'บันทึกคำถามเนื้อหา', shareContentDesc:'คำถามและคำตอบเกี่ยวกับบทนี้ของวันนี้',
+    shareThoughtName:'บันทึกคำถามเฝ้าเดี่ยว', shareThoughtDesc:'การเฝ้าเดี่ยว คำอธิษฐาน และคำขอบคุณของวันนี้',
+    shareBothName:'แบ่งปันทั้งสองอย่าง', shareBothDesc:'ส่งบันทึกคำถามเนื้อหาและคำถามเฝ้าเดี่ยวไปพร้อมกัน',
+    shareGenerating:'กำลังสร้างภาพ...', shareDone:'แบ่งปันบันทึกเฝ้าเดี่ยวแล้ว', shareFailed:'ไม่สามารถสร้างภาพได้ กรุณาลองอีกครั้ง',
+    sharedImageCap:(kind,date)=>`${kind==='content'?'บันทึกคำถามเนื้อหา':'บันทึกคำถามเฝ้าเดี่ยว'} · ${date}`,
+    pageShareBtn:'แบ่งปัน',
+    pageShareTitle:'ต้องการแบ่งปันที่ไหน?',
+    shareToChatName:'แบ่งปันในห้องแชทของแอป',
+    shareToChatDesc:'ส่งไปยังห้องแชท "แบ่งปันด้วยกัน"',
+    shareToKakaoName:'แบ่งปันไปยัง KakaoTalk',
+    shareToKakaoDesc:'แบ่งปันผ่าน KakaoTalk หรือแอปอื่นที่ติดตั้งไว้',
+    shareDownloadName:'ดาวน์โหลดเป็นรูปภาพ',
+    shareDownloadDesc:'บันทึกเป็นไฟล์รูปภาพในอุปกรณ์',
+    pickGroupTitle:'เลือกห้องแชทที่จะส่ง',
+    noGroupsYet:'ยังไม่มีห้องแชทที่สร้างไว้',
+    toastShareUnsupported:'อุปกรณ์/เบราว์เซอร์นี้ไม่รองรับการแบ่งปันโดยตรง จึงดาวน์โหลดภาพให้แทน กรุณาแนบไฟล์ใน KakaoTalk ด้วยตนเอง',
+    toastDownloadDone:'ดาวน์โหลดภาพแล้ว',
   },
 };
 function T(key, ...args){
@@ -491,7 +745,7 @@ function todayDateLabelKorean(){
 }
 function buildContentSnapshotHTML(key){
   const entry = getEntry(key);
-  const noAnswer = state.lang==='en' ? 'No answer written yet' : '아직 작성한 답이 없어요';
+  const noAnswer = T('snapNoAnswerContent');
   const cards = CONTENT_QUESTIONS.map(q=>{
     const val = (entry.content[q.id]||'').trim();
     return `
@@ -504,7 +758,7 @@ function buildContentSnapshotHTML(key){
   return `
     <div class="snap-card" id="snap-render-target">
       <div class="snap-header">
-        <div class="snap-eyebrow">${escapeHtml(bookName(state.activeMonth))} ${state.activeChapter}${state.lang==='en'?'':'장'} · ${T('navContent')}</div>
+        <div class="snap-eyebrow">${escapeHtml(chapterLabel(bookName(state.activeMonth), state.activeChapter))} · ${T('navContent')}</div>
         <div class="snap-date">${todayDateLabelKorean()}</div>
       </div>
       ${cards}
@@ -514,9 +768,9 @@ function buildContentSnapshotHTML(key){
 function buildThoughtSnapshotHTML(key){
   const entry = getEntry(key);
   const t = entry.thought;
-  const noAnswer = state.lang==='en' ? 'Not written yet' : '아직 작성하지 않았어요';
+  const noAnswer = T('snapNoAnswerThought');
   const val = (v)=> (v && v.trim()) ? `<div class="snap-value">${escapeHtml(v)}</div>` : `<div class="snap-value empty">${noAnswer}</div>`;
-  const askQ = t.askIndex!==null ? getAskQuestions()[t.askIndex] : (state.lang==='en' ? 'No question selected' : '선택한 질문이 없어요');
+  const askQ = t.askIndex!==null ? getAskQuestions()[t.askIndex] : T('snapNoQuestionSelected');
   const thanksRows = (t.thanks||[]).filter(v=>v && v.trim()).map((v,i)=>`
     <div class="snap-thanks-row"><div class="num">${i+1}</div><div style="font-size:calc(13px * var(--fs-scale))">${escapeHtml(v)}</div></div>
   `).join('') || `<div class="snap-value empty">${noAnswer}</div>`;
@@ -524,7 +778,7 @@ function buildThoughtSnapshotHTML(key){
   return `
     <div class="snap-card" id="snap-render-target">
       <div class="snap-header">
-        <div class="snap-eyebrow">${escapeHtml(bookName(state.activeMonth))} ${state.activeChapter}${state.lang==='en'?'':'장'} · ${T('navThought')}</div>
+        <div class="snap-eyebrow">${escapeHtml(chapterLabel(bookName(state.activeMonth), state.activeChapter))} · ${T('navThought')}</div>
         <div class="snap-date">${todayDateLabelKorean()}</div>
       </div>
       <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('verseLabel')}</div>${val(t.verse)}</div>
@@ -983,7 +1237,7 @@ function renderMain(){
     const bg = locked ? '' : `style="background:${BOOK_ROW_COLORS[i%BOOK_ROW_COLORS.length]}"`;
     return `
     <button class="book-row ${locked?'locked':'colored'}" ${bg} data-action="${locked?'open-purchase':'open-chapters'}" data-month="${m}">
-      <span class="book-row-name">${state.lang==='en' ? b.en : `${b.ko} <span class="book-row-en">${b.en}</span>`}</span>
+      <span class="book-row-name">${state.lang==='ko' ? `${b.ko} <span class="book-row-en">${b.en}</span>` : bookDisplayName(b)}</span>
       ${locked ? ICON.lock : ICON.chevRight}
     </button>`;
   }).join('');
@@ -993,7 +1247,7 @@ function renderMain(){
       <div class="left-group">
         <button class="icon-btn" data-action="open-settings">${ICON.gear}</button>
         <button class="icon-btn icon-btn-accent" data-action="go-today" title="${T('todayNavTitle')}">${ICON.book}</button>
-        <div class="streak-badge">${ICON.flame}<span class="streak-num">${streak}${state.lang==='en'?'d':'일'}</span></div>
+        <div class="streak-badge">${ICON.flame}<span class="streak-num">${streak}${T('dayUnit')}</span></div>
       </div>
       <div class="right-group">
         <button class="icon-btn" data-action="go-groups" title="${T('groupsNavTitle')}">${ICON.groups}</button>
@@ -1049,7 +1303,6 @@ function renderLogin(){
     `;
   }
   return `
-    <button class="back-fab" data-action="go-main">${ICON.back}</button>
     <div class="screen-center">
       <div class="login-mark">
         <div class="eyebrow">${T('loginWelcome')}</div>
@@ -1236,6 +1489,8 @@ function renderSettingsScreen(){
         <div class="pill-toggle">
           <button class="${state.lang==='ko'?'selected':''}" data-action="set-lang" data-lang="ko">${T('langKo')}</button>
           <button class="${state.lang==='en'?'selected':''}" data-action="set-lang" data-lang="en">${T('langEn')}</button>
+          <button class="${state.lang==='ja'?'selected':''}" data-action="set-lang" data-lang="ja">${T('langJa')}</button>
+          <button class="${state.lang==='th'?'selected':''}" data-action="set-lang" data-lang="th">${T('langTh')}</button>
         </div>
       </div>
 
@@ -1250,7 +1505,6 @@ function renderSettingsScreen(){
       <div class="settings-group">
         <div class="settings-list">
           <div class="setting-item" data-action="go-notifications">${T('notif')} <span class="arrow">${ICON.chevRight}</span></div>
-          <div class="setting-item">${T('account')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-guide">${T('guideMenu')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-contact">${T('contact')} <span class="arrow">${ICON.chevRight}</span></div>
         </div>
@@ -1678,7 +1932,7 @@ function renderDaily(){
       <button class="icon-btn" data-action="go-chapters">${ICON.back}</button>
       <div class="titles">
         <div class="cap">${T('dailyCap', bookName(m))}</div>
-        <h2>${bookName(m)} ${c}${state.lang==='en'?'':'장'}</h2>
+        <h2>${chapterLabel(bookName(m), c)}</h2>
       </div>
       ${state.activeTab!=='bible' ? `<button class="icon-btn" data-action="open-page-share" data-kind="${state.activeTab}" title="${T('pageShareBtn')}">${ICON.share}</button>` : ''}
     </div>
@@ -1711,7 +1965,7 @@ function renderBibleTab(){
       <div class="chapter-card-head">
         <div>
           <div class="cap">${T('todayReading')}</div>
-          <h3>${bookName(state.activeMonth)} ${state.activeChapter}${state.lang==='en'?'':'장'}</h3>
+          <h3>${chapterLabel(bookName(state.activeMonth), state.activeChapter)}</h3>
         </div>
       </div>
       <div class="verse-list">${verses}</div>
