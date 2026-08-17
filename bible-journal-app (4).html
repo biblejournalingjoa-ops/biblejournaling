@@ -1,3 +1,927 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>말씀 묵상 저널</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500;1,600&family=Noto+Serif+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#FBF6EF;
+  --ink:#2A2724;
+  --ink-soft:#7A736B;
+  --ink-faint:#B3AAA0;
+  --rose:#E7B7B9;
+  --rose-deep:#3F5670;
+  --sage:#A9C2A2;
+  --sage-deep:#8A6A2F;
+  --lilac:#C9AFCB;
+  --lilac-deep:#4F6B8F;
+  --amber:#E7C98B;
+  --amber-deep:#3B4F68;
+  --gold:#C08A2E;
+  --paper:#FFFFFF;
+  --line:#E9E0D3;
+  --shadow:0 14px 34px rgba(42,39,34,.10);
+  --shadow-sm:0 4px 14px rgba(42,39,34,.08);
+  --radius:18px;
+  --surface-strong:#2A2724;
+  --badge-blue:#3F5670;
+  --badge-gold:#B8791F;
+  --bubble-them:#FFFFFF;
+}
+#shell.theme-dark{
+  --bg:#1C1A18;
+  --ink:#F6F3EE;
+  --ink-soft:#D2CCC3;
+  --ink-faint:#A29B8F;
+  --rose:#E7B7B9;
+  --rose-deep:#9AB3D6;
+  --sage:#A9C2A2;
+  --sage-deep:#D8B25C;
+  --lilac:#C9AFCB;
+  --lilac-deep:#9DB6D6;
+  --amber:#E7C98B;
+  --amber-deep:#8FB0D8;
+  --gold:#E0B75C;
+  --paper:#28251F;
+  --line:#3A362E;
+  --shadow:0 14px 34px rgba(0,0,0,.35);
+  --shadow-sm:0 4px 14px rgba(0,0,0,.3);
+  --surface-strong:#3F5670;
+  --bubble-them:#4C5F78;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+input::placeholder, textarea::placeholder{color:var(--ink-faint);opacity:1;}
+html,body{margin:0;padding:0;}
+body{
+  background:#EFE7DA;
+  font-family:'Noto Sans KR',sans-serif;
+  color:var(--ink);
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+  padding:24px 10px;
+}
+#shell{
+  width:100%;
+  max-width:412px;
+  min-height:820px;
+  background:var(--bg);
+  color:var(--ink);
+  border-radius:34px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  position:relative;
+  border:1px solid #E3D8C6;
+  display:flex;
+  flex-direction:column;
+}
+#app{flex:1;display:flex;flex-direction:column;min-height:820px;position:relative;}
+#shell.fs-small{zoom:0.9;}
+#shell.fs-default{zoom:1;}
+#shell.fs-large{zoom:1.16;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+::selection{background:var(--rose);color:#fff;}
+
+/* ---------- top bar (main) ---------- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 20px 6px;
+}
+.topbar .icon-btn{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--paper);box-shadow:var(--shadow-sm);
+  color:var(--ink-soft);
+}
+.topbar .icon-btn.active{color:var(--gold);}
+.topbar .icon-btn.icon-btn-accent{
+  background:var(--badge-blue);color:#fff;box-shadow:0 6px 16px rgba(63,86,112,.35);
+}
+.topbar .left-group{display:flex;align-items:center;gap:8px;}
+.topbar .right-group{display:flex;align-items:center;gap:8px;}
+.streak-badge{
+  display:flex;align-items:center;gap:5px;background:var(--paper);box-shadow:var(--shadow-sm);
+  border-radius:20px;padding:8px 12px 8px 9px;color:#E8791E;flex-shrink:0;
+}
+.streak-badge svg{width:17px;height:17px;flex-shrink:0;}
+.streak-badge .streak-num{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;}
+.year-block{text-align:center;padding:4px 0 18px;}
+.year-block .eyebrow{
+  font-family:'Playfair Display',serif;font-style:italic;font-size:11px;
+  letter-spacing:.14em;color:var(--ink-faint);text-transform:uppercase;
+}
+.year-block h1{
+  font-family:'Noto Serif KR',serif;font-size:30px;margin:2px 0 0;font-weight:700;
+}
+.year-sub{font-size:12px;color:var(--ink-soft);margin-top:4px;}
+
+/* ---------- cover grid ---------- */
+.grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  padding:0 16px 28px;
+}
+.books-list{padding:0 16px 28px;display:flex;flex-direction:column;gap:8px;}
+.book-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 18px;border-radius:14px;background:var(--paper);box-shadow:var(--shadow-sm);
+  color:var(--ink);min-height:34px;
+}
+.book-row-name{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;}
+.book-row-en{
+  font-family:'Playfair Display',serif;font-style:italic;font-weight:600;
+  font-size:12.5px;color:var(--ink-faint);margin-left:6px;
+}
+.book-row svg{width:18px;height:18px;color:var(--ink-faint);flex-shrink:0;}
+.book-row.locked{color:var(--ink-faint);}
+.book-row.colored{color:#5A4A32;box-shadow:var(--shadow-sm);}
+.book-row.colored .book-row-name{color:#5A4A32;}
+.book-row.colored .book-row-en{color:#8A7A5C;}
+.book-row.colored svg{color:#5A4A32;}
+.book-row.locked .book-row-name{color:var(--ink-faint);}
+.book-row.locked svg{color:var(--ink-faint);}
+.book-row:active{transform:scale(.98);}
+.cover{
+  position:relative;border-radius:12px;overflow:hidden;
+  aspect-ratio:3/4.3;box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;text-align:left;
+  transition:transform .15s ease;
+}
+.cover:active{transform:scale(.96);}
+.cover-top{
+  flex:1;background:var(--c-top);padding:9px 8px 6px;
+  display:flex;flex-direction:column;gap:4px;position:relative;
+}
+.cover-top::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:rgba(0,0,0,.08);
+}
+.cover-eyebrow{
+  font-family:'Playfair Display',serif;font-style:italic;font-weight:600;
+  font-size:8.6px;line-height:1.25;color:rgba(255,255,255,.92);
+  letter-spacing:.01em;
+}
+.cover-kr{
+  margin-top:auto;font-family:'Noto Serif KR',serif;font-weight:600;
+  font-size:7.6px;line-height:1.35;color:rgba(255,255,255,.85);
+}
+.cover-bottom{
+  background:var(--c-bottom);padding:6px 8px;
+  display:flex;align-items:center;gap:6px;
+}
+.cover-badge{
+  width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.94);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-family:'Noto Serif KR',serif;font-weight:700;font-size:10px;color:var(--ink);
+}
+.cover-foot{font-size:6.6px;color:rgba(255,255,255,.9);line-height:1.2;}
+.lock-overlay{
+  position:absolute;inset:0;background:rgba(20,18,16,.46);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  color:#fff;backdrop-filter:blur(.5px);
+}
+.lock-overlay svg{width:13px;height:13px;}
+.lock-overlay span{font-size:8px;font-weight:600;letter-spacing:.02em;}
+
+/* ---------- login screen ---------- */
+.screen-center{
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:56px 30px 32px;overflow-y:auto;
+}
+.back-fab{
+  position:absolute;top:20px;left:18px;width:36px;height:36px;border-radius:50%;
+  background:var(--paper);box-shadow:var(--shadow-sm);display:flex;align-items:center;
+  justify-content:center;color:var(--ink-soft);z-index:5;
+}
+.login-mark{text-align:center;margin-bottom:34px;}
+.login-mark .eyebrow{
+  font-family:'Playfair Display',serif;font-style:italic;color:var(--ink-faint);
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+}
+.login-mark h2{
+  font-family:'Noto Serif KR',serif;font-size:24px;margin:6px 0 0;font-weight:700;
+}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:11.5px;color:var(--ink-soft);margin-bottom:5px;font-weight:500;}
+.field input{
+  width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);
+  background:var(--paper);font-size:14px;color:var(--ink);outline:none;
+}
+.field input:focus{border-color:var(--lilac-deep);}
+.btn{
+  width:100%;padding:14px;border-radius:12px;font-size:14.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-primary{background:var(--surface-strong);color:#fff;margin-top:6px;}
+.btn-google{background:var(--paper);color:var(--ink);border:1px solid var(--line);margin-top:10px;}
+.btn-kakao{background:#FEE500;color:#191919;margin-top:10px;}
+.btn-kakao svg{flex-shrink:0;}
+.btn-ghost{background:transparent;color:var(--ink-soft);margin-top:14px;text-decoration:underline;text-underline-offset:3px;font-weight:500;}
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0 4px;color:var(--ink-faint);font-size:11px;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+
+.consent-box{
+  background:var(--paper);border-radius:12px;box-shadow:var(--shadow-sm);
+  padding:13px 14px;margin-top:8px;
+}
+.consent-row{display:flex;align-items:flex-start;gap:10px;}
+.consent-check{
+  width:20px;height:20px;border-radius:6px;border:2px solid var(--line);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:transparent;margin-top:1px;
+}
+.consent-check.checked{background:var(--surface-strong);border-color:var(--surface-strong);color:#fff;}
+.consent-check svg{width:11px;height:11px;}
+.consent-label{flex:1;font-size:12.5px;font-weight:600;line-height:1.5;}
+.consent-view-btn{font-size:11px;color:var(--ink-faint);text-decoration:underline;text-underline-offset:2px;flex-shrink:0;margin-top:1px;}
+.consent-detail{
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+  font-size:11.5px;line-height:1.6;color:var(--ink-soft);white-space:pre-line;
+}
+
+/* ---------- modal / sheet ---------- */
+.overlay{
+  position:absolute;inset:0;background:rgba(24,20,16,.42);
+  display:flex;align-items:flex-end;justify-content:center;z-index:40;
+}
+.overlay.center{align-items:center;padding:0 22px;}
+.sheet{
+  width:100%;background:var(--bg);border-radius:22px 22px 0 0;
+  padding:22px 22px 26px;box-shadow:0 -10px 30px rgba(0,0,0,.18);
+  max-height:80%;overflow-y:auto;
+}
+.modal-card{
+  width:100%;background:var(--paper);border-radius:20px;padding:26px 22px 22px;
+  box-shadow:var(--shadow);
+}
+.sheet-handle{width:38px;height:4px;background:var(--line);border-radius:3px;margin:0 auto 16px;}
+.modal-title{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;margin:0 0 6px;}
+.modal-sub{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 18px;}
+.price-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 16px;background:var(--bg);border-radius:12px;margin-bottom:18px;
+}
+.price-row .label{font-size:12.5px;color:var(--ink-soft);}
+.price-row .amount{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:700;}
+.modal-actions{display:flex;gap:10px;}
+.modal-actions .btn{flex:1;}
+.btn-cancel{background:var(--bg);color:var(--ink-soft);}
+
+.plan-options{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+.plan-option{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:13px 15px;border-radius:12px;border:1.5px solid var(--line);
+  background:var(--bg);text-align:left;
+}
+.plan-option.selected{border-color:var(--gold);background:#FBF1DC;}
+.plan-option .radio{
+  width:18px;height:18px;border-radius:50%;border:1.5px solid var(--ink-faint);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+}
+.plan-option.selected .radio{border-color:var(--gold);}
+.plan-option.selected .radio::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--gold);}
+.plan-option .plan-info{flex:1;}
+.plan-option .plan-name{font-size:13.5px;font-weight:700;}
+.plan-option .plan-desc{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+.plan-option .plan-price{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;white-space:nowrap;}
+.plan-option .plan-badge{
+  display:inline-block;background:var(--badge-blue);color:#fff;font-size:9px;font-weight:700;
+  padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;
+}
+
+/* ---------- calendar screen ---------- */
+.cal-header{
+  padding:20px 20px 6px;display:flex;align-items:center;gap:12px;
+}
+.cal-header .icon-btn{
+  width:34px;height:34px;border-radius:50%;background:var(--paper);
+  box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;
+  color:var(--ink-soft);flex-shrink:0;
+}
+.cal-header .titles .cap{font-size:10.5px;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;}
+.cal-header .titles h2{font-family:'Noto Serif KR',serif;font-size:19px;margin:2px 0 0;font-weight:700;}
+.cal-today-strip{
+  margin:10px 20px 6px;padding:11px 14px;border-radius:12px;background:var(--paper);
+  box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:space-between;
+}
+.cal-today-strip .t-label{font-size:11px;color:var(--ink-faint);}
+.cal-today-strip .t-date{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13.5px;margin-top:2px;}
+.cal-today-strip .t-badge{
+  background:var(--badge-gold);color:#fff;font-size:10.5px;font-weight:700;
+  padding:5px 10px;border-radius:20px;
+}
+.cal-weekdays{
+  display:grid;grid-template-columns:repeat(7,1fr);padding:14px 16px 4px;
+  text-align:center;font-size:11px;color:var(--ink-faint);font-weight:600;
+}
+.cal-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:2px 16px 24px;
+}
+.cal-cell{
+  aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:12px;position:relative;gap:2px;
+}
+.cal-cell.empty{visibility:hidden;}
+.cal-cell .cal-num{font-size:13.5px;font-weight:600;color:var(--ink);}
+.cal-cell .cal-dot{width:4px;height:4px;border-radius:50%;background:var(--rose-deep);}
+.cal-cell.is-today{background:var(--surface-strong);}
+.cal-cell.is-today .cal-num{color:#fff;}
+.cal-cell.is-today .cal-dot{background:var(--gold);}
+.cal-cell:active{transform:scale(.94);}
+.cal-legend{
+  display:flex;align-items:center;gap:6px;padding:0 20px 10px;font-size:11px;color:var(--ink-faint);
+}
+.cal-legend .dot{width:5px;height:5px;border-radius:50%;background:var(--rose-deep);}
+
+.chap-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:8px;
+}
+.chap-cell{
+  aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:12px;position:relative;gap:3px;background:var(--paper);box-shadow:var(--shadow-sm);
+}
+.chap-cell .chap-num{font-size:14px;font-weight:700;color:var(--ink);font-family:'Noto Serif KR',serif;}
+.chap-cell .cal-dot{width:4px;height:4px;border-radius:50%;background:var(--rose-deep);}
+.chap-cell svg{width:12px;height:12px;color:#5B7A55;}
+.chap-cell.complete{background:#E4F1E1;border:1px solid #A9C2A2;}
+.chap-cell.complete .chap-num{color:#3F5A3A;}
+#shell.theme-dark .chap-cell.complete{background:#2E3B2A;border-color:#4C6248;}
+#shell.theme-dark .chap-cell.complete .chap-num{color:#C7E0C0;}
+#shell.theme-dark .chap-cell.complete svg{color:#8FBF85;}
+.chap-cell:active{transform:scale(.94);}
+
+/* ---------- daily view ---------- */
+.daily-header{
+  padding:20px 20px 14px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--line);
+}
+.daily-header .icon-btn{
+  width:34px;height:34px;border-radius:50%;background:var(--paper);
+  box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;
+  color:var(--ink-soft);flex-shrink:0;
+}
+.daily-header .titles{flex:1;}
+.daily-header .titles .cap{font-size:10.5px;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;}
+.daily-header .titles h2{font-family:'Noto Serif KR',serif;font-size:17px;margin:2px 0 0;font-weight:700;}
+
+.tab-content{flex:1;overflow-y:auto;padding:18px 20px 90px;}
+
+/* bible tab */
+.chapter-card{
+  background:var(--paper);border-radius:16px;padding:18px 18px 6px;box-shadow:var(--shadow-sm);
+  margin-bottom:16px;
+}
+.chapter-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.chapter-info-btn{
+  width:34px;height:34px;border-radius:50%;background:var(--bg);color:var(--ink-faint);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;
+}
+.chapter-info-btn svg{width:18px;height:18px;}
+.chapter-card .cap{font-size:10.5px;color:var(--gold);letter-spacing:.08em;font-weight:700;text-transform:uppercase;}
+.chapter-card h3{font-family:'Noto Serif KR',serif;font-size:20px;margin:6px 0 2px;}
+.chapter-card .note{font-size:11.5px;color:var(--ink-faint);margin-bottom:12px;}
+.verse-list{display:flex;flex-direction:column;}
+.verse{
+  display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line);
+  font-size:13.5px;line-height:1.6;transition:background .5s ease;
+  border-radius:8px;scroll-margin-top:100px;
+}
+.verse .vnum{
+  font-family:'Noto Serif KR',serif;font-weight:700;color:var(--ink-faint);
+  font-size:12px;width:20px;flex-shrink:0;padding-top:1px;
+}
+.verse.highlight{background:#FBEFCB;}
+
+/* content questions tab */
+.q-card{
+  background:var(--paper);border-radius:16px;padding:16px;box-shadow:var(--shadow-sm);
+  margin-bottom:12px;
+}
+.q-ref{
+  display:inline-flex;align-items:center;gap:4px;background:var(--bg);
+  color:var(--lilac-deep);font-weight:700;font-size:11.5px;padding:5px 10px;
+  border-radius:20px;margin-bottom:9px;border:1px solid var(--line);
+}
+.q-ref svg{width:11px;height:11px;}
+.q-text{font-size:13.5px;line-height:1.55;margin-bottom:10px;font-weight:500;}
+.q-answer{
+  width:100%;min-height:64px;border-radius:10px;border:1px solid var(--line);
+  background:var(--bg);padding:10px 12px;font-size:13px;font-family:inherit;
+  resize:vertical;outline:none;color:var(--ink);
+}
+.q-answer:focus{border-color:var(--lilac-deep);}
+
+/* thought tab */
+.section-block{margin-bottom:18px;}
+.section-block .s-label{
+  display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;
+  margin-bottom:8px;font-family:'Noto Serif KR',serif;
+}
+.section-block .s-label .dot{width:6px;height:6px;border-radius:50%;background:var(--rose-deep);flex-shrink:0;}
+.section-block textarea, .section-block input[type=text]{
+  width:100%;border-radius:10px;border:1px solid var(--line);background:var(--paper);
+  padding:11px 12px;font-size:13px;font-family:inherit;color:var(--ink);outline:none;
+}
+.section-block textarea{min-height:58px;resize:vertical;box-shadow:var(--shadow-sm);}
+.section-block input[type=text]{box-shadow:var(--shadow-sm);}
+.thanks-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.thanks-row .num{
+  width:20px;height:20px;border-radius:50%;background:var(--sage);color:#fff;
+  font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+.ask-box{background:var(--paper);border-radius:12px;box-shadow:var(--shadow-sm);overflow:hidden;}
+.ask-row{
+  display:flex;align-items:center;gap:10px;padding:12px 13px;justify-content:space-between;
+}
+.ask-row .ask-q{font-size:13px;font-weight:600;line-height:1.45;flex:1;}
+.ask-arrow{
+  width:28px;height:28px;border-radius:50%;background:var(--bg);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:var(--ink-soft);
+  transition:transform .2s ease;
+}
+.ask-arrow.open{transform:rotate(180deg);}
+.ask-list{border-top:1px solid var(--line);}
+.ask-item{
+  padding:11px 13px;font-size:12.5px;line-height:1.5;border-top:1px solid var(--line);
+  color:var(--ink-soft);
+}
+.ask-item:first-child{border-top:none;}
+.ask-item.selected{background:#FBEFCB;color:var(--ink);font-weight:600;}
+.ask-answer-wrap{padding:10px 13px 14px;}
+.add-thanks-btn{
+  display:flex;align-items:center;gap:6px;justify-content:center;
+  width:100%;padding:10px;border-radius:10px;border:1.5px dashed var(--line);
+  color:var(--ink-soft);font-size:12.5px;font-weight:600;margin-top:2px;
+}
+.add-thanks-btn svg{width:14px;height:14px;}
+.add-thanks-btn:active{background:var(--paper);}
+
+/* ---------- groups list ---------- */
+.groups-header{
+  padding:20px 20px 6px;display:flex;align-items:center;gap:12px;
+}
+.groups-header .icon-btn{
+  width:34px;height:34px;border-radius:50%;background:var(--paper);
+  box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;
+  color:var(--ink-soft);flex-shrink:0;
+}
+.groups-header .titles .cap{font-size:10.5px;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;}
+.groups-header .titles h2{font-family:'Noto Serif KR',serif;font-size:19px;margin:2px 0 0;font-weight:700;}
+.groups-body{flex:1;overflow-y:auto;padding:14px 20px 24px;}
+.new-group-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px;border-radius:14px;background:var(--surface-strong);color:#fff;
+  font-size:13.5px;font-weight:700;margin-bottom:16px;
+}
+.new-group-btn svg{width:16px;height:16px;}
+.group-card{
+  display:flex;align-items:center;gap:12px;background:var(--paper);border-radius:14px;
+  padding:13px 14px;box-shadow:var(--shadow-sm);margin-bottom:10px;text-align:left;width:100%;
+}
+.group-avatar{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  font-family:'Noto Serif KR',serif;font-weight:700;font-size:15px;
+}
+.group-info{flex:1;min-width:0;}
+.group-info .g-name{font-size:13.5px;font-weight:700;}
+.group-info .g-sub{font-size:11.5px;color:var(--ink-soft);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.group-meta{font-size:10.5px;color:var(--ink-faint);flex-shrink:0;text-align:right;}
+.empty-groups{
+  text-align:center;padding:50px 20px;color:var(--ink-soft);
+}
+.empty-groups .emoji{font-size:30px;margin-bottom:10px;}
+.empty-groups p{font-size:12.5px;line-height:1.6;}
+
+/* ---------- group chat room ---------- */
+.room-header{
+  padding:18px 18px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);
+}
+.room-header .icon-btn{
+  width:32px;height:32px;border-radius:50%;background:var(--paper);
+  box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;
+  color:var(--ink-soft);flex-shrink:0;
+}
+.room-header .r-avatar{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  font-family:'Noto Serif KR',serif;font-weight:700;font-size:13px;
+}
+.room-header .titles{flex:1;min-width:0;}
+.room-header .titles h2{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;margin:0;}
+.room-header .titles .cap{font-size:10.5px;color:var(--ink-faint);}
+.room-header .invite-btn{
+  width:32px;height:32px;border-radius:50%;background:var(--badge-blue);color:#fff;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.room-header .invite-btn svg{width:15px;height:15px;}
+.chat-scroll{flex:1;overflow-y:auto;padding:16px 16px 10px;display:flex;flex-direction:column;gap:10px;}
+.msg-row{display:flex;flex-direction:column;max-width:78%;}
+.msg-row.me{align-self:flex-end;align-items:flex-end;}
+.msg-row.them{align-self:flex-start;align-items:flex-start;}
+.msg-sender{font-size:10.5px;color:var(--ink-faint);margin-bottom:3px;padding:0 3px;}
+.msg-line{display:flex;align-items:flex-end;gap:5px;}
+.msg-unread{
+  font-size:10.5px;font-weight:700;color:#E8791E;flex-shrink:0;
+  margin-bottom:3px;white-space:nowrap;
+}
+.msg-bubble{
+  padding:10px 13px;border-radius:16px;font-size:13px;line-height:1.5;
+  border:1px solid var(--line);
+}
+.msg-row.me .msg-bubble{background:var(--surface-strong);color:#fff;border-bottom-right-radius:5px;border-color:var(--surface-strong);}
+.msg-row.them .msg-bubble{background:var(--bubble-them);box-shadow:var(--shadow-sm);border-bottom-left-radius:5px;border:1px solid var(--line);}
+#shell.theme-dark .msg-row.me .msg-bubble{background:#FFFFFF;color:#1E1B18;border-color:#FFFFFF;}
+#shell.theme-dark .msg-row.them .msg-bubble{background:#FFFFFF;color:#1E1B18;border-color:#FFFFFF;}
+.msg-row.system{align-self:center;max-width:90%;}
+.msg-row.system .msg-bubble{background:transparent;color:var(--ink-faint);font-size:11px;padding:4px;border:none;}
+.journal-card{
+  background:var(--bubble-them);border-radius:14px;padding:12px 13px;box-shadow:var(--shadow-sm);
+  border-left:3px solid var(--gold);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  min-width:180px;
+}
+.journal-card .jc-cap{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px;}
+.journal-card .jc-title{font-family:'Noto Serif KR',serif;font-weight:700;font-size:13px;margin-bottom:4px;}
+.journal-card .jc-text{font-size:12px;color:var(--ink-soft);line-height:1.5;}
+.msg-row.me .journal-card{border-left-color:#fff;background:rgba(255,255,255,.12);}
+.msg-row.me .journal-card .jc-title,
+.msg-row.me .journal-card .jc-text,
+.msg-row.me .journal-card .jc-cap{color:#fff;}
+.compose-bar{
+  display:flex;align-items:center;gap:8px;padding:10px 14px 16px;border-top:1px solid var(--line);
+  background:var(--bg);
+}
+.compose-bar .share-journal-btn{
+  width:38px;height:38px;border-radius:50%;background:var(--paper);box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;justify-content:center;color:var(--rose-deep);flex-shrink:0;
+}
+.compose-bar .share-journal-btn svg{width:17px;height:17px;}
+.compose-bar input{
+  flex:1;padding:11px 15px;border-radius:22px;border:1px solid var(--line);
+  background:var(--paper);font-size:13px;outline:none;font-family:inherit;
+}
+.compose-bar input:focus{border-color:var(--lilac-deep);}
+.compose-bar .send-btn{
+  width:38px;height:38px;border-radius:50%;background:var(--surface-strong);color:#fff;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.compose-bar .send-btn svg{width:16px;height:16px;}
+
+/* ---------- invite sheet ---------- */
+.invite-link-box{
+  display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:12px;
+  padding:12px 13px;margin-bottom:16px;
+}
+.invite-link-box span{flex:1;font-size:12px;color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.invite-link-box button{
+  flex-shrink:0;background:var(--surface-strong);color:#fff;font-size:11.5px;font-weight:700;
+  padding:8px 12px;border-radius:9px;display:flex;align-items:center;gap:5px;
+}
+.invite-link-box button svg{width:13px;height:13px;}
+.share-channels{display:flex;flex-direction:column;gap:8px;}
+.share-channel{
+  display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--paper);
+  border-radius:12px;box-shadow:var(--shadow-sm);text-align:left;
+}
+.share-channel .ch-icon{
+  width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;
+}
+.share-channel .ch-icon svg{width:17px;height:17px;}
+.share-channel .ch-name{font-size:13px;font-weight:600;}
+.share-channel .ch-desc{font-size:11px;color:var(--ink-soft);margin-top:1px;}
+
+/* ---------- create-group sheet ---------- */
+.create-group-field{margin-bottom:16px;}
+.create-group-field label{display:block;font-size:12px;color:var(--ink-soft);margin-bottom:6px;font-weight:500;}
+.create-group-field input{
+  width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+  background:var(--paper);font-size:14px;font-family:inherit;outline:none;
+}
+.create-group-field input:focus{border-color:var(--lilac-deep);}
+
+/* bottom nav */
+.bottom-nav{
+  position:absolute;left:0;right:0;bottom:0;background:var(--paper);
+  border-top:1px solid var(--line);display:flex;padding:8px 6px 14px;
+  box-shadow:0 -6px 20px rgba(0,0,0,.05);
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:6px 2px;color:var(--ink-faint);
+}
+.nav-btn svg{width:21px;height:21px;}
+.nav-btn span{font-size:10px;font-weight:600;}
+.nav-btn.active{color:var(--rose-deep);}
+
+/* toast */
+.toast{
+  position:absolute;bottom:100px;left:50%;transform:translateX(-50%);
+  background:var(--surface-strong);color:#fff;padding:10px 18px;border-radius:24px;
+  font-size:12.5px;box-shadow:var(--shadow);z-index:80;opacity:0;
+  transition:opacity .25s ease, transform .25s ease;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+/* ---------- settings screen (full page) ---------- */
+.settings-header{
+  padding:20px 20px 14px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--line);
+}
+.settings-header .icon-btn{
+  width:34px;height:34px;border-radius:50%;background:var(--paper);
+  box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;
+  color:var(--ink-soft);flex-shrink:0;
+}
+.settings-header h2{font-family:'Noto Serif KR',serif;font-size:19px;margin:0;font-weight:700;}
+.settings-body{flex:1;overflow-y:auto;padding:20px 20px 30px;}
+.settings-group{margin-bottom:26px;}
+.settings-group .g-title{
+  font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:10px;
+  letter-spacing:.02em;
+}
+.pill-toggle{
+  display:flex;background:var(--paper);border-radius:12px;padding:4px;
+  box-shadow:var(--shadow-sm);gap:4px;
+}
+.pill-toggle button{
+  flex:1;padding:10px 6px;border-radius:9px;font-size:12.5px;font-weight:600;
+  color:var(--ink-soft);text-align:center;
+}
+.pill-toggle button.selected{background:var(--surface-strong);color:#fff;}
+.settings-list{background:var(--paper);border-radius:14px;box-shadow:var(--shadow-sm);padding:0 14px;}
+
+.notif-day-row{
+  display:flex;align-items:center;justify-content:space-between;padding:15px 4px;
+  border-top:1px solid var(--line);
+}
+.notif-day-row:first-child{border-top:none;}
+.notif-day-row .day-name{font-size:13.5px;font-weight:600;}
+.notif-day-row .day-status{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+.notif-day-row .day-status.on{color:var(--gold);font-weight:600;}
+.toggle-switch{
+  width:42px;height:25px;border-radius:20px;background:var(--line);position:relative;flex-shrink:0;
+  transition:background .2s ease;
+}
+.toggle-switch::after{
+  content:"";position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s ease;
+}
+.toggle-switch.on{background:var(--badge-blue);}
+.toggle-switch.on::after{transform:translateX(17px);}
+.notif-sheet-time{
+  display:flex;align-items:center;justify-content:space-between;background:var(--bg);
+  border-radius:12px;padding:14px 16px;margin:16px 0 20px;
+}
+.notif-sheet-time label{font-size:13px;font-weight:600;}
+.notif-sheet-time input[type=time]{
+  border:1px solid var(--line);background:var(--paper);color:var(--ink);
+  border-radius:8px;padding:6px 10px;font-size:14px;font-family:inherit;
+}
+.notif-sheet-actions{display:flex;gap:10px;}
+.notif-sheet-actions .btn{flex:1;}
+
+.contact-card{
+  background:var(--paper);border-radius:16px;box-shadow:var(--shadow-sm);
+  padding:28px 22px 24px;text-align:center;
+}
+.contact-icon{
+  width:52px;height:52px;border-radius:50%;background:var(--bg);color:var(--gold);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+}
+.contact-icon svg{width:24px;height:24px;}
+.contact-body{font-size:13.5px;line-height:1.65;color:var(--ink-soft);margin:0 0 20px;}
+.contact-mail-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;
+}
+.contact-mail-btn svg{width:16px;height:16px;}
+.contact-note{font-size:11.5px;color:var(--ink-faint);margin:12px 0 14px;line-height:1.5;}
+.contact-email-chip{
+  display:inline-block;font-size:12px;color:var(--ink-soft);background:var(--bg);
+  border-radius:20px;padding:6px 14px;
+}
+.guide-empty{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:70px 20px 30px;
+}
+.guide-empty-icon{
+  width:56px;height:56px;border-radius:50%;background:var(--paper);box-shadow:var(--shadow-sm);
+  color:var(--ink-faint);display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+}
+.guide-empty-icon svg{width:24px;height:24px;}
+.guide-empty-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;margin-bottom:8px;}
+.guide-empty-body{font-size:13px;color:var(--ink-soft);line-height:1.6;max-width:260px;}
+
+/* ---------- share picker sheet ---------- */
+.share-pick-option{
+  display:flex;align-items:center;gap:12px;padding:15px 14px;background:var(--paper);
+  border-radius:14px;box-shadow:var(--shadow-sm);text-align:left;width:100%;margin-bottom:10px;
+}
+.share-pick-option .sp-icon{
+  width:40px;height:40px;border-radius:12px;background:var(--bg);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:var(--rose-deep);
+}
+.share-pick-option .sp-icon svg{width:19px;height:19px;}
+.share-pick-option .sp-name{font-size:13.5px;font-weight:700;}
+.share-pick-option .sp-desc{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+.share-pick-option:active{transform:scale(.98);}
+.pick-group-row{
+  display:flex;align-items:center;gap:12px;padding:13px 12px;background:var(--paper);
+  border-radius:14px;box-shadow:var(--shadow-sm);width:100%;margin-bottom:8px;text-align:left;
+}
+.pick-group-row .g-dot{width:34px;height:34px;border-radius:50%;flex-shrink:0;}
+.pick-group-row .g-name{font-size:13px;font-weight:700;}
+.pick-group-row:active{transform:scale(.98);}
+.share-back-row{
+  display:flex;align-items:center;gap:6px;color:var(--ink-faint);font-size:12px;font-weight:600;
+  margin-bottom:12px;
+}
+.share-back-row svg{width:14px;height:14px;transform:rotate(180deg);}
+
+/* ---------- off-screen snapshot render target ---------- */
+.snap-card{
+  position:fixed;top:0;left:-99999px;width:360px;background:#FBF6EF;
+  padding:26px 22px;font-family:'Noto Sans KR',sans-serif;color:#2A2724;
+}
+.snap-header{margin-bottom:16px;}
+.snap-eyebrow{font-size:11px;color:#C08A2E;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.snap-date{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:700;margin-top:4px;}
+.snap-qcard{background:#FFFFFF;border-radius:16px;padding:16px;margin-bottom:12px;}
+.snap-ref{
+  display:inline-block;background:#FBF6EF;color:#4F6B8F;font-weight:700;font-size:11.5px;
+  padding:5px 10px;border-radius:20px;margin-bottom:9px;border:1px solid #E9E0D3;
+}
+.snap-qtext{font-size:13.5px;line-height:1.55;margin-bottom:10px;font-weight:500;}
+.snap-answer{font-size:13px;line-height:1.6;padding:10px 12px;background:#FBF6EF;border-radius:10px;}
+.snap-answer.empty{color:#B3AAA0;font-style:italic;}
+.snap-section{margin-bottom:16px;}
+.snap-slabel{
+  display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;
+  margin-bottom:8px;font-family:'Noto Serif KR',serif;
+}
+.snap-slabel .dot{width:6px;height:6px;border-radius:50%;background:#3F5670;flex-shrink:0;}
+.snap-value{
+  font-size:13px;line-height:1.6;padding:10px 12px;background:#FFFFFF;border-radius:10px;
+}
+.snap-value.empty{color:#B3AAA0;font-style:italic;}
+.snap-thanks-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.snap-thanks-row .num{
+  width:19px;height:19px;border-radius:50%;background:#A9C2A2;color:#fff;
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.snap-footer{
+  text-align:center;font-family:'Playfair Display',serif;font-style:italic;font-size:11px;
+  color:#B3AAA0;margin-top:6px;letter-spacing:.04em;
+}
+.shared-snap-img{width:100%;border-radius:14px;display:block;border:1px solid var(--line);box-shadow:var(--shadow-sm);}
+.snap-img-wrap{max-width:220px;}
+.snap-img-cap{font-size:10.5px;color:var(--ink-faint);margin-top:5px;padding:0 2px;}
+
+.snap-img-pair-wrap{max-width:260px;}
+.snap-img-pair{display:flex;gap:4px;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);border:1px solid var(--line);}
+.shared-snap-img-half{width:50%;height:150px;object-fit:cover;object-position:top;display:block;}
+
+/* ---------- full-screen image viewer ---------- */
+.image-viewer{
+  position:absolute;inset:0;background:#000;z-index:90;
+  display:flex;flex-direction:column;
+}
+.viewer-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 16px 10px;flex-shrink:0;
+}
+.viewer-topbar .cap{color:rgba(255,255,255,.85);font-size:12.5px;padding:0 6px;}
+.viewer-close{
+  width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12);
+  color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.viewer-body{flex:1;overflow-y:auto;display:flex;justify-content:center;align-items:flex-start;padding:0 0 24px;}
+.viewer-body img{width:100%;max-width:480px;height:auto;display:block;flex-shrink:0;}
+.viewer-nav{
+  position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
+  background:rgba(0,0,0,.4);color:#fff;display:flex;align-items:center;justify-content:center;z-index:2;
+}
+.viewer-nav.prev{left:10px;}
+.viewer-nav.prev svg{transform:rotate(180deg);}
+.viewer-nav.next{right:10px;}
+.viewer-dots{
+  display:flex;justify-content:center;gap:6px;padding:10px 0 14px;flex-shrink:0;
+}
+.viewer-dots .dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);}
+.viewer-dots .dot.active{background:#fff;}
+
+/* settings sheet items */
+.setting-item{
+  display:flex;align-items:center;justify-content:space-between;padding:14px 4px;
+  border-top:1px solid var(--line);font-size:13.5px;font-weight:500;
+}
+.setting-item:first-child{border-top:none;}
+.setting-item .arrow{color:var(--ink-faint);}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script type="module">
+  // ---- Firebase setup ----
+  // 1) Firebase 콘솔(프로젝트: bible-journaling) > 프로젝트 설정 > 일반 탭에서 복사한 firebaseConfig를 아래에 붙여넣으세요.
+  // 2) Authentication > Sign-in method에서 이메일/비밀번호, Google을 사용 설정하세요.
+  // 3) Firestore Database를 만드세요 (users 컬렉션에 회원 프로필을 저장합니다).
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+  import {
+    getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    updateProfile, onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, getDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "bible-journaling.firebaseapp.com",
+    projectId: "bible-journaling",
+    appId: "YOUR_APP_ID",
+  };
+
+  let auth = null;
+  let db = null;
+  try{
+    const app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+  }catch(e){
+    console.warn('Firebase not configured yet:', e);
+  }
+
+  function toProfile(u){
+    return { uid:u.uid, name:u.displayName, email:u.email, photoUrl:u.photoURL };
+  }
+
+  // Expose a small bridge so the app's plain <script> below (non-module) can call these.
+  window.__firebaseAuth = {
+    ready: !!auth,
+    signInWithGoogle: async ()=>{
+      if(!auth) throw new Error('firebase-not-configured');
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      return toProfile(result.user);
+    },
+    signInWithKakao: async ()=>{
+      if(!auth) throw new Error('firebase-not-configured');
+      // Kakao isn't a built-in Firebase provider. This uses Firebase's generic OIDC
+      // provider support, since Kakao Login supports OpenID Connect. You must:
+      //  1) Enable "OpenID Connect" as a custom provider in Firebase Console > Authentication
+      //     > Sign-in method, and name it "oidc.kakao".
+      //  2) Register a Kakao Login (OIDC) app in Kakao Developers and fill in the
+      //     client ID/secret and issuer URL Firebase asks for.
+      const provider = new OAuthProvider('oidc.kakao');
+      const result = await signInWithPopup(auth, provider);
+      return toProfile(result.user);
+    },
+    signUpWithEmail: async (email, password, displayName)=>{
+      if(!auth) throw new Error('firebase-not-configured');
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      if(displayName){
+        try{ await updateProfile(result.user, { displayName }); }catch(e){}
+      }
+      return toProfile(result.user);
+    },
+    signInWithEmail: async (email, password)=>{
+      if(!auth) throw new Error('firebase-not-configured');
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      return toProfile(result.user);
+    },
+    signOutOfGoogle: async ()=>{
+      if(auth) await signOut(auth);
+    },
+    onChange: (cb)=>{
+      if(!auth) return;
+      onAuthStateChanged(auth, (u)=>{
+        if(u) cb(toProfile(u));
+        else cb(null);
+      });
+    }
+  };
+
+  window.__firebaseDB = {
+    ready: !!db,
+    saveUserProfile: async (uid, data)=>{
+      if(!db) throw new Error('firebase-not-configured');
+      await setDoc(doc(db, 'users', uid), { ...data, updatedAt: serverTimestamp() }, { merge:true });
+    },
+    getUserProfile: async (uid)=>{
+      if(!db) throw new Error('firebase-not-configured');
+      const snap = await getDoc(doc(db, 'users', uid));
+      return snap.exists() ? snap.data() : null;
+    }
+  };
+
+  window.dispatchEvent(new Event('firebase-bridge-ready'));
+</script>
+</head>
+<body>
+<div id="shell"><div id="app"></div></div>
+
+<script>
 /* ---------------- data ---------------- */
 const BOOKS = [
   { m:1, ko:'창세기', en:'Genesis' },
@@ -76,24 +1000,6 @@ const ASK_QUESTIONS = [
   '주님, 지금 제게 무엇을 말씀하십니까?',
 ];
 
-const ASK_QUESTIONS_EN = [
-  'Lord, what is on Your heart for me today?',
-  'Is there sin, pride, or fear that I am overlooking?',
-  'What truth do You want to show me today?',
-  'Who is someone You want me to love today?',
-  'What is something I need to stop doing?',
-  'What is one small step You want me to take today?',
-  'Is there direction You are giving me for my family, ministry, or work/study?',
-  'How do You see the problem that worries me?',
-  'What burden do You want me to lay down today?',
-  'What comfort do You want to speak to me?',
-  'Lord, what are You saying to me right now?',
-];
-
-function getAskQuestions(){
-  return state.lang === 'en' ? ASK_QUESTIONS_EN : ASK_QUESTIONS;
-}
-
 /* ---------------- i18n ---------------- */
 const STRINGS = {
   ko:{
@@ -147,10 +1053,10 @@ const STRINGS = {
     dailyCap:(name)=>`${name}의 말씀 여정`,
     navBible:'성경', navContent:'내용 질문 기록', navThought:'생각 질문 기록',
     todayReading:'오늘의 말씀', chapterNote:'본문은 이해를 돕기 위한 요약 예시입니다.',
-    chapterInfoBtn:'배경 설명 보기',
-    chapterInfoTitle:(book)=>`${book} 배경 설명`,
+    chapterInfoBtn:'장 배경 설명 보기',
+    chapterInfoTitle:(book,ch)=>`${book} ${ch}장 배경 설명`,
     chapterInfoEmptyTitle:'준비 중이에요',
-    chapterInfoEmptyBody:'이 책의 배경 설명은 곧 추가될 예정이에요.',
+    chapterInfoEmptyBody:'이 장의 배경 설명은 곧 추가될 예정이에요.',
     qPlaceholder:'생각한 답을 적어보세요',
     verseLabel:'나에게 주신 말씀 한 구절', versePh:'예: 출애굽기 8:10',
     passageLabel:'본문 내용', passagePh:'오늘 본문의 흐름을 요약해 보세요',
@@ -162,10 +1068,6 @@ const STRINGS = {
     thanksLabel:'오늘의 감사', thanksPh:(i)=>`감사한 일 ${i}`, addThanks:'감사한 일 추가',
     toastLogin:'로그인되었습니다', toastLogout:'로그아웃되었습니다',
     toastGoogleFailed:'구글 로그인에 실패했어요. 다시 시도해 주세요',
-    toastGoogleCancelled:'구글 로그인을 취소했어요',
-    toastPopupBlocked:'팝업이 차단되어 로그인할 수 없어요. 팝업 차단을 해제한 뒤 다시 시도해 주세요',
-    toastNetworkError:'네트워크 연결을 확인해 주세요',
-    toastLogoutFailed:'로그아웃에 실패했어요. 다시 시도해 주세요',
     toastKakaoFailed:'카카오 로그인에 실패했어요. 다시 시도해 주세요',
     toastEmailLoginFailed:'이메일 또는 비밀번호가 올바르지 않아요',
     toastEmailInUse:'이미 가입된 이메일이에요',
@@ -244,10 +1146,10 @@ const STRINGS = {
     dailyCap:(name)=>`${name} journey`,
     navBible:'Bible', navContent:'Content Qs', navThought:'Reflection',
     todayReading:"Today's reading", chapterNote:'This passage is a summarized sample for demo purposes.',
-    chapterInfoBtn:'View background',
-    chapterInfoTitle:(book)=>`Background: ${book}`,
+    chapterInfoBtn:'View chapter background',
+    chapterInfoTitle:(book,ch)=>`Background: ${book} ${ch}`,
     chapterInfoEmptyTitle:'Coming soon',
-    chapterInfoEmptyBody:"Background notes for this book will be added soon.",
+    chapterInfoEmptyBody:"Background notes for this chapter will be added soon.",
     qPlaceholder:'Write your answer here',
     verseLabel:'A verse given to me', versePh:'e.g. Exodus 8:10',
     passageLabel:'Passage summary', passagePh:'Summarize the flow of today\u2019s passage',
@@ -259,10 +1161,6 @@ const STRINGS = {
     thanksLabel:"Today's gratitude", thanksPh:(i)=>`Gratitude ${i}`, addThanks:'Add gratitude',
     toastLogin:'Logged in', toastLogout:'Logged out',
     toastGoogleFailed:'Google sign-in failed. Please try again',
-    toastGoogleCancelled:'Google sign-in was cancelled',
-    toastPopupBlocked:'Sign-in popup was blocked. Please allow popups and try again',
-    toastNetworkError:'Please check your network connection',
-    toastLogoutFailed:'Sign-out failed. Please try again',
     toastKakaoFailed:'Kakao sign-in failed. Please try again',
     toastEmailLoginFailed:'Incorrect email or password',
     toastEmailInUse:'This email is already registered',
@@ -330,10 +1228,9 @@ const ICON = {
 
 /* ---------------- state ---------------- */
 let state = {
-  screen:'loading',         // loading | main | login | signup | chapters | daily | groups | group-room | settings
+  screen:'main',            // main | login | signup | chapters | daily | groups | group-room | settings
   purchased:[1,2,3,4,5], // all 5 Pentateuch books are free/unlocked
   loggedIn:false,
-  user:null,                // { name, email, photoUrl } of the signed-in user
   activeMonth:null,         // month whose calendar is open
   activeChapter:null,       // chapter number selected within the current book
   activeTab:'bible',        // bible | content | thought
@@ -358,7 +1255,6 @@ let state = {
   signupConsent:false,      // privacy consent checkbox on the signup screen
   signupConsentOpen:false,  // whether the consent detail text is expanded
   prevScreen:'main',        // where to return to when leaving settings
-  loadingCount:0,           // >0 while any global async op (auth/Firestore/etc) is in flight
 };
 
 const YEAR = 2026;
@@ -419,19 +1315,6 @@ function pushMyMessage(g, msg){
   g.messages.push(msg);
   saveGroups();
   scheduleReadTicks(g, msg);
-  syncMessageToFirestore(g, msg);
-}
-function syncMessageToFirestore(g, msg){
-  if(msg.type!=='text' || !msg.text) return; // 이미지/시스템 메시지는 Firestore 규칙상 본인 계정으로만 기록할 수 있는 텍스트만 미러링합니다
-  if(!(state.user && state.user.uid)) return;
-  const fdb = window.__firebaseDB;
-  if(!fdb || !fdb.ready || typeof fdb.sendMessage !== 'function') return;
-  const ensure = typeof fdb.ensureGroup === 'function'
-    ? fdb.ensureGroup(g.id, { name:g.name, ownerUid:state.user.uid, color:g.color, code:g.code })
-    : Promise.resolve();
-  ensure
-    .then(()=> fdb.sendMessage(g.id, { uid: state.user.uid, name: state.user.nickname || state.user.name || null, text: msg.text }))
-    .catch(err=>console.error('Firestore chat save failed:', err));
 }
 
 function blankEntry(){
@@ -497,9 +1380,9 @@ function buildThoughtSnapshotHTML(key){
   const t = entry.thought;
   const noAnswer = state.lang==='en' ? 'Not written yet' : '아직 작성하지 않았어요';
   const val = (v)=> (v && v.trim()) ? `<div class="snap-value">${escapeHtml(v)}</div>` : `<div class="snap-value empty">${noAnswer}</div>`;
-  const askQ = t.askIndex!==null ? getAskQuestions()[t.askIndex] : (state.lang==='en' ? 'No question selected' : '선택한 질문이 없어요');
+  const askQ = t.askIndex!==null ? ASK_QUESTIONS[t.askIndex] : (state.lang==='en' ? 'No question selected' : '선택한 질문이 없어요');
   const thanksRows = (t.thanks||[]).filter(v=>v && v.trim()).map((v,i)=>`
-    <div class="snap-thanks-row"><div class="num">${i+1}</div><div style="font-size:calc(13px * var(--fs-scale))">${escapeHtml(v)}</div></div>
+    <div class="snap-thanks-row"><div class="num">${i+1}</div><div style="font-size:13px">${escapeHtml(v)}</div></div>
   `).join('') || `<div class="snap-value empty">${noAnswer}</div>`;
 
   return `
@@ -608,7 +1491,6 @@ let toastTimer=null, saveTimer=null;
 
 /* ---------------- persistence ---------------- */
 async function loadAll(){
-  showLoading();
   try{
     const p = await window.storage.get('purchased-months');
     if(p) state.purchased = JSON.parse(p.value);
@@ -652,13 +1534,9 @@ async function loadAll(){
     if(a) journalData = JSON.parse(a.value);
   }catch(e){}
   try{
-    // Firebase Authentication (via initAuthGate/onAuthStateChanged) is the source of truth
-    // for state.loggedIn/state.user. Here we only merge in extra cached profile fields
-    // (username/nickname/birth from signup) that Firebase itself doesn't store.
-    const up = await window.storage.get('user-profile');
-    if(up && up.value) state.user = Object.assign({}, JSON.parse(up.value), state.user);
+    const l = await window.storage.get('auth-state');
+    if(l) state.loggedIn = JSON.parse(l.value).loggedIn;
   }catch(e){}
-  subscribeToAuthUser();
   try{
     const g = await window.storage.get('groups-data');
     groups = g ? JSON.parse(g.value) : seedGroups();
@@ -681,7 +1559,7 @@ async function loadAll(){
     if(nf) notifSettings = Object.assign(notifSettings, JSON.parse(nf.value));
   }catch(e){}
   groupsLoaded = true;
-  hideLoading();
+  render();
 }
 function savePrefs(){
   window.storage.set('app-prefs', JSON.stringify({fontSize:state.fontSize, lang:state.lang, theme:state.theme}), false).catch(()=>{});
@@ -695,102 +1573,14 @@ function savePurchased(){
 function saveAuth(){
   window.storage.set('auth-state', JSON.stringify({loggedIn:state.loggedIn}), false).catch(()=>{});
 }
-/* ---------------- Firebase auth gate ---------------- */
-function googleErrorToast(err){
-  const code = err && err.code;
-  if(code==='auth/popup-closed-by-user' || code==='auth/cancelled-popup-request') return T('toastGoogleCancelled');
-  if(code==='auth/popup-blocked') return T('toastPopupBlocked');
-  if(code==='auth/network-request-failed') return T('toastNetworkError');
-  return T('toastGoogleFailed');
-}
-
-function applyAuthProfile(profile){
-  if(profile){
-    // Merge onto any cached fields (e.g. username/nickname/birth) instead of replacing outright.
-    state.user = Object.assign({}, state.user, { name:profile.name, email:profile.email, photoUrl:profile.photoUrl });
-    state.loggedIn = true;
-  } else {
-    state.user = null;
-    state.loggedIn = false;
-  }
-  saveAuth();
-}
-
-/* Runs once at startup: shows the loading screen until Firebase reports the current
-   auth session, then routes straight to home (logged in) or login (logged out) with
-   no login-screen flash. Also keeps listening so a lost/expired session sends the
-   user back to the login screen from wherever they are. */
-function initAuthGate(){
-  render(); // paint the loading screen immediately, before Firebase's async check resolves
-  const bridge = window.__firebaseAuth;
-  if(!bridge || !bridge.ready){
-    state.screen = 'login';
-    render();
-    showToast(T('toastFirebaseNotSet'));
-    return;
-  }
-  let firstCheck = true;
-  bridge.onChange(profile=>{
-    applyAuthProfile(profile);
-    if(firstCheck){
-      firstCheck = false;
-      state.screen = profile ? 'main' : 'login';
-    } else if(!profile && state.screen!=='login' && state.screen!=='signup'){
-      state.screen = 'login';
-    }
-    render();
-  });
-}
-/* Firebase Auth의 실제 로그인 상태(onAuthStateChanged)를 구독해, 로컬 캐시(user-profile)가
-   비어있거나 오래된 경우(예: 카카오 로그인 후 아이디/닉네임이 빈칸으로 저장된 과거 세션)에도
-   currentUser와 Firestore users/{uid} 문서 값으로 프로필 화면을 다시 채워줍니다. */
-function subscribeToAuthUser(){
-  if(!(window.__firebaseAuth && window.__firebaseAuth.ready)) return;
-  window.__firebaseAuth.onChange(async (profile)=>{
-    if(!profile) return;
-    let merged = { ...state.user, ...profile };
-    if(window.__firebaseDB && window.__firebaseDB.ready){
-      try{
-        const doc = await withLoading(window.__firebaseDB.getUserProfile(profile.uid));
-        if(doc){
-          merged = { ...merged, ...doc };
-          merged.uid = profile.uid;
-          merged.name = doc.name || profile.name || merged.name;
-          merged.email = doc.email || profile.email || merged.email;
-          merged.photoUrl = doc.photoUrl || profile.photoUrl || merged.photoUrl;
-        }
-      }catch(e){}
-    }
-    state.user = merged;
-    state.loggedIn = true;
-    window.storage.set('user-profile', JSON.stringify(state.user), false).catch(()=>{});
-    saveAuth();
-    if(groupsLoaded) render();
-  });
-}
 function saveGroups(){
   window.storage.set('groups-data', JSON.stringify(groups), false).catch(()=>{});
 }
 function saveAnswersDebounced(){
   clearTimeout(saveTimer);
-  const book = state.activeMonth ? bookName(state.activeMonth) : null;
-  const chapter = state.activeChapter;
-  const entry = (state.activeMonth && state.activeChapter) ? getEntry(ckey(state.activeMonth, state.activeChapter)) : null;
   saveTimer = setTimeout(()=>{
     window.storage.set('journal-entries', JSON.stringify(journalData), false).catch(()=>{});
-    syncJournalToFirestore(book, chapter, entry);
   }, 450);
-}
-function syncJournalToFirestore(book, chapter, entry){
-  if(!entry || !book || !chapter) return;
-  if(!(state.user && state.user.uid)) return;
-  const fdb = window.__firebaseDB;
-  if(!fdb || !fdb.ready || typeof fdb.saveJournalEntry !== 'function') return;
-  fdb.saveJournalEntry(state.user.uid, {
-    book, chapter,
-    contentAnswers: entry.content,
-    thoughtAnswers: entry.thought,
-  }).catch(err=>console.error('Firestore journal save failed:', err));
 }
 
 /* ---------------- helpers ---------------- */
@@ -809,39 +1599,13 @@ function todayLabel(){
 }
 
 /* ---------------- render root ---------------- */
-/* ---------------- global loading overlay ----------------
-   앱 어디서든(Firebase Auth, Firestore 조회/저장, 기타 비동기 통신) showLoading()/hideLoading()을
-   호출해 같은 오버레이를 켜고 끌 수 있습니다. 중첩 호출을 고려해 카운터로 관리하므로,
-   동시에 여러 요청이 걸려 있어도 모두 끝나야 사라집니다. withLoading(promise)는 이 두 호출을
-   promise 앞뒤로 자동 연결해 주는 헬퍼입니다. */
-function showLoading(){
-  state.loadingCount++;
-  render();
-}
-function hideLoading(){
-  state.loadingCount = Math.max(0, state.loadingCount - 1);
-  render();
-}
-function withLoading(promise){
-  showLoading();
-  return promise.finally(()=> hideLoading());
-}
-function renderLoadingOverlay(){
-  if(state.loadingCount<=0) return '';
-  return `
-    <div class="loading-overlay">
-      <div class="loading-card"><div class="loading-ring"></div></div>
-    </div>
-  `;
-}
 function render(){
   const shell = document.getElementById('shell');
   shell.className = 'fs-' + state.fontSize + ' theme-' + state.theme;
 
   const app = document.getElementById('app');
   let html = '';
-  if(state.screen==='loading') html = renderLoading();
-  else if(state.screen==='main') html = renderMain();
+  if(state.screen==='main') html = renderMain();
   else if(state.screen==='login') html = renderLogin();
   else if(state.screen==='signup') html = renderSignupScreen();
   else if(state.screen==='chapters') html = renderChapterGrid();
@@ -863,7 +1627,7 @@ function render(){
   if(state.notifDayOpen) overlays += renderNotifDaySheet();
   if(state.pageShare) overlays += renderPageShareSheet();
 
-  app.innerHTML = html + overlays + renderLoadingOverlay() + `<div class="toast" id="toast"></div>`;
+  app.innerHTML = html + overlays + `<div class="toast" id="toast"></div>`;
 
   if(state.screen==='daily' && state.activeTab==='bible' && state.highlightVerse){
     requestAnimationFrame(()=>{
@@ -883,15 +1647,6 @@ function render(){
 /* keep the "오늘" marker on the calendar accurate in real time */
 setInterval(()=>{ if(state.screen==='chapters') render(); }, 30000);
 
-/* ---------------- loading screen (Firebase auth check) ---------------- */
-function renderLoading(){
-  return `
-    <div class="screen-center loading-screen">
-      <div class="loading-spinner"></div>
-    </div>
-  `;
-}
-
 /* ---------------- main screen ---------------- */
 function renderMain(){
   const streak = computeStreak();
@@ -902,7 +1657,7 @@ function renderMain(){
     const bg = locked ? '' : `style="background:${BOOK_ROW_COLORS[i%BOOK_ROW_COLORS.length]}"`;
     return `
     <button class="book-row ${locked?'locked':'colored'}" ${bg} data-action="${locked?'open-purchase':'open-chapters'}" data-month="${m}">
-      <span class="book-row-name">${state.lang==='en' ? b.en : `${b.ko} <span class="book-row-en">${b.en}</span>`}</span>
+      <span class="book-row-name">${b.ko} <span class="book-row-en">${b.en}</span></span>
       ${locked ? ICON.lock : ICON.chevRight}
     </button>`;
   }).join('');
@@ -916,7 +1671,7 @@ function renderMain(){
       </div>
       <div class="right-group">
         <button class="icon-btn" data-action="go-groups" title="${T('groupsNavTitle')}">${ICON.groups}</button>
-        <button class="icon-btn ${state.loggedIn?'active':''}" data-action="go-login">${state.loggedIn && state.user && state.user.photoUrl ? `<img src="${escapeHtml(state.user.photoUrl)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center;display:block;">` : (state.loggedIn?ICON.personCheck:ICON.person)}</button>
+        <button class="icon-btn ${state.loggedIn?'active':''}" data-action="go-login">${state.loggedIn?ICON.personCheck:ICON.person}</button>
       </div>
     </div>
     <div class="year-block">
@@ -930,30 +1685,6 @@ function renderMain(){
 
 /* ---------------- login screen ---------------- */
 function renderLogin(){
-  if(state.loggedIn && state.user){
-    // 카카오 등 일부 로그인은 동의 항목에 따라 닉네임이 비어올 수 있으므로,
-    // 값이 없을 때는 uid까지 순서대로 대체해 화면이 완전히 빈칸으로 보이지 않게 합니다.
-    const nickname = escapeHtml(state.user.nickname || state.user.name || state.user.uid || '');
-    const photoUrl = state.user.photoUrl ? escapeHtml(state.user.photoUrl) : '';
-    const avatar = photoUrl
-      ? `<img src="${photoUrl}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:center;display:block;">`
-      : `<div style="width:64px;height:64px;border-radius:50%;background:var(--paper);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);">${ICON.personCheck}</div>`;
-    return `
-      <button class="back-fab" data-action="go-main">${ICON.back}</button>
-      <div class="screen-center">
-        <div class="login-mark">
-          <div style="display:flex;justify-content:center;margin-bottom:10px;">${avatar}</div>
-          <div class="eyebrow">${T('loginWelcome')}</div>
-          <h2>${nickname}</h2>
-        </div>
-        <div class="field">
-          <label>${T('nicknameLabel')}</label>
-          <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:calc(14px * var(--fs-scale));color:var(--ink);">${nickname}</div>
-        </div>
-        <button class="btn btn-primary" data-action="do-logout">${T('logout')}</button>
-      </div>
-    `;
-  }
   return `
     <button class="back-fab" data-action="go-main">${ICON.back}</button>
     <div class="screen-center">
@@ -993,7 +1724,7 @@ function renderSignupScreen(){
         <div class="eyebrow">${T('loginTitle')}</div>
         <h2>${T('signupTitle')}</h2>
       </div>
-      <p class="terms-sub" style="text-align:center;margin-bottom:18px;font-size:calc(12.5px * var(--fs-scale));color:var(--ink-soft);">${T('signupSub')}</p>
+      <p class="terms-sub" style="text-align:center;margin-bottom:18px;font-size:12.5px;color:var(--ink-soft);">${T('signupSub')}</p>
 
       <div class="field">
         <label>${T('nameLabel')}</label>
@@ -1118,6 +1849,7 @@ function renderSettingsScreen(){
           <div class="setting-item">${T('account')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-guide">${T('guideMenu')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-contact">${T('contact')} <span class="arrow">${ICON.chevRight}</span></div>
+          <div class="setting-item" data-action="do-logout">${T('logout')} <span class="arrow">${ICON.chevRight}</span></div>
         </div>
       </div>
     </div>
@@ -1524,7 +2256,6 @@ function renderChapterGrid(){
         <div class="cap">${T('calCap')}</div>
         <h2>${bookName(m)}</h2>
       </div>
-      <button class="icon-btn" data-action="open-chapter-info" title="${T('chapterInfoBtn')}">${ICON.info}</button>
     </div>
     <div class="settings-body" style="padding-top:6px;">
       <p class="terms-sub" style="margin-bottom:14px;">${T('chapterGridSub')}</p>
@@ -1578,6 +2309,7 @@ function renderBibleTab(){
           <div class="cap">${T('todayReading')}</div>
           <h3>${bookName(state.activeMonth)} ${state.activeChapter}${state.lang==='en'?'':'장'}</h3>
         </div>
+        <button class="chapter-info-btn" data-action="open-chapter-info" title="${T('chapterInfoBtn')}">${ICON.info}</button>
       </div>
       <div class="verse-list">${verses}</div>
     </div>
@@ -1590,7 +2322,7 @@ function renderChapterInfoSheet(){
   <div class="overlay" data-action="close-chapter-info">
     <div class="sheet" data-action="noop">
       <div class="sheet-handle"></div>
-      <div class="modal-title">${T('chapterInfoTitle', bookName(state.activeMonth))}</div>
+      <div class="modal-title">${T('chapterInfoTitle', bookName(state.activeMonth), state.activeChapter)}</div>
       <div class="guide-empty" style="padding:30px 4px 10px;">
         <div class="guide-empty-icon">${ICON.info}</div>
         <div class="guide-empty-title">${T('chapterInfoEmptyTitle')}</div>
@@ -1617,9 +2349,8 @@ function renderContentTab(ds){
 function renderThoughtTab(ds){
   const entry = getEntry(ds);
   const t = entry.thought;
-  const askQuestions = getAskQuestions();
-  const askQ = t.askIndex!==null ? askQuestions[t.askIndex] : T('askPlaceholderQ');
-  const askList = askQuestions.map((q,i)=>`
+  const askQ = t.askIndex!==null ? ASK_QUESTIONS[t.askIndex] : T('askPlaceholderQ');
+  const askList = ASK_QUESTIONS.map((q,i)=>`
     <div class="ask-item ${t.askIndex===i?'selected':''}" data-action="pick-ask" data-index="${i}">${q}</div>
   `).join('');
 
@@ -1684,7 +2415,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   if(!el) return;
   const action = el.dataset.action;
 
-  if(action==='go-main'){ state.screen = state.loggedIn ? 'main' : 'login'; state.purchaseModal=null; render(); }
+  if(action==='go-main'){ state.screen='main'; state.purchaseModal=null; render(); }
   else if(action==='go-login'){ state.screen='login'; render(); }
   else if(action==='do-email-login'){
     const val = (id)=> { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
@@ -1692,9 +2423,8 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     const password = val('login-password');
     if(!email || !password){ showToast(T('toastFillAll')); return; }
     if(!(window.__firebaseAuth && window.__firebaseAuth.ready)){ showToast(T('toastFirebaseNotSet')); return; }
-    withLoading(window.__firebaseAuth.signInWithEmail(email, password)).then(profile=>{
+    window.__firebaseAuth.signInWithEmail(email, password).then(profile=>{
       window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
-      state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
       state.loggedIn = true;
       saveAuth();
       state.screen = 'main';
@@ -1707,10 +2437,11 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='do-google-login'){
     if(window.__firebaseAuth && window.__firebaseAuth.ready){
-      withLoading(window.__firebaseAuth.signInWithGoogle()).then(profile=>{
-        // users/{uid} 저장은 firebaseBridge.js가 로그인 성공 시 자동으로 처리합니다.
+      window.__firebaseAuth.signInWithGoogle().then(profile=>{
         window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
-        state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
+        if(window.__firebaseDB && window.__firebaseDB.ready){
+          window.__firebaseDB.saveUserProfile(profile.uid, { name:profile.name, email:profile.email, photoUrl:profile.photoUrl, provider:'google' }).catch(()=>{});
+        }
         state.loggedIn = true;
         saveAuth();
         state.screen = 'main';
@@ -1718,7 +2449,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
         showToast(T('toastLogin'));
       }).catch(err=>{
         console.error('Google sign-in failed:', err);
-        showToast(googleErrorToast(err));
+        showToast(T('toastGoogleFailed'));
       });
     } else {
       showToast(T('toastFirebaseNotSet'));
@@ -1726,10 +2457,11 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='do-kakao-login'){
     if(window.__firebaseAuth && window.__firebaseAuth.ready){
-      withLoading(window.__firebaseAuth.signInWithKakao()).then(profile=>{
-        // users/{uid} 저장은 firebaseBridge.js가 로그인 성공 시 자동으로 처리합니다.
+      window.__firebaseAuth.signInWithKakao().then(profile=>{
         window.storage.set('user-profile', JSON.stringify(profile), false).catch(()=>{});
-        state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
+        if(window.__firebaseDB && window.__firebaseDB.ready){
+          window.__firebaseDB.saveUserProfile(profile.uid, { name:profile.name, email:profile.email, photoUrl:profile.photoUrl, provider:'kakao' }).catch(()=>{});
+        }
         state.loggedIn = true;
         saveAuth();
         state.screen = 'main';
@@ -1788,15 +2520,15 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       showToast(T('toastFirebaseNotSet'));
       return;
     }
-    // birth/username/nickname/약관 동의 정보는 signUpWithEmail의 extraProfile로 전달하면
-    // firebaseBridge.js가 users/{uid} 문서를 만들 때 함께 저장합니다.
-    withLoading(window.__firebaseAuth.signUpWithEmail(email, pw, name, {
-      birth, username, nickname,
-      termsConsent:true, privacyConsent:true, consentAgreedAt:new Date().toISOString(),
-    })).then(profile=>{
+    window.__firebaseAuth.signUpWithEmail(email, pw, name).then(profile=>{
       const fullProfile = { ...profile, name, birth, username, nickname };
       window.storage.set('user-profile', JSON.stringify(fullProfile), false).catch(()=>{});
-      state.user = { uid:fullProfile.uid, name:fullProfile.name, email:fullProfile.email, photoUrl:fullProfile.photoUrl, username:fullProfile.username, nickname:fullProfile.nickname };
+      if(window.__firebaseDB && window.__firebaseDB.ready){
+        window.__firebaseDB.saveUserProfile(profile.uid, {
+          name, email, birth, username, nickname, provider:'password',
+          termsConsent:true, privacyConsent:true, consentAgreedAt:new Date().toISOString(),
+        }).catch(err=>console.error('Firestore save failed:', err));
+      }
       state.loggedIn = true;
       saveAuth();
       state.screen = 'main';
@@ -1810,17 +2542,8 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     });
   }
   else if(action==='do-logout'){
-    const finishLogout = ()=>{
-      state.loggedIn=false; state.user=null; saveAuth(); state.screen='login'; render(); showToast(T('toastLogout'));
-    };
-    if(window.__firebaseAuth && window.__firebaseAuth.ready){
-      window.__firebaseAuth.signOutOfGoogle().then(finishLogout).catch(err=>{
-        console.error('Sign-out failed:', err);
-        showToast(T('toastLogoutFailed'));
-      });
-    } else {
-      finishLogout();
-    }
+    state.loggedIn=false; saveAuth(); state.screen='main'; render(); showToast(T('toastLogout'));
+    if(window.__firebaseAuth && window.__firebaseAuth.ready){ window.__firebaseAuth.signOutOfGoogle().catch(()=>{}); }
   }
   else if(action==='open-settings'){ state.screen='settings'; render(); }
   else if(action==='go-contact'){ state.screen='contact'; render(); }
@@ -2192,5 +2915,7 @@ document.getElementById('shell').addEventListener('input', (e)=>{
   saveAnswersDebounced();
 });
 
-initAuthGate();
 loadAll();
+</script>
+</body>
+</html>

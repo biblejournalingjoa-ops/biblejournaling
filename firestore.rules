@@ -1,0 +1,72 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isGroupMember(groupId) {
+      return isSignedIn() &&
+        request.auth.uid in get(/databases/$(database)/documents/groups/$(groupId)).data.members;
+    }
+    // NOTE: isGroupMember()는 현재 아래 groups/messages 규칙에서 사용하지 않습니다.
+    // (그룹 문서가 없을 때 get()이 실패해 permission-denied가 나는 문제가 있어
+    //  테스트/개발 단계에서는 isSignedIn()만으로 완화했습니다. 운영 배포 전에는
+    //  groups/{groupId}와 messages 규칙을 isGroupMember 기반으로 되돌리는 것을 권장합니다.)
+
+    // ---- users/{uid} ----
+    // 본인 프로필만 읽고/쓸 수 있습니다. uid, createdAt은 위조 방지를 위해 값 검증합니다.
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid) && request.resource.data.uid == uid;
+      allow update: if isOwner(uid) &&
+        request.resource.data.uid == uid &&
+        request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if false;
+
+      // users/{uid}/journals/{book_chapter} : 본인의 묵상 기록만 접근 가능
+      match /journals/{entryId} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    // ---- groups/{groupId} ----
+    // 테스트/개발 단계: 로그인한 유저라면 그룹 생성/조회/참여가 가능하도록 완화했습니다.
+    // (운영 배포 전에는 read/update를 isGroupMember(groupId) 기반으로 다시 좁히세요.)
+    match /groups/{groupId} {
+      // 로그인한 유저는 그룹을 조회할 수 있음
+      allow read: if isSignedIn();
+
+      // 로그인한 유저는 그룹을 생성할 수 있음
+      allow create: if isSignedIn();
+
+      // 로그인한 유저는 그룹 문서를 수정(멤버 추가 등)할 수 있음
+      allow update: if isSignedIn();
+
+      // 그룹 삭제는 소유자만
+      allow delete: if isSignedIn() && resource.data.ownerUid == request.auth.uid;
+
+      // groups/{groupId}/messages/{messageId} : 로그인한 유저는 읽고 쓸 수 있음.
+      // 메시지는 본인 uid로만 작성 가능하고, 작성 후 수정/삭제는 막습니다(대화 기록 보존).
+      match /messages/{messageId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+        allow update, delete: if false;
+      }
+    }
+
+    // ---- bibles/{book_chapter} ----
+    // 성경 본문은 모든 로그인 사용자가 읽을 수 있는 공용 데이터입니다.
+    // 오탈자 방지를 위해 클라이언트에서의 쓰기는 막고, Firebase 콘솔/Admin SDK로만 등록합니다.
+    match /bibles/{chapterId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+  }
+}
