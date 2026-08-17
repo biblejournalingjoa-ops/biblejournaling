@@ -144,6 +144,10 @@ const STRINGS = {
     thanksLabel:'오늘의 감사', thanksPh:(i)=>`감사한 일 ${i}`, addThanks:'감사한 일 추가',
     toastLogin:'로그인되었습니다', toastLogout:'로그아웃되었습니다',
     toastGoogleFailed:'구글 로그인에 실패했어요. 다시 시도해 주세요',
+    toastGoogleCancelled:'구글 로그인을 취소했어요',
+    toastPopupBlocked:'팝업이 차단되어 로그인할 수 없어요. 팝업 차단을 해제한 뒤 다시 시도해 주세요',
+    toastNetworkError:'네트워크 연결을 확인해 주세요',
+    toastLogoutFailed:'로그아웃에 실패했어요. 다시 시도해 주세요',
     toastKakaoFailed:'카카오 로그인에 실패했어요. 다시 시도해 주세요',
     toastEmailLoginFailed:'이메일 또는 비밀번호가 올바르지 않아요',
     toastEmailInUse:'이미 가입된 이메일이에요',
@@ -237,6 +241,10 @@ const STRINGS = {
     thanksLabel:"Today's gratitude", thanksPh:(i)=>`Gratitude ${i}`, addThanks:'Add gratitude',
     toastLogin:'Logged in', toastLogout:'Logged out',
     toastGoogleFailed:'Google sign-in failed. Please try again',
+    toastGoogleCancelled:'Google sign-in was cancelled',
+    toastPopupBlocked:'Sign-in popup was blocked. Please allow popups and try again',
+    toastNetworkError:'Please check your network connection',
+    toastLogoutFailed:'Sign-out failed. Please try again',
     toastKakaoFailed:'Kakao sign-in failed. Please try again',
     toastEmailLoginFailed:'Incorrect email or password',
     toastEmailInUse:'This email is already registered',
@@ -304,7 +312,7 @@ const ICON = {
 
 /* ---------------- state ---------------- */
 let state = {
-  screen:'main',            // main | login | signup | chapters | daily | groups | group-room | settings
+  screen:'loading',         // loading | main | login | signup | chapters | daily | groups | group-room | settings
   purchased:[1,2,3,4,5], // all 5 Pentateuch books are free/unlocked
   loggedIn:false,
   user:null,                // { name, email, photoUrl } of the signed-in user
@@ -611,12 +619,11 @@ async function loadAll(){
     if(a) journalData = JSON.parse(a.value);
   }catch(e){}
   try{
-    const l = await window.storage.get('auth-state');
-    if(l) state.loggedIn = JSON.parse(l.value).loggedIn;
-  }catch(e){}
-  try{
+    // Firebase Authentication (via initAuthGate/onAuthStateChanged) is the source of truth
+    // for state.loggedIn/state.user. Here we only merge in extra cached profile fields
+    // (username/nickname/birth from signup) that Firebase itself doesn't store.
     const up = await window.storage.get('user-profile');
-    if(up && up.value) state.user = JSON.parse(up.value);
+    if(up && up.value) state.user = Object.assign({}, JSON.parse(up.value), state.user);
   }catch(e){}
   try{
     const g = await window.storage.get('groups-data');
@@ -654,6 +661,53 @@ function savePurchased(){
 function saveAuth(){
   window.storage.set('auth-state', JSON.stringify({loggedIn:state.loggedIn}), false).catch(()=>{});
 }
+
+/* ---------------- Firebase auth gate ---------------- */
+function googleErrorToast(err){
+  const code = err && err.code;
+  if(code==='auth/popup-closed-by-user' || code==='auth/cancelled-popup-request') return T('toastGoogleCancelled');
+  if(code==='auth/popup-blocked') return T('toastPopupBlocked');
+  if(code==='auth/network-request-failed') return T('toastNetworkError');
+  return T('toastGoogleFailed');
+}
+
+function applyAuthProfile(profile){
+  if(profile){
+    // Merge onto any cached fields (e.g. username/nickname/birth) instead of replacing outright.
+    state.user = Object.assign({}, state.user, { name:profile.name, email:profile.email, photoUrl:profile.photoUrl });
+    state.loggedIn = true;
+  } else {
+    state.user = null;
+    state.loggedIn = false;
+  }
+  saveAuth();
+}
+
+/* Runs once at startup: shows the loading screen until Firebase reports the current
+   auth session, then routes straight to home (logged in) or login (logged out) with
+   no login-screen flash. Also keeps listening so a lost/expired session sends the
+   user back to the login screen from wherever they are. */
+function initAuthGate(){
+  render(); // paint the loading screen immediately, before Firebase's async check resolves
+  const bridge = window.__firebaseAuth;
+  if(!bridge || !bridge.ready){
+    state.screen = 'login';
+    render();
+    showToast(T('toastFirebaseNotSet'));
+    return;
+  }
+  let firstCheck = true;
+  bridge.onChange(profile=>{
+    applyAuthProfile(profile);
+    if(firstCheck){
+      firstCheck = false;
+      state.screen = profile ? 'main' : 'login';
+    } else if(!profile && state.screen!=='login' && state.screen!=='signup'){
+      state.screen = 'login';
+    }
+    render();
+  });
+}
 function saveGroups(){
   window.storage.set('groups-data', JSON.stringify(groups), false).catch(()=>{});
 }
@@ -686,7 +740,8 @@ function render(){
 
   const app = document.getElementById('app');
   let html = '';
-  if(state.screen==='main') html = renderMain();
+  if(state.screen==='loading') html = renderLoading();
+  else if(state.screen==='main') html = renderMain();
   else if(state.screen==='login') html = renderLogin();
   else if(state.screen==='signup') html = renderSignupScreen();
   else if(state.screen==='chapters') html = renderChapterGrid();
@@ -728,6 +783,15 @@ function render(){
 /* keep the "오늘" marker on the calendar accurate in real time */
 setInterval(()=>{ if(state.screen==='chapters') render(); }, 30000);
 
+/* ---------------- loading screen (Firebase auth check) ---------------- */
+function renderLoading(){
+  return `
+    <div class="screen-center loading-screen">
+      <div class="loading-spinner"></div>
+    </div>
+  `;
+}
+
 /* ---------------- main screen ---------------- */
 function renderMain(){
   const streak = computeStreak();
@@ -752,7 +816,7 @@ function renderMain(){
       </div>
       <div class="right-group">
         <button class="icon-btn" data-action="go-groups" title="${T('groupsNavTitle')}">${ICON.groups}</button>
-        <button class="icon-btn ${state.loggedIn?'active':''}" data-action="go-login">${state.loggedIn && state.user && state.user.photoUrl ? `<img src="${escapeHtml(state.user.photoUrl)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : (state.loggedIn?ICON.personCheck:ICON.person)}</button>
+        <button class="icon-btn ${state.loggedIn?'active':''}" data-action="go-login">${state.loggedIn && state.user && state.user.photoUrl ? `<img src="${escapeHtml(state.user.photoUrl)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center;display:block;">` : (state.loggedIn?ICON.personCheck:ICON.person)}</button>
       </div>
     </div>
     <div class="year-block">
@@ -773,7 +837,7 @@ function renderLogin(){
     const nickname = state.user.nickname ? escapeHtml(state.user.nickname) : name;
     const photoUrl = state.user.photoUrl ? escapeHtml(state.user.photoUrl) : '';
     const avatar = photoUrl
-      ? `<img src="${photoUrl}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">`
+      ? `<img src="${photoUrl}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:center;display:block;">`
       : `<div style="width:64px;height:64px;border-radius:50%;background:var(--paper);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);">${ICON.personCheck}</div>`;
     return `
       <button class="back-fab" data-action="go-main">${ICON.back}</button>
@@ -1525,7 +1589,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   if(!el) return;
   const action = el.dataset.action;
 
-  if(action==='go-main'){ state.screen='main'; state.purchaseModal=null; render(); }
+  if(action==='go-main'){ state.screen = state.loggedIn ? 'main' : 'login'; state.purchaseModal=null; render(); }
   else if(action==='go-login'){ state.screen='login'; render(); }
   else if(action==='do-email-login'){
     const val = (id)=> { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
@@ -1561,7 +1625,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
         showToast(T('toastLogin'));
       }).catch(err=>{
         console.error('Google sign-in failed:', err);
-        showToast(T('toastGoogleFailed'));
+        showToast(googleErrorToast(err));
       });
     } else {
       showToast(T('toastFirebaseNotSet'));
@@ -1656,8 +1720,17 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     });
   }
   else if(action==='do-logout'){
-    state.loggedIn=false; state.user=null; saveAuth(); state.screen='main'; render(); showToast(T('toastLogout'));
-    if(window.__firebaseAuth && window.__firebaseAuth.ready){ window.__firebaseAuth.signOutOfGoogle().catch(()=>{}); }
+    const finishLogout = ()=>{
+      state.loggedIn=false; state.user=null; saveAuth(); state.screen='login'; render(); showToast(T('toastLogout'));
+    };
+    if(window.__firebaseAuth && window.__firebaseAuth.ready){
+      window.__firebaseAuth.signOutOfGoogle().then(finishLogout).catch(err=>{
+        console.error('Sign-out failed:', err);
+        showToast(T('toastLogoutFailed'));
+      });
+    } else {
+      finishLogout();
+    }
   }
   else if(action==='open-settings'){ state.screen='settings'; render(); }
   else if(action==='go-contact'){ state.screen='contact'; render(); }
@@ -2029,4 +2102,5 @@ document.getElementById('shell').addEventListener('input', (e)=>{
   saveAnswersDebounced();
 });
 
+initAuthGate();
 loadAll();
