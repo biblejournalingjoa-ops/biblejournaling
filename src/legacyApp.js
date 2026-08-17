@@ -149,6 +149,7 @@ const STRINGS = {
     cancel:'취소', buyBtn:'구매하기',
     settingsTitle:'설정', fontSizeLabel:'글자 크기', fontSmall:'작게', fontDefault:'기본', fontLarge:'크게',
     langLabel:'언어', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    languageMenu:'언어 설정', languageModalTitle:'언어 선택',
     themeLabel:'다크 모드', themeLight:'라이트', themeDark:'다크',
     signupTitle:'회원가입', signupSub:'가입에 필요한 정보를 입력해 주세요.',
     nameLabel:'이름', namePh:'실명을 입력해 주세요',
@@ -261,6 +262,7 @@ const STRINGS = {
     cancel:'Cancel', buyBtn:'Unlock',
     settingsTitle:'Settings', fontSizeLabel:'Text size', fontSmall:'Small', fontDefault:'Default', fontLarge:'Large',
     langLabel:'Language', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    languageMenu:'Language', languageModalTitle:'Select language',
     themeLabel:'Dark mode', themeLight:'Light', themeDark:'Dark',
     signupTitle:'Sign up', signupSub:'Please fill in the details below to create your account.',
     nameLabel:'Full name', namePh:'Enter your legal name',
@@ -373,6 +375,7 @@ const STRINGS = {
     cancel:'キャンセル', buyBtn:'購入する',
     settingsTitle:'設定', fontSizeLabel:'文字サイズ', fontSmall:'小', fontDefault:'標準', fontLarge:'大',
     langLabel:'言語', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    languageMenu:'言語設定', languageModalTitle:'言語を選択',
     themeLabel:'ダークモード', themeLight:'ライト', themeDark:'ダーク',
     signupTitle:'新規登録', signupSub:'登録に必要な情報を入力してください。',
     nameLabel:'氏名', namePh:'本名を入力してください',
@@ -485,6 +488,7 @@ const STRINGS = {
     cancel:'ยกเลิก', buyBtn:'ซื้อเลย',
     settingsTitle:'การตั้งค่า', fontSizeLabel:'ขนาดตัวอักษร', fontSmall:'เล็ก', fontDefault:'ปกติ', fontLarge:'ใหญ่',
     langLabel:'ภาษา', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    languageMenu:'ตั้งค่าภาษา', languageModalTitle:'เลือกภาษา',
     themeLabel:'โหมดมืด', themeLight:'สว่าง', themeDark:'มืด',
     signupTitle:'สมัครสมาชิก', signupSub:'กรุณากรอกข้อมูลที่จำเป็นสำหรับการสมัครสมาชิก',
     nameLabel:'ชื่อ-นามสกุล', namePh:'กรุณากรอกชื่อจริง',
@@ -591,6 +595,8 @@ function T(key, ...args){
   if(v===undefined) return '';
   return typeof v==='function' ? v(...args) : v;
 }
+const LANG_CODES = ['ko','en','ja','th'];
+const LANG_LABEL_KEYS = { ko:'langKo', en:'langEn', ja:'langJa', th:'langTh' };
 
 /* ---------------- icons ---------------- */
 const ICON = {
@@ -658,6 +664,7 @@ let state = {
   avatarModal:null,         // { previewUrl, blob } while a newly picked profile photo awaits confirmation
   donateModal:false,        // whether the donation/support-us modal is open
   donateCopied:false,       // true briefly after the account number was copied, to flip the button label
+  languageModal:false,      // whether the language-picker modal is open
 };
 
 const YEAR = 2026;
@@ -1224,6 +1231,7 @@ function render(){
   if(state.notifDayOpen) overlays += renderNotifDaySheet();
   if(state.pageShare) overlays += renderPageShareSheet();
   if(state.donateModal) overlays += renderDonateModal();
+  if(state.languageModal) overlays += renderLanguageModal();
 
   app.innerHTML = html + overlays + renderLoadingOverlay() + `<div class="toast" id="toast"></div>`;
 
@@ -1512,12 +1520,14 @@ function renderSettingsScreen(){
       </div>
 
       <div class="settings-group">
-        <div class="g-title">${T('langLabel')}</div>
-        <div class="pill-toggle">
-          <button class="${state.lang==='ko'?'selected':''}" data-action="set-lang" data-lang="ko">${T('langKo')}</button>
-          <button class="${state.lang==='en'?'selected':''}" data-action="set-lang" data-lang="en">${T('langEn')}</button>
-          <button class="${state.lang==='ja'?'selected':''}" data-action="set-lang" data-lang="ja">${T('langJa')}</button>
-          <button class="${state.lang==='th'?'selected':''}" data-action="set-lang" data-lang="th">${T('langTh')}</button>
+        <div class="settings-list">
+          <div class="setting-item" data-action="open-language">
+            <span>🌐 ${T('languageMenu')}</span>
+            <span class="setting-item-right">
+              <span class="setting-item-value">${T(LANG_LABEL_KEYS[state.lang])}</span>
+              <span class="arrow">${ICON.chevRight}</span>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -1539,6 +1549,29 @@ function renderSettingsScreen(){
       </div>
     </div>
   `;
+}
+
+/* ---------------- language picker modal ---------------- */
+function renderLanguageModal(){
+  if(!state.languageModal) return '';
+  const items = LANG_CODES.map(code=>{
+    const selected = state.lang===code;
+    return `
+    <button class="language-item ${selected?'selected':''}" data-action="set-lang" data-lang="${code}">
+      <span class="lang-name">${T(LANG_LABEL_KEYS[code])}</span>
+      ${selected ? `<span class="lang-check">${ICON.check}</span>` : ''}
+    </button>`;
+  }).join('');
+  return `
+  <div class="overlay center" data-action="close-language">
+    <div class="modal-card language-modal-card" data-action="noop">
+      <div class="language-modal-header">
+        <div class="modal-title">${T('languageModalTitle')}</div>
+        <button class="icon-btn" data-action="close-language">${ICON.close}</button>
+      </div>
+      <div class="language-list">${items}</div>
+    </div>
+  </div>`;
 }
 
 /* ---------------- donation modal ---------------- */
@@ -2386,7 +2419,9 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     render();
   }
   else if(action==='set-fontsize'){ state.fontSize = el.dataset.size; savePrefs(); render(); }
-  else if(action==='set-lang'){ state.lang = el.dataset.lang; savePrefs(); render(); }
+  else if(action==='open-language'){ state.languageModal=true; render(); }
+  else if(action==='close-language'){ state.languageModal=false; render(); }
+  else if(action==='set-lang'){ state.lang = el.dataset.lang; savePrefs(); state.languageModal=false; render(); }
   else if(action==='set-theme'){ state.theme = el.dataset.theme; savePrefs(); render(); }
   else if(action==='go-today'){
     const m = state.purchased.length ? state.purchased[0] : 1;

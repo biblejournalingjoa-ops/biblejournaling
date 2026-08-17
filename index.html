@@ -878,6 +878,27 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 }
 .setting-item:first-child{border-top:none;}
 .setting-item .arrow{color:var(--ink-faint);}
+.setting-item-right{display:flex;align-items:center;gap:6px;}
+.setting-item-value{font-size:calc(12.5px * var(--fs-scale));color:var(--ink-faint);font-weight:500;}
+
+/* ---------- language picker modal ---------- */
+.language-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.language-modal-header .modal-title{margin:0;}
+.language-modal-header .icon-btn{
+  width:32px;height:32px;border-radius:50%;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;color:var(--ink-soft);flex-shrink:0;
+}
+.language-modal-header .icon-btn svg{width:16px;height:16px;}
+.language-list{display:flex;flex-direction:column;gap:8px;}
+.language-item{
+  display:flex;align-items:center;justify-content:space-between;width:100%;
+  padding:14px 16px;border-radius:12px;background:var(--bg);border:1.5px solid transparent;
+  font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--ink);text-align:left;
+}
+.language-item.selected{border-color:var(--gold);background:#FBF1DC;}
+#shell.theme-dark .language-item.selected{background:rgba(224,183,92,.16);}
+.language-item .lang-check{color:var(--gold);display:flex;align-items:center;flex-shrink:0;}
+.language-item .lang-check svg{width:16px;height:16px;}
 
 /* ---------- donation modal ---------- */
 .donate-icon{font-size:34px;text-align:center;margin-bottom:8px;}
