@@ -1522,7 +1522,7 @@ function renderSettingsScreen(){
       <div class="settings-group">
         <div class="settings-list">
           <div class="setting-item" data-action="open-language">
-            <span>🌐 ${T('languageMenu')}</span>
+            <span>${T('languageMenu')}</span>
             <span class="setting-item-right">
               <span class="setting-item-value">${T(LANG_LABEL_KEYS[state.lang])}</span>
               <span class="arrow">${ICON.chevRight}</span>
