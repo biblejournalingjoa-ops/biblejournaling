@@ -19,17 +19,25 @@
   // 로그인 방식(구글/카카오/이메일)과 관계없이 로그인/회원가입에 성공하면
   // users/{uid} 문서를 자동으로 생성/갱신합니다. 실패해도 로그인 흐름은 막지 않습니다.
   //
-  // name/photoUrl은 "최초 가입 시 기본값"으로만 채웁니다. 이미 Firestore에 값이 있다면
-  // (=사용자가 프로필 화면에서 직접 닉네임/사진을 바꾼 적이 있거나 이전에 로그인한 적이
-  // 있다면) 로그인할 때마다 구글/카카오 프로필 값으로 덮어쓰지 않습니다. 그렇지 않으면
-  // 사용자가 바꾼 값이 다음 로그인에서 구글/카카오 기본값으로 되돌아가 버립니다.
+  // name은 "최초 가입 시 기본값"으로만 채웁니다. 이미 Firestore에 값이 있다면(=사용자가
+  // 프로필 화면에서 직접 닉네임을 바꾼 적이 있거나 이전에 로그인한 적이 있다면) 로그인할
+  // 때마다 구글/카카오 이름으로 덮어쓰지 않습니다.
+  //
+  // photoUrl은 구글/카카오 로그인일 때는 매번 프로바이더가 돌려준 최신 사진으로 덮어써
+  // 항상 최신 상태를 유지합니다(사용자가 소셜 계정 프로필 사진을 바꾸면 앱에도 반영되어야
+  // 하므로). 이메일/비밀번호 로그인은 프로바이더 사진 개념이 없으므로 기존 값을 보존합니다.
   async function saveUserOnAuth(profile, provider, extra = {}){
     if(!db) return;
     try{
       const existing = await getUser(profile.uid);
       const payload = { email: profile.email, provider, ...extra };
       if(!existing || !existing.name) payload.name = profile.name;
-      if(!existing || !existing.photoUrl) payload.photoUrl = profile.photoUrl;
+      const isSocial = provider === 'google' || provider === 'kakao';
+      if(isSocial){
+        if(profile.photoUrl) payload.photoUrl = profile.photoUrl;
+      } else if(!existing || !existing.photoUrl){
+        payload.photoUrl = profile.photoUrl;
+      }
       await upsertUser(profile.uid, payload);
     }catch(err){
       console.error('Firestore user save failed:', err);
@@ -43,6 +51,18 @@
       if(!auth) throw new Error('firebase-not-configured');
       const result = await signInWithPopup(auth, googleProvider);
       const profile = toProfile(result.user);
+      // Firebase Auth's top-level currentUser.photoURL is only auto-filled at first
+      // account creation and does not refresh on later logins, so if the user's Google
+      // avatar changed since then we'd keep showing the stale one. Pull the live photo
+      // from the OAuth response and push it back into Auth explicitly on every login.
+      const info = getAdditionalUserInfo(result);
+      const googlePicture = info && info.profile && info.profile.picture;
+      if(googlePicture){
+        profile.photoUrl = googlePicture;
+        if(result.user.photoURL !== googlePicture){
+          updateProfile(result.user, { photoURL: googlePicture }).catch(()=>{});
+        }
+      }
       saveUserOnAuth(profile, 'google');
       return profile;
     },
@@ -71,20 +91,20 @@
       const profile = toProfile(result.user);
       // Kakao's OIDC id_token reports the display name as "nickname" and the photo as
       // "picture", not the standard "name" claim, so Firebase can't auto-fill
-      // displayName/photoURL. Fall back to the raw claims via getAdditionalUserInfo.
-      if(!profile.name || !profile.photoUrl){
-        const info = getAdditionalUserInfo(result);
-        const kakaoProfile = info && info.profile;
-        if(kakaoProfile){
-          if(!profile.name && kakaoProfile.nickname) profile.name = kakaoProfile.nickname;
-          if(!profile.photoUrl && kakaoProfile.picture) profile.photoUrl = kakaoProfile.picture;
-        }
-        if(profile.name || profile.photoUrl){
-          updateProfile(result.user, {
-            displayName: profile.name || null,
-            photoURL: profile.photoUrl || null,
-          }).catch(()=>{});
-        }
+      // displayName/photoURL. Read the raw claims via getAdditionalUserInfo every login
+      // (not just when Firebase's own fields are empty) so a changed Kakao profile
+      // photo is always picked up, and push it into Auth explicitly.
+      const info = getAdditionalUserInfo(result);
+      const kakaoProfile = info && info.profile;
+      if(kakaoProfile){
+        if(!profile.name && kakaoProfile.nickname) profile.name = kakaoProfile.nickname;
+        if(kakaoProfile.picture) profile.photoUrl = kakaoProfile.picture;
+      }
+      if(profile.name !== result.user.displayName || profile.photoUrl !== result.user.photoURL){
+        updateProfile(result.user, {
+          displayName: profile.name || null,
+          photoURL: profile.photoUrl || null,
+        }).catch(()=>{});
       }
       saveUserOnAuth(profile, 'kakao');
       return profile;
