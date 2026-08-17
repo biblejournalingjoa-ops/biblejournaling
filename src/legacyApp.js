@@ -228,6 +228,10 @@ const STRINGS = {
     toastAvatarInvalidType:'이미지 파일만 선택할 수 있어요',
     toastAvatarSaved:'프로필 사진이 변경되었습니다',
     toastAvatarSaveFailed:'프로필 사진 업로드에 실패했어요. 다시 시도해 주세요',
+    toastAvatarTooLarge:'이미지 용량이 너무 커요. 더 작은 사진으로 다시 시도해 주세요',
+    toastAvatarPermissionDenied:'프로필 사진을 저장할 권한이 없어요. 다시 로그인한 뒤 시도해 주세요',
+    toastAvatarCancelled:'프로필 사진 업로드를 취소했어요',
+    toastAvatarLoginRequired:'로그인 정보가 만료됐어요. 다시 로그인한 뒤 시도해 주세요',
     toastPurchaseYear:'1년 전체 이용권 구매가 완료되었습니다', toastPurchaseMonth:(name)=>`${name} 노트 구매가 완료되었습니다`,
     toastNeedPurchase:(name)=>`${name} 저널을 먼저 구매해 주세요`,
     sharePickTitle:'무엇을 공유할까요?', sharePickSub:'오늘 작성한 기록을 이미지로 만들어 공유해요.',
@@ -341,6 +345,10 @@ const STRINGS = {
     toastAvatarInvalidType:'Please choose an image file',
     toastAvatarSaved:'Profile photo updated',
     toastAvatarSaveFailed:'Could not upload the photo. Please try again',
+    toastAvatarTooLarge:'That image is too large. Please try a smaller photo',
+    toastAvatarPermissionDenied:"You don't have permission to save this photo. Please sign in again and retry",
+    toastAvatarCancelled:'Profile photo upload was cancelled',
+    toastAvatarLoginRequired:'Your session expired. Please sign in again and retry',
     toastPurchaseYear:'Full year pass unlocked', toastPurchaseMonth:(name)=>`${name} journal unlocked`,
     toastNeedPurchase:(name)=>`Unlock the ${name} journal first`,
     sharePickTitle:'What would you like to share?', sharePickSub:"Turn today's entry into an image and share it.",
@@ -454,6 +462,10 @@ const STRINGS = {
     toastAvatarInvalidType:'画像ファイルのみ選択できます',
     toastAvatarSaved:'プロフィール写真が変更されました',
     toastAvatarSaveFailed:'プロフィール写真のアップロードに失敗しました。もう一度お試しください',
+    toastAvatarTooLarge:'画像サイズが大きすぎます。もっと小さい写真でもう一度お試しください',
+    toastAvatarPermissionDenied:'プロフィール写真を保存する権限がありません。再度ログインしてからお試しください',
+    toastAvatarCancelled:'プロフィール写真のアップロードをキャンセルしました',
+    toastAvatarLoginRequired:'ログイン情報の有効期限が切れました。再度ログインしてからお試しください',
     toastPurchaseYear:'年間全巻利用券の購入が完了しました', toastPurchaseMonth:(name)=>`${name}ノートの購入が完了しました`,
     toastNeedPurchase:(name)=>`先に${name}ジャーナルを購入してください`,
     sharePickTitle:'何を共有しますか?', sharePickSub:'今日書いた記録を画像にして共有します。',
@@ -567,6 +579,10 @@ const STRINGS = {
     toastAvatarInvalidType:'เลือกได้เฉพาะไฟล์รูปภาพเท่านั้น',
     toastAvatarSaved:'เปลี่ยนรูปโปรไฟล์แล้ว',
     toastAvatarSaveFailed:'อัปโหลดรูปโปรไฟล์ไม่สำเร็จ กรุณาลองอีกครั้ง',
+    toastAvatarTooLarge:'ไฟล์รูปภาพมีขนาดใหญ่เกินไป กรุณาลองใช้รูปที่มีขนาดเล็กลง',
+    toastAvatarPermissionDenied:'คุณไม่มีสิทธิ์บันทึกรูปโปรไฟล์นี้ กรุณาเข้าสู่ระบบใหม่แล้วลองอีกครั้ง',
+    toastAvatarCancelled:'ยกเลิกการอัปโหลดรูปโปรไฟล์แล้ว',
+    toastAvatarLoginRequired:'เซสชันของคุณหมดอายุ กรุณาเข้าสู่ระบบใหม่แล้วลองอีกครั้ง',
     toastPurchaseYear:'ซื้อแพ็กเกจรายปีทั้งหมดสำเร็จแล้ว', toastPurchaseMonth:(name)=>`ซื้อสมุดบันทึก ${name} สำเร็จแล้ว`,
     toastNeedPurchase:(name)=>`กรุณาซื้อสมุดบันทึก ${name} ก่อน`,
     sharePickTitle:'ต้องการแบ่งปันอะไร?', sharePickSub:'สร้างภาพจากบันทึกของวันนี้เพื่อแบ่งปัน',
@@ -1010,6 +1026,18 @@ function googleErrorToast(err){
   return T('toastGoogleFailed');
 }
 
+/* storage.rules rejects writes that fail the isOwner/size/contentType checks with a single
+   generic 'storage/unauthorized' code, so we can't tell those three apart from the code alone -
+   but the other codes below let us give a much more specific toast than "upload failed". */
+function avatarErrorToast(err){
+  const code = err && err.code;
+  if(code==='auth/no-current-user' || code==='auth/uid-mismatch') return T('toastAvatarLoginRequired');
+  if(code==='storage/unauthorized') return T('toastAvatarPermissionDenied');
+  if(code==='storage/canceled') return T('toastAvatarCancelled');
+  if(code==='storage/retry-limit-exceeded' || code==='storage/unknown' || code==='storage/server-file-wrong-size') return T('toastNetworkError');
+  return T('toastAvatarSaveFailed');
+}
+
 function applyAuthProfile(profile){
   if(profile){
     // Merge onto any cached fields (e.g. username/nickname/birth) instead of replacing outright.
@@ -1156,11 +1184,24 @@ function setupAvatarFileInput(){
     }
     try{
       const blob = await resizeImageFile(file);
+      // storage.rules caps writes at 5MB; resizeImageFile keeps typical photos well under
+      // that, but guard anyway so an oversized/odd image fails fast with a clear reason
+      // instead of a confusing storage/unauthorized error from the rules check later.
+      const MAX_AVATAR_BYTES = 4.5 * 1024 * 1024;
+      if(blob.size > MAX_AVATAR_BYTES){
+        console.error('[Profile] 선택한 이미지가 너무 큽니다:', { size: blob.size, max: MAX_AVATAR_BYTES });
+        showToast(T('toastAvatarTooLarge'));
+        return;
+      }
       if(state.avatarModal) URL.revokeObjectURL(state.avatarModal.previewUrl);
       state.avatarModal = { previewUrl: URL.createObjectURL(blob), blob };
       render();
     }catch(e){
-      console.error('Profile image resize failed:', e);
+      console.error('[Profile] 이미지 리사이즈 실패:', {
+        code: e && e.code,
+        message: e && e.message,
+        error: e,
+      });
       showToast(T('toastAvatarSaveFailed'));
     }
   });
@@ -2355,7 +2396,11 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       if(window.__firebaseAuth && window.__firebaseAuth.ready){
         tasks.push(
           window.__firebaseAuth.updateUserProfile({ photoURL: url })
-            .catch(err=> console.error('[Profile] Firebase Auth photoURL 갱신 실패 (무시하고 계속 진행)', err))
+            .catch(err=> console.error('[Profile] Firebase Auth photoURL 갱신 실패 (무시하고 계속 진행)', {
+              code: err && err.code,
+              message: err && err.message,
+              error: err,
+            }))
         );
       }
       await Promise.all(tasks);
@@ -2369,10 +2414,14 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       console.log('[Profile] 프로필 저장 성공 (아바타)');
       showToast(T('toastAvatarSaved'));
     }).catch(err=>{
-      console.error('[Profile] 프로필 저장 실패 (아바타):', err && err.code, err);
+      console.error('[Profile] 프로필 저장 실패 (아바타):', {
+        code: err && err.code,
+        message: err && err.message,
+        error: err,
+      });
       if(state.avatarModal) state.avatarModal.saving = false;
       render();
-      showToast(T('toastAvatarSaveFailed'));
+      showToast(avatarErrorToast(err));
     });
   }
   else if(action==='open-settings'){ state.screen='settings'; render(); }
