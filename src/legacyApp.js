@@ -166,7 +166,7 @@ const STRINGS = {
     notif:'알림 설정', contact:'문의하기', logout:'로그아웃', donate:'후원하기',
     dayUnit:'일', snapNoAnswerContent:'아직 작성한 답이 없어요', snapNoAnswerThought:'아직 작성하지 않았어요', snapNoQuestionSelected:'선택한 질문이 없어요',
     notifTitle:'알림 설정', notifSub:'요일을 선택해서 묵상 알림 시간을 설정해 보세요.',
-    dayMon:'월요일', dayTue:'화요일', dayWed:'수요일', dayThu:'목요일', dayFri:'금요일',
+    dayMon:'월요일', dayTue:'화요일', dayWed:'수요일', dayThu:'목요일', dayFri:'금요일', daySat:'토요일',
     notifOff:'알림 꺼짐',
     notifOnLabel:'알림 켜기',
     notifTimeLabel:'알림 시간',
@@ -277,8 +277,8 @@ const STRINGS = {
     toastSignupDone:'Sign-up complete',
     notif:'Notifications', contact:'Contact us', logout:'Log out', donate:'Support us',
     dayUnit:'d', snapNoAnswerContent:'No answer written yet', snapNoAnswerThought:'Not written yet', snapNoQuestionSelected:'No question selected',
-    notifTitle:'Notifications', notifSub:'Choose a weekday to set a reflection reminder time.',
-    dayMon:'Monday', dayTue:'Tuesday', dayWed:'Wednesday', dayThu:'Thursday', dayFri:'Friday',
+    notifTitle:'Notifications', notifSub:'Choose a day to set a reflection reminder time.',
+    dayMon:'Monday', dayTue:'Tuesday', dayWed:'Wednesday', dayThu:'Thursday', dayFri:'Friday', daySat:'Saturday',
     notifOff:'Off',
     notifOnLabel:'Turn on reminder',
     notifTimeLabel:'Reminder time',
@@ -390,7 +390,7 @@ const STRINGS = {
     notif:'通知設定', contact:'お問い合わせ', logout:'ログアウト', donate:'応援する',
     dayUnit:'日', snapNoAnswerContent:'まだ入力した答えがありません', snapNoAnswerThought:'まだ記入していません', snapNoQuestionSelected:'選択した質問がありません',
     notifTitle:'通知設定', notifSub:'曜日を選んで黙想の通知時間を設定してみましょう。',
-    dayMon:'月曜日', dayTue:'火曜日', dayWed:'水曜日', dayThu:'木曜日', dayFri:'金曜日',
+    dayMon:'月曜日', dayTue:'火曜日', dayWed:'水曜日', dayThu:'木曜日', dayFri:'金曜日', daySat:'土曜日',
     notifOff:'通知オフ',
     notifOnLabel:'通知をオンにする',
     notifTimeLabel:'通知時間',
@@ -502,7 +502,7 @@ const STRINGS = {
     notif:'ตั้งค่าการแจ้งเตือน', contact:'ติดต่อเรา', logout:'ออกจากระบบ', donate:'สนับสนุนเรา',
     dayUnit:' วัน', snapNoAnswerContent:'ยังไม่มีคำตอบที่บันทึกไว้', snapNoAnswerThought:'ยังไม่ได้บันทึก', snapNoQuestionSelected:'ยังไม่ได้เลือกคำถาม',
     notifTitle:'ตั้งค่าการแจ้งเตือน', notifSub:'เลือกวันในสัปดาห์เพื่อตั้งเวลาแจ้งเตือนเฝ้าเดี่ยว',
-    dayMon:'วันจันทร์', dayTue:'วันอังคาร', dayWed:'วันพุธ', dayThu:'วันพฤหัสบดี', dayFri:'วันศุกร์',
+    dayMon:'วันจันทร์', dayTue:'วันอังคาร', dayWed:'วันพุธ', dayThu:'วันพฤหัสบดี', dayFri:'วันศุกร์', daySat:'วันเสาร์',
     notifOff:'ปิดการแจ้งเตือน',
     notifOnLabel:'เปิดการแจ้งเตือน',
     notifTimeLabel:'เวลาแจ้งเตือน',
@@ -665,9 +665,9 @@ const YEAR = 2026;
 // journalData: { 'YYYY-MM-DD': { content:{qid:text}, thought:{...} } }
 let journalData = {};
 
-// notifSettings: { mon: '07:00'|null, tue: ..., wed: ..., thu: ..., fri: ... }  (null = off)
-let notifSettings = { mon:null, tue:null, wed:null, thu:null, fri:null };
-const NOTIF_DAYS = ['mon','tue','wed','thu','fri'];
+// notifSettings: { mon: '07:00'|null, tue: ..., wed: ..., thu: ..., fri: ..., sat: ... }  (null = off)
+let notifSettings = { mon:null, tue:null, wed:null, thu:null, fri:null, sat:null };
+const NOTIF_DAYS = ['mon','tue','wed','thu','fri','sat'];
 
 // groups: [{ id, name, color, code, memberCount, messages:[{id, from, isMe, type:'text'|'journal'|'image'|'system', text, unread, ...}] }]
 let groups = [];
@@ -1602,7 +1602,7 @@ function renderGuideScreen(){
 
 /* ---------------- notification settings screen ---------------- */
 function renderNotificationsScreen(){
-  const dayKeys = { mon:'dayMon', tue:'dayTue', wed:'dayWed', thu:'dayThu', fri:'dayFri' };
+  const dayKeys = { mon:'dayMon', tue:'dayTue', wed:'dayWed', thu:'dayThu', fri:'dayFri', sat:'daySat' };
   const rows = NOTIF_DAYS.map(d=>{
     const time = notifSettings[d];
     return `
@@ -1630,7 +1630,7 @@ function renderNotificationsScreen(){
 /* ---------------- per-day time-set sheet ---------------- */
 function renderNotifDaySheet(){
   const d = state.notifDayOpen;
-  const dayKeys = { mon:'dayMon', tue:'dayTue', wed:'dayWed', thu:'dayThu', fri:'dayFri' };
+  const dayKeys = { mon:'dayMon', tue:'dayTue', wed:'dayWed', thu:'dayThu', fri:'dayFri', sat:'daySat' };
   const time = notifSettings[d] || '07:00';
   const isOn = !!notifSettings[d];
   return `
