@@ -7,8 +7,7 @@
     createUserWithEmailAndPassword, signInWithEmailAndPassword,
     updateProfile, onAuthStateChanged, signOut
   } from "firebase/auth";
-  import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
-  import { auth, db, storage, googleProvider } from "./firebase.js";
+  import { auth, db, googleProvider } from "./firebase.js";
   import * as firestoreApi from "./firestore/index.js";
   const { upsertUser, getUser } = firestoreApi;
 
@@ -157,63 +156,8 @@
     ...firestoreApi,
   };
 
-  // 프로필 이미지는 Firebase Storage의 profile-images/{uid}/ 아래에 저장하고,
-  // 다운로드 URL만 users/{uid}.photoUrl에 기록합니다. storage.rules에서
-  // 본인 uid 경로에만 쓰기가 가능하도록 제한합니다.
-  window.__firebaseStorage = {
-    ready: !!storage,
-    uploadProfileImage: async (uid, blob)=>{
-      if(!storage) throw new Error('firebase-not-configured');
-      if(!uid || !blob) throw new Error('uploadProfileImage: uid and blob are required');
-      // storage.rules only allows writes to profile-images/{uid}/... when
-      // request.auth.uid === uid. If the caller's uid (from app state) is stale
-      // or the user's session dropped, the upload would be silently rejected by
-      // the rules, so check the live auth state up front instead of relying on
-      // app state matching Firebase Auth.
-      if(!auth.currentUser){
-        console.error('[Profile] 업로드 중단: 로그인된 사용자(auth.currentUser)가 없습니다.');
-        throw new Error('auth/no-current-user');
-      }
-      if(auth.currentUser.uid !== uid){
-        console.error('[Profile] 업로드 중단: 전달된 uid가 현재 로그인 UID와 다릅니다.', { uid, currentUid: auth.currentUser.uid });
-        throw new Error('auth/uid-mismatch');
-      }
-
-      const path = `profile-images/${uid}/${Date.now()}.jpg`;
-      const ref = storageRef(storage, path);
-
-      console.log('[Profile] 이미지 업로드 시작', { path, size: blob.size, type: blob.type });
-      try{
-        await uploadBytes(ref, blob, { contentType: blob.type || 'image/jpeg' });
-      }catch(err){
-        // err.code is a machine-readable Storage error (e.g. 'storage/unauthorized' when
-        // storage.rules rejects the write, 'storage/unknown' when the bucket itself isn't
-        // provisioned/enabled in the Firebase console) - log it alongside err.message and
-        // the full object so a production failure is diagnosable from the console alone.
-        console.error('[Profile] 이미지 업로드 실패', {
-          code: err && err.code,
-          message: err && err.message,
-          serverResponse: err && err.customData && err.customData.serverResponse,
-          error: err,
-        });
-        throw err;
-      }
-      console.log('[Profile] 이미지 업로드 완료');
-
-      let url;
-      try{
-        url = await getDownloadURL(ref);
-      }catch(err){
-        console.error('[Profile] 다운로드 URL 가져오기 실패', {
-          code: err && err.code,
-          message: err && err.message,
-          error: err,
-        });
-        throw err;
-      }
-      console.log('[Profile] 다운로드 URL 가져오기 완료', url);
-      return url;
-    }
-  };
+  // 프로필 사진은 Firebase Storage를 거치지 않고, 클라이언트에서 200px/JPEG 0.7로 압축한
+  // Base64 data URL을 users/{uid}.photoUrl(Firestore)과 Auth의 photoURL에 바로 저장합니다.
+  // Storage 버킷/CORS 설정 문제나 storage/retry-limit-exceeded 같은 실패를 아예 피하기 위함입니다.
 
   window.dispatchEvent(new Event('firebase-bridge-ready'));

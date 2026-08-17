@@ -230,7 +230,6 @@ const STRINGS = {
     toastAvatarSaveFailed:'프로필 사진 업로드에 실패했어요. 다시 시도해 주세요',
     toastAvatarTooLarge:'이미지 용량이 너무 커요. 더 작은 사진으로 다시 시도해 주세요',
     toastAvatarPermissionDenied:'프로필 사진을 저장할 권한이 없어요. 다시 로그인한 뒤 시도해 주세요',
-    toastAvatarCancelled:'프로필 사진 업로드를 취소했어요',
     toastAvatarLoginRequired:'로그인 정보가 만료됐어요. 다시 로그인한 뒤 시도해 주세요',
     toastPurchaseYear:'1년 전체 이용권 구매가 완료되었습니다', toastPurchaseMonth:(name)=>`${name} 노트 구매가 완료되었습니다`,
     toastNeedPurchase:(name)=>`${name} 저널을 먼저 구매해 주세요`,
@@ -356,7 +355,6 @@ const STRINGS = {
     toastAvatarSaveFailed:'Could not upload the photo. Please try again',
     toastAvatarTooLarge:'That image is too large. Please try a smaller photo',
     toastAvatarPermissionDenied:"You don't have permission to save this photo. Please sign in again and retry",
-    toastAvatarCancelled:'Profile photo upload was cancelled',
     toastAvatarLoginRequired:'Your session expired. Please sign in again and retry',
     toastPurchaseYear:'Full year pass unlocked', toastPurchaseMonth:(name)=>`${name} journal unlocked`,
     toastNeedPurchase:(name)=>`Unlock the ${name} journal first`,
@@ -482,7 +480,6 @@ const STRINGS = {
     toastAvatarSaveFailed:'プロフィール写真のアップロードに失敗しました。もう一度お試しください',
     toastAvatarTooLarge:'画像サイズが大きすぎます。もっと小さい写真でもう一度お試しください',
     toastAvatarPermissionDenied:'プロフィール写真を保存する権限がありません。再度ログインしてからお試しください',
-    toastAvatarCancelled:'プロフィール写真のアップロードをキャンセルしました',
     toastAvatarLoginRequired:'ログイン情報の有効期限が切れました。再度ログインしてからお試しください',
     toastPurchaseYear:'年間全巻利用券の購入が完了しました', toastPurchaseMonth:(name)=>`${name}ノートの購入が完了しました`,
     toastNeedPurchase:(name)=>`先に${name}ジャーナルを購入してください`,
@@ -608,7 +605,6 @@ const STRINGS = {
     toastAvatarSaveFailed:'อัปโหลดรูปโปรไฟล์ไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastAvatarTooLarge:'ไฟล์รูปภาพมีขนาดใหญ่เกินไป กรุณาลองใช้รูปที่มีขนาดเล็กลง',
     toastAvatarPermissionDenied:'คุณไม่มีสิทธิ์บันทึกรูปโปรไฟล์นี้ กรุณาเข้าสู่ระบบใหม่แล้วลองอีกครั้ง',
-    toastAvatarCancelled:'ยกเลิกการอัปโหลดรูปโปรไฟล์แล้ว',
     toastAvatarLoginRequired:'เซสชันของคุณหมดอายุ กรุณาเข้าสู่ระบบใหม่แล้วลองอีกครั้ง',
     toastPurchaseYear:'ซื้อแพ็กเกจรายปีทั้งหมดสำเร็จแล้ว', toastPurchaseMonth:(name)=>`ซื้อสมุดบันทึก ${name} สำเร็จแล้ว`,
     toastNeedPurchase:(name)=>`กรุณาซื้อสมุดบันทึก ${name} ก่อน`,
@@ -1116,15 +1112,14 @@ function googleErrorToast(err){
   return T('toastGoogleFailed');
 }
 
-/* storage.rules rejects writes that fail the isOwner/size/contentType checks with a single
-   generic 'storage/unauthorized' code, so we can't tell those three apart from the code alone -
-   but the other codes below let us give a much more specific toast than "upload failed". */
+/* Profile photo saves go through Firestore (permission-denied if firestore.rules rejects
+   the write) and Auth's updateProfile (network/session errors) - no Storage calls, so the
+   error surface is just these two SDKs' own codes. */
 function avatarErrorToast(err){
   const code = err && err.code;
-  if(code==='auth/no-current-user' || code==='auth/uid-mismatch') return T('toastAvatarLoginRequired');
-  if(code==='storage/unauthorized') return T('toastAvatarPermissionDenied');
-  if(code==='storage/canceled') return T('toastAvatarCancelled');
-  if(code==='storage/retry-limit-exceeded' || code==='storage/unknown' || code==='storage/server-file-wrong-size') return T('toastNetworkError');
+  if(code==='permission-denied') return T('toastAvatarPermissionDenied');
+  if(code==='unavailable' || code==='auth/network-request-failed') return T('toastNetworkError');
+  if(code==='auth/user-token-expired' || code==='auth/user-signed-out') return T('toastAvatarLoginRequired');
   return T('toastAvatarSaveFailed');
 }
 
@@ -1226,10 +1221,13 @@ function showToast(msg){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
 }
-/* Resizes/re-encodes a picked image client-side before upload, so profile photos never
-   ship the original (often multi-MB) file to Storage. Longest side is capped at 512px
-   and re-encoded as JPEG, which keeps typical profile photos well under ~150KB. */
-function resizeImageFile(file, maxSize=512, quality=0.85){
+/* Resizes/re-encodes a picked image client-side into a small Base64 JPEG data URL, which is
+   written directly to the user's photoURL (Auth + Firestore) instead of Firebase Storage.
+   Profile photos don't need to go through Storage at all, and skipping it sidesteps
+   Storage-specific failure modes (bucket/CORS misconfiguration, storage/retry-limit-exceeded)
+   entirely. Capping at 200px/quality 0.7 keeps the resulting data URL to roughly 10-20KB,
+   comfortably under Firestore's 1MB field limit. */
+function resizeImageToDataURL(file, maxSize=200, quality=0.7){
   return new Promise((resolve, reject)=>{
     const url = URL.createObjectURL(file);
     const img = new Image();
@@ -1245,10 +1243,11 @@ function resizeImageFile(file, maxSize=512, quality=0.85){
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
-      canvas.toBlob(blob=>{
-        if(!blob) reject(new Error('image-encode-failed'));
-        else resolve(blob);
-      }, 'image/jpeg', quality);
+      try{
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      }catch(err){
+        reject(err);
+      }
     };
     img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('image-load-failed')); };
     img.src = url;
@@ -1273,18 +1272,17 @@ function setupAvatarFileInput(){
       return;
     }
     try{
-      const blob = await resizeImageFile(file);
-      // storage.rules caps writes at 5MB; resizeImageFile keeps typical photos well under
-      // that, but guard anyway so an oversized/odd image fails fast with a clear reason
-      // instead of a confusing storage/unauthorized error from the rules check later.
-      const MAX_AVATAR_BYTES = 4.5 * 1024 * 1024;
-      if(blob.size > MAX_AVATAR_BYTES){
-        console.error('[Profile] 선택한 이미지가 너무 큽니다:', { size: blob.size, max: MAX_AVATAR_BYTES });
+      const dataUrl = await resizeImageToDataURL(file);
+      // Firestore document fields cap out at 1MB; a 200px/quality-0.7 JPEG data URL is
+      // nowhere near that in practice, but guard anyway so an unusual image (e.g. a huge
+      // flat-color PNG that JPEG can't compress well) fails fast with a clear reason.
+      const MAX_DATA_URL_LENGTH = 300 * 1024;
+      if(dataUrl.length > MAX_DATA_URL_LENGTH){
+        console.error('[Profile] 선택한 이미지가 너무 큽니다:', { length: dataUrl.length, max: MAX_DATA_URL_LENGTH });
         showToast(T('toastAvatarTooLarge'));
         return;
       }
-      if(state.avatarModal) URL.revokeObjectURL(state.avatarModal.previewUrl);
-      state.avatarModal = { previewUrl: URL.createObjectURL(blob), blob };
+      state.avatarModal = { dataUrl };
       render();
     }catch(e){
       console.error('[Profile] 이미지 리사이즈 실패:', {
@@ -1589,7 +1587,7 @@ function renderAvatarModal(){
       <div class="modal-title">${T('avatarModalTitle')}</div>
       <p class="modal-sub">${T('avatarModalSub')}</p>
       <div style="display:flex;justify-content:center;margin-bottom:18px;">
-        <img src="${m.previewUrl}" alt="" style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:var(--shadow-sm);">
+        <img src="${m.dataUrl}" alt="" style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:var(--shadow-sm);">
       </div>
       <div class="modal-actions">
         <button class="btn btn-cancel" data-action="close-avatar-modal" ${saving?'disabled':''}>${T('cancel')}</button>
@@ -2517,51 +2515,45 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     });
   }
   else if(action==='close-avatar-modal'){
-    // Ignore while a save is in flight so the blob/previewUrl a pending upload
-    // is still using can't be revoked out from under it.
-    if(state.avatarModal && state.avatarModal.saving) return;
-    if(state.avatarModal) URL.revokeObjectURL(state.avatarModal.previewUrl);
+    if(state.avatarModal && state.avatarModal.saving) return; // ignore while a save is in flight
     state.avatarModal = null;
     render();
   }
   else if(action==='confirm-avatar'){
     if(!state.avatarModal || !state.user || !state.user.uid) return;
-    if(state.avatarModal.saving) return; // 중복 클릭으로 업로드가 두 번 실행되는 것을 방지
+    if(state.avatarModal.saving) return; // 중복 클릭으로 저장이 두 번 실행되는 것을 방지
     const uid = state.user.uid;
-    const { blob, previewUrl } = state.avatarModal;
-    if(!(window.__firebaseStorage && window.__firebaseStorage.ready)){
-      showToast(T('toastFirebaseNotSet'));
-      return;
-    }
-    console.log('[Profile] 프로필 저장 시작 (아바타)', { uid });
+    const { dataUrl } = state.avatarModal;
+    console.log('[Profile] 프로필 저장 시작 (아바타, Base64)', { uid, length: dataUrl.length });
     state.avatarModal.saving = true;
     render();
 
-    withLoading(window.__firebaseStorage.uploadProfileImage(uid, blob).then(async (url)=>{
-      const tasks = [];
-      if(window.__firebaseDB && window.__firebaseDB.ready){
-        console.log('[Profile] 사용자 정보 저장 시작 (Firestore)');
-        tasks.push(
-          window.__firebaseDB.saveUserProfile(uid, { photoUrl: url })
-            .then(()=> console.log('[Profile] 사용자 정보 저장 완료 (Firestore)'))
-        );
-      }
-      if(window.__firebaseAuth && window.__firebaseAuth.ready){
-        tasks.push(
-          window.__firebaseAuth.updateUserProfile({ photoURL: url })
-            .catch(err=> console.error('[Profile] Firebase Auth photoURL 갱신 실패 (무시하고 계속 진행)', {
-              code: err && err.code,
-              message: err && err.message,
-              error: err,
-            }))
-        );
-      }
-      await Promise.all(tasks);
-      return url;
-    })).then(url=>{
-      state.user = Object.assign({}, state.user, { photoUrl: url });
+    // Profile photos are stored as a small Base64 data URL directly on the Firestore user
+    // doc and the Auth profile, bypassing Firebase Storage entirely - this sidesteps
+    // Storage-specific failures (bucket/CORS misconfiguration, storage/retry-limit-exceeded,
+    // net::ERR_FAILED) that a resize-then-upload flow is otherwise exposed to.
+    const tasks = [];
+    if(window.__firebaseDB && window.__firebaseDB.ready){
+      console.log('[Profile] 사용자 정보 저장 시작 (Firestore)');
+      tasks.push(
+        window.__firebaseDB.saveUserProfile(uid, { photoUrl: dataUrl })
+          .then(()=> console.log('[Profile] 사용자 정보 저장 완료 (Firestore)'))
+      );
+    }
+    if(window.__firebaseAuth && window.__firebaseAuth.ready){
+      tasks.push(
+        window.__firebaseAuth.updateUserProfile({ photoURL: dataUrl })
+          .catch(err=> console.error('[Profile] Firebase Auth photoURL 갱신 실패 (무시하고 계속 진행)', {
+            code: err && err.code,
+            message: err && err.message,
+            error: err,
+          }))
+      );
+    }
+
+    withLoading(Promise.all(tasks)).then(()=>{
+      state.user = Object.assign({}, state.user, { photoUrl: dataUrl });
       window.storage.set('user-profile', JSON.stringify(state.user), false).catch(()=>{});
-      URL.revokeObjectURL(previewUrl);
       state.avatarModal = null;
       render();
       console.log('[Profile] 프로필 저장 성공 (아바타)');
