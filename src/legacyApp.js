@@ -1644,15 +1644,6 @@ function renderSettingsScreen(){
     </div>
     <div class="settings-body">
       <div class="settings-group">
-        <div class="g-title">${T('fontSizeLabel')}</div>
-        <div class="pill-toggle">
-          <button class="${state.fontSize==='small'?'selected':''}" data-action="set-fontsize" data-size="small">${T('fontSmall')}</button>
-          <button class="${state.fontSize==='default'?'selected':''}" data-action="set-fontsize" data-size="default">${T('fontDefault')}</button>
-          <button class="${state.fontSize==='large'?'selected':''}" data-action="set-fontsize" data-size="large">${T('fontLarge')}</button>
-        </div>
-      </div>
-
-      <div class="settings-group">
         <div class="settings-list">
           <div class="setting-item" data-action="open-language">
             <span>${T('languageMenu')}</span>
@@ -1661,6 +1652,15 @@ function renderSettingsScreen(){
               <span class="arrow">${ICON.chevRight}</span>
             </span>
           </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="g-title">${T('fontSizeLabel')}</div>
+        <div class="pill-toggle">
+          <button class="${state.fontSize==='small'?'selected':''}" data-action="set-fontsize" data-size="small">${T('fontSmall')}</button>
+          <button class="${state.fontSize==='default'?'selected':''}" data-action="set-fontsize" data-size="default">${T('fontDefault')}</button>
+          <button class="${state.fontSize==='large'?'selected':''}" data-action="set-fontsize" data-size="large">${T('fontLarge')}</button>
         </div>
       </div>
 
