@@ -1436,6 +1436,7 @@ function renderLogin(){
     // 값이 없을 때는 uid까지 순서대로 대체해 화면이 완전히 빈칸으로 보이지 않게 합니다.
     const nickname = escapeHtml(state.user.nickname || state.user.name || state.user.uid || '');
     const email = escapeHtml(state.user.email || '');
+    const isKakaoUser = state.user.provider === 'kakao';
     const photoUrl = state.user.photoUrl ? escapeHtml(state.user.photoUrl) : '';
     const avatar = photoUrl
       ? `<img src="${photoUrl}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:center;display:block;">`
@@ -1460,10 +1461,11 @@ function renderLogin(){
             <button class="nickname-edit-btn" data-action="open-nickname-edit" title="${T('nicknameModalTitle')}">${ICON.pencil}</button>
           </div>
         </div>
+        ${isKakaoUser ? '' : `
         <div class="field">
           <label>${T('emailLabel')}</label>
           <div style="padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:calc(14px * var(--fs-scale));color:var(--ink-soft);">${email}</div>
-        </div>
+        </div>`}
         <button class="btn btn-primary" data-action="do-logout">${T('logout')}</button>
       </div>
     `;
