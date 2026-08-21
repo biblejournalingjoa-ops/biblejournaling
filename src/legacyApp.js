@@ -1,3 +1,5 @@
+import kjvData from './data/kjv.json';
+
 /* ---------------- data ---------------- */
 const BOOKS = [
   { m:1, ko:'창세기', en:'Genesis', ja:'創世記', th:'ปฐมกาล' },
@@ -22,6 +24,21 @@ function chapterLabel(name, c){
 }
 const CHAPTER_COUNTS = { 1:50, 2:40, 3:27, 4:36, 5:34 }; // Genesis, Exodus, Leviticus, Numbers, Deuteronomy
 function ckey(m, c){ return `${m}-${c}`; }
+
+const KJV_BY_BOOK = {};
+kjvData.forEach(b=>{ KJV_BY_BOOK[b.book] = b.chapters; });
+function cleanKjvText(text){
+  return text
+    .replace(/\s*\{[^}]*:[^}]*\}/g, '') // drop translator margin notes, e.g. {...: Heb. ...}
+    .replace(/\{([^}]*)\}/g, '$1')      // unwrap supplied-word markers, e.g. {was} -> was
+    .trim();
+}
+function kjvVerses(m, c){
+  const b = BOOKS.find(x=>x.m===m);
+  const chapters = b && KJV_BY_BOOK[b.en];
+  const verses = (chapters && chapters[c-1]) || [];
+  return verses.map(cleanKjvText);
+}
 const PALETTE = [
   {top:'#E7B7B9', bottom:'#3F5670'},
   {top:'#A9C2A2', bottom:'#8A6A2F'},
@@ -2563,7 +2580,8 @@ function renderDaily(){
 }
 
 function renderBibleTab(){
-  const verses = CHAPTER.verses.map((text,idx)=>{
+  const verseTexts = state.lang==='en' ? kjvVerses(state.activeMonth, state.activeChapter) : CHAPTER.verses;
+  const verses = verseTexts.map((text,idx)=>{
     const n = idx+1;
     return `<div class="verse" id="verse-${n}"><span class="vnum">${n}</span><span>${text}</span></div>`;
   }).join('');
