@@ -20,6 +20,12 @@ service cloud.firestore {
     //  테스트/개발 단계에서는 isSignedIn()만으로 완화했습니다. 운영 배포 전에는
     //  groups/{groupId}와 messages 규칙을 isGroupMember 기반으로 되돌리는 것을 권장합니다.)
 
+    // 채팅방이 폭파(closed)되었는지 확인합니다. 폭파된 방에는 새 메시지를 쓸 수 없습니다.
+    function groupIsClosed(groupId) {
+      return exists(/databases/$(database)/documents/groups/$(groupId)) &&
+        get(/databases/$(database)/documents/groups/$(groupId)).data.get('closed', false) == true;
+    }
+
     // ---- users/{uid} ----
     // 본인 프로필만 읽고/쓸 수 있습니다. uid, createdAt은 위조 방지를 위해 값 검증합니다.
     match /users/{uid} {
@@ -51,17 +57,26 @@ service cloud.firestore {
       // 로그인한 유저는 그룹을 생성할 수 있음
       allow create: if isSignedIn();
 
-      // 로그인한 유저는 그룹 문서를 수정(멤버 추가 등)할 수 있음
-      allow update: if isSignedIn();
+      // 그룹 문서 수정: 이름(name)/프로필 사진(photoUrl)/폭파 여부(closed, closedAt)는
+      // 방장(ownerUid)만 바꿀 수 있습니다. 일반 멤버는 멤버 목록(members) 필드만
+      // (참여/나가기를 위해) 바꿀 수 있습니다. 이미 폭파된 방은 더 이상 수정할 수 없습니다.
+      allow update: if isSignedIn() &&
+        resource.data.get('closed', false) == false &&
+        (
+          resource.data.ownerUid == request.auth.uid ||
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members'])
+        );
 
       // 그룹 삭제는 소유자만
       allow delete: if isSignedIn() && resource.data.ownerUid == request.auth.uid;
 
       // groups/{groupId}/messages/{messageId} : 로그인한 유저는 읽고 쓸 수 있음.
       // 메시지는 본인 uid로만 작성 가능하고, 작성 후 수정/삭제는 막습니다(대화 기록 보존).
+      // 방장이 채팅방을 폭파(closed=true)한 뒤에는 새 메시지를 쓸 수 없습니다.
       match /messages/{messageId} {
         allow read: if isSignedIn();
-        allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+        allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid &&
+          !groupIsClosed(groupId);
         allow update, delete: if false;
       }
     }

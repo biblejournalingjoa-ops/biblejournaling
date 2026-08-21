@@ -1,7 +1,7 @@
 // groups 컬렉션: 그룹 생성, 멤버 추가/조회, 내가 속한 그룹 목록 조회
 // 문서 경로: groups/{groupId}
 import {
-  collection, doc, addDoc, setDoc, getDoc, getDocs,
+  collection, doc, addDoc, setDoc, getDoc, getDocs, onSnapshot,
   updateDoc, arrayUnion, arrayRemove, query, where, orderBy, serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase.js";
@@ -78,4 +78,36 @@ export async function listMyGroups(uid) {
   );
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+/** 채팅방 이름을 변경합니다 (Security Rules 상 방장만 허용). */
+export async function updateGroupName(groupId, name) {
+  if (!groupId || !name) throw new Error("updateGroupName: groupId and name are required");
+  await updateDoc(doc(db, "groups", groupId), { name });
+}
+
+/** 채팅방 프로필 이미지 URL을 변경합니다 (Security Rules 상 방장만 허용). */
+export async function updateGroupPhoto(groupId, photoUrl) {
+  if (!groupId) throw new Error("updateGroupPhoto: groupId is required");
+  await updateDoc(doc(db, "groups", groupId), { photoUrl: photoUrl || null });
+}
+
+/**
+ * 채팅방을 "폭파"합니다. 대화 기록을 실제로 지우는 대신(비용·되돌릴 수 없음 문제),
+ * closed 플래그만 세워 이후 모든 read/write를 Security Rules에서 차단하는 소프트 삭제
+ * 방식을 씁니다. Security Rules 상 방장만 허용됩니다.
+ */
+export async function closeGroup(groupId) {
+  if (!groupId) throw new Error("closeGroup: groupId is required");
+  await updateDoc(doc(db, "groups", groupId), { closed: true, closedAt: serverTimestamp() });
+}
+
+/**
+ * 그룹 문서 실시간 구독. 채팅방 이름/프로필 사진/폭파 여부가 바뀌면 즉시 콜백을 호출합니다.
+ * @returns {() => void} unsubscribe
+ */
+export function subscribeToGroup(groupId, onChange) {
+  return onSnapshot(doc(db, "groups", groupId), (snap) => {
+    onChange(snap.exists() ? { id: snap.id, ...snap.data() } : null);
+  });
 }

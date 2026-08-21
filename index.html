@@ -565,6 +565,19 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .member-list-status.error{color:var(--danger);}
 .group-info-actions{display:flex;flex-direction:column;gap:10px;margin-top:auto;}
 .group-info-actions .btn{margin-top:0;}
+.group-info-actions .btn-danger{display:flex;align-items:center;justify-content:center;gap:7px;}
+.group-info-actions .btn-danger svg{width:15px;height:15px;}
+
+/* ---------- chat room management ---------- */
+.group-avatar-xl{
+  width:96px;height:96px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  font-family:'Noto Serif KR',serif;font-weight:700;font-size:calc(34px * var(--fs-scale));
+}
+.room-manage-avatar-wrap{display:flex;justify-content:center;margin-bottom:14px;}
+.room-manage-avatar-wrap .avatar-btn{border-radius:50%;}
+.room-name-row{max-width:280px;margin:0 auto 4px;}
+.room-name-field{text-align:left;max-width:280px;margin:0 auto 4px;}
 
 /* ---------- group chat room ---------- */
 .room-header{

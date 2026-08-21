@@ -260,6 +260,24 @@ const STRINGS = {
     toastLeaveFailed:'그룹 나가기에 실패했어요. 다시 시도해 주세요',
     toastMembersLoadFailed:'참여자 정보를 불러오지 못했어요',
     memberFallbackName:'팀원', youTag:'(나)', loadingLabel:'불러오는 중...',
+    groupManageTitle:'채팅방 관리',
+    roomNameLabel:'채팅방 이름',
+    renameRoomTitle:'채팅방 이름 변경',
+    changeRoomPhotoTitle:'채팅방 프로필 사진 변경',
+    ownerTag:'방장',
+    explodeRoomBtn:'채팅방 폭파',
+    explodeConfirmTitle:'채팅방을 폭파하시겠습니까?',
+    explodeConfirmBody:'채팅방을 폭파하면 모든 참여자가 이 채팅방에 접근할 수 없게 됩니다.\n이 작업은 되돌릴 수 없습니다.',
+    explodeConfirmBtn:'채팅방 폭파',
+    toastRoomNameEmpty:'채팅방 이름을 입력해 주세요',
+    toastRoomNameTooLong:'채팅방 이름은 30자 이내로 입력해 주세요',
+    toastRoomNameSaved:'채팅방 이름이 변경되었습니다',
+    toastRoomNameSaveFailed:'채팅방 이름 저장에 실패했어요. 다시 시도해 주세요',
+    toastRoomPhotoSaved:'채팅방 프로필 사진이 변경되었습니다',
+    toastRoomPhotoSaveFailed:'채팅방 프로필 사진 업로드에 실패했어요. 다시 시도해 주세요',
+    toastRoomClosed:'채팅방을 폭파했어요',
+    toastRoomCloseFailed:'채팅방 폭파에 실패했어요. 다시 시도해 주세요',
+    toastRoomGone:'더 이상 존재하지 않는 채팅방이에요',
   },
   en:{
     yearTag:'Bible Journaling', yearSub:'One journal a month, twelve months walking with the Word',
@@ -385,6 +403,24 @@ const STRINGS = {
     toastLeaveFailed:'Failed to leave the group. Please try again',
     toastMembersLoadFailed:'Could not load participants',
     memberFallbackName:'Member', youTag:'(You)', loadingLabel:'Loading...',
+    groupManageTitle:'Chat room settings',
+    roomNameLabel:'Chat room name',
+    renameRoomTitle:'Rename chat room',
+    changeRoomPhotoTitle:'Change chat room photo',
+    ownerTag:'Owner',
+    explodeRoomBtn:'Destroy chat room',
+    explodeConfirmTitle:'Destroy this chat room?',
+    explodeConfirmBody:"Destroying this chat room will remove access for every participant.\nThis cannot be undone.",
+    explodeConfirmBtn:'Destroy chat room',
+    toastRoomNameEmpty:'Please enter a chat room name',
+    toastRoomNameTooLong:'Chat room names must be 30 characters or fewer',
+    toastRoomNameSaved:'Chat room name updated',
+    toastRoomNameSaveFailed:'Could not save the chat room name. Please try again',
+    toastRoomPhotoSaved:'Chat room photo updated',
+    toastRoomPhotoSaveFailed:'Could not upload the chat room photo. Please try again',
+    toastRoomClosed:'Chat room destroyed',
+    toastRoomCloseFailed:'Could not destroy the chat room. Please try again',
+    toastRoomGone:'This chat room no longer exists',
   },
   ja:{
     yearTag:'Bible Journaling', yearSub:'月に1冊、御言葉と共に歩む12か月',
@@ -510,6 +546,24 @@ const STRINGS = {
     toastLeaveFailed:'退出に失敗しました。もう一度お試しください',
     toastMembersLoadFailed:'参加者情報を読み込めませんでした',
     memberFallbackName:'メンバー', youTag:'(自分)', loadingLabel:'読み込み中...',
+    groupManageTitle:'チャットルーム管理',
+    roomNameLabel:'チャットルーム名',
+    renameRoomTitle:'チャットルーム名を変更',
+    changeRoomPhotoTitle:'チャットルームのプロフィール写真を変更',
+    ownerTag:'ルームリーダー',
+    explodeRoomBtn:'チャットルームを削除',
+    explodeConfirmTitle:'このチャットルームを削除しますか?',
+    explodeConfirmBody:'チャットルームを削除すると、すべての参加者がこのチャットルームにアクセスできなくなります。\nこの操作は元に戻せません。',
+    explodeConfirmBtn:'チャットルームを削除',
+    toastRoomNameEmpty:'チャットルーム名を入力してください',
+    toastRoomNameTooLong:'チャットルーム名は30文字以内で入力してください',
+    toastRoomNameSaved:'チャットルーム名が変更されました',
+    toastRoomNameSaveFailed:'チャットルーム名の保存に失敗しました。もう一度お試しください',
+    toastRoomPhotoSaved:'チャットルームのプロフィール写真が変更されました',
+    toastRoomPhotoSaveFailed:'チャットルームのプロフィール写真のアップロードに失敗しました。もう一度お試しください',
+    toastRoomClosed:'チャットルームを削除しました',
+    toastRoomCloseFailed:'チャットルームの削除に失敗しました。もう一度お試しください',
+    toastRoomGone:'これ以上存在しないチャットルームです',
   },
   th:{
     yearTag:'Bible Journaling', yearSub:'หนึ่งเดือนหนึ่งเล่ม เดินไปกับพระวจนะตลอดสิบสองเดือน',
@@ -635,6 +689,24 @@ const STRINGS = {
     toastLeaveFailed:'ออกจากกลุ่มไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastMembersLoadFailed:'ไม่สามารถโหลดข้อมูลผู้เข้าร่วมได้',
     memberFallbackName:'สมาชิก', youTag:'(ฉัน)', loadingLabel:'กำลังโหลด...',
+    groupManageTitle:'จัดการห้องแชท',
+    roomNameLabel:'ชื่อห้องแชท',
+    renameRoomTitle:'เปลี่ยนชื่อห้องแชท',
+    changeRoomPhotoTitle:'เปลี่ยนรูปโปรไฟล์ห้องแชท',
+    ownerTag:'เจ้าของห้อง',
+    explodeRoomBtn:'ทำลายห้องแชท',
+    explodeConfirmTitle:'ต้องการทำลายห้องแชทนี้หรือไม่?',
+    explodeConfirmBody:'เมื่อทำลายห้องแชทแล้ว ผู้เข้าร่วมทุกคนจะไม่สามารถเข้าถึงห้องแชทนี้ได้อีก\nไม่สามารถย้อนกลับการทำงานนี้ได้',
+    explodeConfirmBtn:'ทำลายห้องแชท',
+    toastRoomNameEmpty:'กรุณากรอกชื่อห้องแชท',
+    toastRoomNameTooLong:'ชื่อห้องแชทต้องไม่เกิน 30 ตัวอักษร',
+    toastRoomNameSaved:'เปลี่ยนชื่อห้องแชทแล้ว',
+    toastRoomNameSaveFailed:'บันทึกชื่อห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
+    toastRoomPhotoSaved:'เปลี่ยนรูปโปรไฟล์ห้องแชทแล้ว',
+    toastRoomPhotoSaveFailed:'อัปโหลดรูปโปรไฟล์ห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
+    toastRoomClosed:'ทำลายห้องแชทแล้ว',
+    toastRoomCloseFailed:'ทำลายห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
+    toastRoomGone:'ห้องแชทนี้ไม่มีอยู่แล้ว',
   },
 };
 function T(key, ...args){
@@ -675,11 +747,13 @@ const ICON = {
   message:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="13" rx="3"/><path d="M3 7l9 6 9-6"/></svg>`,
   chatBubble:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12a7.5 7.5 0 01-11 6.6L4 20l1.4-4.5A7.5 7.5 0 1120 12z"/></svg>`,
   copy:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M5 15.5H4a1 1 0 01-1-1V4a1 1 0 011-1h10.5a1 1 0 011 1v1"/></svg>`,
+  menu:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`,
+  bomb:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="14" r="7"/><path d="M16 9l2.5-2.5M17 4l1.5 1.5M19.5 6.5L21 8"/></svg>`,
 };
 
 /* ---------------- state ---------------- */
 let state = {
-  screen:'loading',         // loading | main | login | signup | chapters | daily | groups | group-info | group-room | settings
+  screen:'loading',         // loading | main | login | signup | chapters | daily | groups | group-info | group-room | group-manage | settings
   purchased:[1,2,3,4,5], // all 5 Pentateuch books are free/unlocked
   loggedIn:false,
   user:null,                // { name, email, photoUrl } of the signed-in user
@@ -691,10 +765,16 @@ let state = {
   selectedPlan:'year',      // year | month  (chosen inside purchase modal)
   askOpen:false,
   activeGroupId:null,       // group room currently open
-  groupInfoMembers:null,    // [{uid,name,photoUrl}] for the open group-info screen; null while loading
+  groupInfoMembers:null,    // [{uid,name,photoUrl}] for the open group-info/group-manage screen; null while loading
   groupInfoError:false,     // true if the participant list failed to load from Firestore
   leaveConfirmOpen:false,   // whether the "leave group" confirm dialog is open
   leaveBusy:false,          // true while a leave-group request is in flight
+  groupManageDoc:null,      // { id, name, photoUrl, ownerUid, closed, ... } the live Firestore doc for the open group-manage/group-room screen
+  groupNameEditOpen:false,  // whether the room-name edit field is showing on the manage screen
+  groupNameSaving:false,    // true while a room-name save is in flight
+  roomPhotoModal:null,      // { blob, previewUrl, saving } while a newly picked room photo awaits confirmation
+  explodeConfirmOpen:false, // whether the "destroy chat room" confirm dialog is open
+  explodeBusy:false,        // true while a destroy-chat-room request is in flight
   createGroupOpen:false,
   inviteGroupId:null,       // group id whose invite sheet is open
   shareGroupId:null,        // group id whose share-picker sheet is open
@@ -731,6 +811,8 @@ const NOTIF_DAYS = ['mon','tue','wed','thu','fri','sat','sun'];
 // groups: [{ id, name, color, code, memberCount, messages:[{id, from, isMe, type:'text'|'journal'|'image'|'system', text, unread, ...}] }]
 let groups = [];
 let groupsLoaded = false;
+let groupDocUnsub = null; // unsubscribe fn for the live groups/{id} listener behind group-room/group-manage
+let groupDocUnsubId = null; // which group id groupDocUnsub currently listens to
 
 const GROUP_COLORS = ['#3F5670','#8A6A2F','#4F6B8F','#7E9A6D','#B25C6B'];
 
@@ -751,6 +833,17 @@ function seedGroups(){
   }];
 }
 function getGroup(id){ return groups.find(g=>g.id===id); }
+/* Chat room avatar: uses the uploaded room photo when set, otherwise falls back to the
+   existing colored-initial avatar. `cls` supplies the existing size/shape CSS class
+   (group-avatar | group-avatar-lg | r-avatar) so this slots into any of the three spots
+   the room avatar already appears in without new CSS. */
+function groupAvatarHtml(g, cls){
+  if(g && g.photoUrl){
+    return `<img class="${cls}" src="${escapeHtml(g.photoUrl)}" alt="" style="object-fit:cover;object-position:center;">`;
+  }
+  const initial = g ? escapeHtml((g.name||'').slice(0,1)) : '';
+  return `<div class="${cls}" style="background:${(g && g.color) || 'var(--surface-strong)'}">${initial}</div>`;
+}
 
 /* simulate group members reading a message I sent, ticking the unread count down to 0 */
 function scheduleReadTicks(g, msg){
@@ -815,6 +908,7 @@ function loadGroupMembers(groupId){
     ensure
       .then(()=> fdb.getGroup(groupId))
       .then(async (doc)=>{
+        if(state.activeGroupId===groupId && !state.groupManageDoc) state.groupManageDoc = doc;
         const uids = (doc && doc.members && doc.members.length) ? doc.members : [state.user.uid];
         const members = await Promise.all(uids.map(async (uid)=>{
           try{
@@ -838,8 +932,62 @@ function loadGroupMembers(groupId){
       state.groupInfoMembers = [];
     }
   }).finally(()=>{
-    if(state.screen==='group-info') render();
+    if(state.screen==='group-info' || state.screen==='group-manage') render();
   });
+}
+
+/* Keeps the room's Firestore doc (name/photoUrl/ownerUid/closed) live-synced while the
+   user is inside the group-room or group-manage screen: local `groups` cache is patched
+   immediately so the room header / manage screen / groups list all reflect the latest
+   name & photo without a reload, and if the owner "explodes" the room while someone else
+   is looking at it, that someone is bounced back out to the groups list right away. */
+function ensureGroupDocSub(groupId){
+  if(groupDocUnsubId === groupId && groupDocUnsub) return;
+  subscribeToGroupDoc(groupId);
+}
+function subscribeToGroupDoc(groupId){
+  unsubscribeGroupDoc();
+  state.groupManageDoc = null;
+  const fdb = window.__firebaseDB;
+  if(!fdb || !fdb.ready || typeof fdb.subscribeToGroup !== 'function' || !groupId) return;
+  groupDocUnsubId = groupId;
+  groupDocUnsub = fdb.subscribeToGroup(groupId, (doc)=>{
+    if(state.activeGroupId !== groupId) return;
+    if(doc && doc.closed){
+      groups = groups.filter(gr=>gr.id!==groupId);
+      saveGroups();
+      state.activeGroupId = null;
+      state.groupManageDoc = null;
+      state.groupInfoMembers = null;
+      if(state.screen==='group-room' || state.screen==='group-manage'){
+        state.screen = 'groups';
+        showToast(T('toastRoomGone'));
+      }
+      render();
+      return;
+    }
+    state.groupManageDoc = doc;
+    const local = getGroup(groupId);
+    if(doc && local){
+      let changed = false;
+      if(doc.name && local.name !== doc.name){ local.name = doc.name; changed = true; }
+      if(local.photoUrl !== (doc.photoUrl || null)){ local.photoUrl = doc.photoUrl || null; changed = true; }
+      if(local.ownerUid !== doc.ownerUid){ local.ownerUid = doc.ownerUid; changed = true; }
+      if(changed) saveGroups();
+    }
+    render();
+  });
+}
+function unsubscribeGroupDoc(){
+  if(groupDocUnsub){ groupDocUnsub(); groupDocUnsub = null; }
+  groupDocUnsubId = null;
+}
+function isRoomOwner(){
+  const uid = state.user && state.user.uid;
+  if(!uid) return false;
+  if(state.groupManageDoc) return state.groupManageDoc.ownerUid === uid;
+  const g = getGroup(state.activeGroupId);
+  return !!(g && g.ownerUid === uid);
 }
 
 function blankEntry(){
@@ -1254,6 +1402,34 @@ function resizeImageToDataURL(file, maxSize=200, quality=0.7){
   });
 }
 
+/* Same resize as resizeImageToDataURL, but resolves a JPEG Blob instead of a data URL -
+   used for the chat room photo, which (unlike the personal profile photo) is uploaded to
+   Firebase Storage rather than embedded as Base64 in a Firestore field. */
+function resizeImageToBlob(file, maxSize=480, quality=0.85){
+  return new Promise((resolve, reject)=>{
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if(width > maxSize || height > maxSize){
+        if(width >= height){ height = Math.round(height * maxSize / width); width = maxSize; }
+        else { width = Math.round(width * maxSize / height); height = maxSize; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob((blob)=>{
+        if(blob) resolve(blob); else reject(new Error('blob-failed'));
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('image-load-failed')); };
+    img.src = url;
+  });
+}
+
 /* Hidden file input used by the profile screen's "change photo" button. It lives outside
    #app (a sibling of it inside #shell) so it survives the innerHTML re-renders in render(). */
 function setupAvatarFileInput(){
@@ -1296,6 +1472,39 @@ function setupAvatarFileInput(){
   document.getElementById('shell').appendChild(input);
 }
 setupAvatarFileInput();
+
+/* Hidden file input used by the chat room management screen's "change room photo"
+   button. Unlike the personal profile photo (Base64 in Firestore), this one is uploaded
+   to Firebase Storage, so we keep both the resized Blob (to upload) and an object URL
+   (to preview) on state.roomPhotoModal until the user confirms. */
+function setupRoomPhotoFileInput(){
+  if(document.getElementById('room-photo-file-input')) return;
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.id = 'room-photo-file-input';
+  input.accept = 'image/*';
+  input.style.display = 'none';
+  input.addEventListener('change', async ()=>{
+    const file = input.files && input.files[0];
+    input.value = '';
+    if(!file) return;
+    if(!file.type || !file.type.startsWith('image/')){
+      showToast(T('toastAvatarInvalidType'));
+      return;
+    }
+    try{
+      const blob = await resizeImageToBlob(file);
+      const previewUrl = URL.createObjectURL(blob);
+      state.roomPhotoModal = { blob, previewUrl };
+      render();
+    }catch(e){
+      console.error('[GroupManage] 채팅방 사진 리사이즈 실패:', e);
+      showToast(T('toastRoomPhotoSaveFailed'));
+    }
+  });
+  document.getElementById('shell').appendChild(input);
+}
+setupRoomPhotoFileInput();
 
 function todayLabel(){
   const d = new Date();
@@ -1344,6 +1553,7 @@ function render(){
   else if(state.screen==='groups') html = renderGroupsList();
   else if(state.screen==='group-info') html = renderGroupInfo();
   else if(state.screen==='group-room') html = renderGroupRoom();
+  else if(state.screen==='group-manage') html = renderGroupManage();
   else if(state.screen==='settings') html = renderSettingsScreen();
   else if(state.screen==='contact') html = renderContactScreen();
   else if(state.screen==='guide') html = renderGuideScreen();
@@ -1363,6 +1573,8 @@ function render(){
   if(state.donateModal) overlays += renderDonateModal();
   if(state.languageModal) overlays += renderLanguageModal();
   if(state.leaveConfirmOpen) overlays += renderLeaveConfirmModal();
+  if(state.roomPhotoModal) overlays += renderRoomPhotoModal();
+  if(state.explodeConfirmOpen) overlays += renderExplodeConfirmModal();
 
   app.innerHTML = html + overlays + renderLoadingOverlay() + `<div class="toast" id="toast"></div>`;
 
@@ -1378,6 +1590,17 @@ function render(){
   if(state.screen==='group-room'){
     const cs = document.getElementById('chat-scroll');
     if(cs) cs.scrollTop = cs.scrollHeight;
+  }
+  if((state.screen==='group-room' || state.screen==='group-manage') && state.activeGroupId){
+    ensureGroupDocSub(state.activeGroupId);
+  } else if(state.screen!=='group-room' && state.screen!=='group-manage'){
+    unsubscribeGroupDoc();
+  }
+  if(state.screen==='group-manage' && state.groupNameEditOpen){
+    requestAnimationFrame(()=>{
+      const inp = document.getElementById('room-name-input');
+      if(inp) inp.focus();
+    });
   }
 }
 
@@ -1823,9 +2046,9 @@ function renderGroupsList(){
     const lastText = last ? (last.type==='image' ? `📷 ${last.jTitle}` : last.type==='journal' ? `📖 ${last.jTitle}` : last.text) : '아직 대화가 없어요';
     return `
     <button class="group-card" data-action="open-group" data-id="${g.id}">
-      <div class="group-avatar" style="background:${g.color}">${g.name.slice(0,1)}</div>
+      ${groupAvatarHtml(g, 'group-avatar')}
       <div class="group-info">
-        <div class="g-name">${g.name}</div>
+        <div class="g-name">${escapeHtml(g.name)}</div>
         <div class="g-sub">${lastText}</div>
       </div>
       <div class="group-meta">${g.messages.length}개 대화</div>
@@ -1887,7 +2110,7 @@ function renderGroupInfo(){
     </div>
     <div class="group-info-body">
       <div class="group-info-summary">
-        <div class="group-avatar-lg" style="background:${g.color}">${escapeHtml(g.name.slice(0,1))}</div>
+        ${groupAvatarHtml(g, 'group-avatar-lg')}
         <div class="gi-name">${escapeHtml(g.name)}</div>
         <div class="gi-count">${T('groupInfoParticipants', count)}</div>
       </div>
@@ -1899,6 +2122,114 @@ function renderGroupInfo(){
     </div>
   `;
 }
+
+/* ---------------- chat room management (rename / photo / destroy) ---------------- */
+function renderGroupManage(){
+  const g = getGroup(state.activeGroupId);
+  if(!g){
+    return `<div class="groups-header"><button class="icon-btn" data-action="go-groups">${ICON.back}</button></div>`;
+  }
+  const owner = isRoomOwner();
+  const ownerUid = state.groupManageDoc ? state.groupManageDoc.ownerUid : g.ownerUid;
+  const members = state.groupInfoMembers;
+  const count = members ? members.length : (g.memberCount || 1);
+
+  let membersHtml;
+  if(members === null){
+    membersHtml = `<div class="member-list-status">${T('loadingLabel')}</div>`;
+  } else if(members.length === 0){
+    membersHtml = state.groupInfoError
+      ? `<div class="member-list-status error">${T('toastMembersLoadFailed')}</div>`
+      : '';
+  } else {
+    membersHtml = members.map(m=>`
+      <div class="member-row">
+        <div class="member-avatar">${m.photoUrl ? `<img src="${escapeHtml(m.photoUrl)}" alt="">` : ICON.person}</div>
+        <div class="member-name">${escapeHtml(m.name)}
+          ${ownerUid && m.uid===ownerUid ? ` <span class="member-you">${T('ownerTag')}</span>` : ''}
+          ${state.user && state.user.uid===m.uid ? ` <span class="member-you">${T('youTag')}</span>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  const avatarInner = groupAvatarHtml(g, 'group-avatar-xl');
+  const avatarBlock = owner
+    ? `<button class="avatar-btn" data-action="pick-room-photo" title="${T('changeRoomPhotoTitle')}">${avatarInner}<span class="avatar-edit-badge">${ICON.camera}</span></button>`
+    : avatarInner;
+
+  const nameBlock = (owner && state.groupNameEditOpen)
+    ? `
+      <div class="field room-name-field">
+        <label>${T('roomNameLabel')}</label>
+        <input type="text" id="room-name-input" value="${escapeHtml(g.name)}" maxlength="30" ${state.groupNameSaving?'disabled':''}>
+        <div class="modal-actions" style="margin-top:10px;">
+          <button class="btn btn-cancel" data-action="close-room-name-edit" ${state.groupNameSaving?'disabled':''}>${T('cancel')}</button>
+          <button class="btn btn-primary" data-action="save-room-name" ${state.groupNameSaving?'disabled':''}>${T('saveBtn')}</button>
+        </div>
+      </div>`
+    : `
+      <div class="profile-nickname-row room-name-row">
+        <div class="gi-name">${escapeHtml(g.name)}</div>
+        ${owner ? `<button class="nickname-edit-btn" data-action="open-room-name-edit" title="${T('renameRoomTitle')}">${ICON.pencil}</button>` : ''}
+      </div>`;
+
+  return `
+    <div class="groups-header">
+      <button class="icon-btn" data-action="go-group-room">${ICON.back}</button>
+      <div class="titles">
+        <div class="cap">Together</div>
+        <h2>${T('groupManageTitle')}</h2>
+      </div>
+    </div>
+    <div class="group-info-body">
+      <div class="group-info-summary">
+        <div class="room-manage-avatar-wrap">${avatarBlock}</div>
+        ${nameBlock}
+        <div class="gi-count">${T('groupInfoParticipants', count)}</div>
+      </div>
+      <div class="member-list">${membersHtml}</div>
+      <div class="group-info-actions">
+        ${owner
+          ? `<button class="btn btn-danger" data-action="open-explode-confirm">${ICON.bomb} ${T('explodeRoomBtn')}</button>`
+          : `<button class="btn btn-danger" data-action="open-leave-confirm">${T('leaveGroupBtn')}</button>`}
+      </div>
+    </div>
+  `;
+}
+function renderRoomPhotoModal(){
+  const m = state.roomPhotoModal;
+  if(!m) return '';
+  const saving = !!m.saving;
+  return `
+  <div class="overlay center" data-action="${saving?'noop':'close-room-photo-modal'}">
+    <div class="modal-card" data-action="noop">
+      <div class="modal-title">${T('changeRoomPhotoTitle')}</div>
+      <p class="modal-sub">${T('avatarModalSub')}</p>
+      <div style="display:flex;justify-content:center;margin-bottom:18px;">
+        <img src="${m.previewUrl}" alt="" style="width:120px;height:120px;border-radius:50%;object-fit:cover;object-position:center;box-shadow:var(--shadow-sm);">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" data-action="close-room-photo-modal" ${saving?'disabled':''}>${T('cancel')}</button>
+        <button class="btn btn-primary" data-action="confirm-room-photo" ${saving?'disabled':''}>${T('saveBtn')}</button>
+      </div>
+    </div>
+  </div>`;
+}
+function renderExplodeConfirmModal(){
+  return `
+  <div class="overlay center" data-action="${state.explodeBusy?'noop':'close-explode-confirm'}">
+    <div class="modal-card" data-action="noop">
+      <div class="modal-title">${T('explodeConfirmTitle')}</div>
+      <p class="modal-sub" style="white-space:pre-line;">${T('explodeConfirmBody')}</p>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" data-action="close-explode-confirm" ${state.explodeBusy?'disabled':''}>${T('cancel')}</button>
+        <button class="btn btn-danger" data-action="confirm-explode-room" ${state.explodeBusy?'disabled':''}>${T('explodeConfirmBtn')}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
 function renderLeaveConfirmModal(){
   return `
   <div class="overlay center" data-action="close-leave-confirm">
@@ -1981,12 +2312,13 @@ function renderGroupRoom(){
   return `
     <div class="room-header">
       <button class="icon-btn" data-action="go-groups">${ICON.back}</button>
-      <div class="r-avatar" style="background:${g.color}">${g.name.slice(0,1)}</div>
+      ${groupAvatarHtml(g, 'r-avatar')}
       <div class="titles">
-        <h2>${g.name}</h2>
+        <h2>${escapeHtml(g.name)}</h2>
         <div class="cap">${g.messages.length}개 대화</div>
       </div>
       <button class="invite-btn" data-action="open-invite" data-id="${g.id}">${ICON.link}</button>
+      <button class="icon-btn" data-action="open-group-manage" data-id="${g.id}" title="${T('groupManageTitle')}">${ICON.menu}</button>
     </div>
     <div class="chat-scroll" id="chat-scroll">${bubbles}</div>
     <div class="compose-bar">
@@ -2712,6 +3044,136 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     state.screen='group-room';
     render();
   }
+  else if(action==='open-group-manage'){
+    state.activeGroupId = el.dataset.id || state.activeGroupId;
+    state.screen = 'group-manage';
+    state.groupInfoMembers = null;
+    state.groupInfoError = false;
+    state.groupNameEditOpen = false;
+    render();
+    loadGroupMembers(state.activeGroupId);
+  }
+  else if(action==='go-group-room'){
+    state.groupNameEditOpen = false;
+    state.screen = 'group-room';
+    render();
+  }
+  else if(action==='pick-room-photo'){
+    if(!isRoomOwner()) return;
+    const input = document.getElementById('room-photo-file-input');
+    if(input) input.click();
+  }
+  else if(action==='close-room-photo-modal'){
+    if(state.roomPhotoModal && state.roomPhotoModal.saving) return;
+    if(state.roomPhotoModal && state.roomPhotoModal.previewUrl) URL.revokeObjectURL(state.roomPhotoModal.previewUrl);
+    state.roomPhotoModal = null;
+    render();
+  }
+  else if(action==='confirm-room-photo'){
+    const m = state.roomPhotoModal;
+    const groupId = state.activeGroupId;
+    if(!m || m.saving || !groupId) return;
+    const fdb = window.__firebaseDB;
+    if(!fdb || !fdb.ready || typeof fdb.uploadGroupPhoto !== 'function' || typeof fdb.updateGroupPhoto !== 'function'){
+      showToast(T('toastRoomPhotoSaveFailed'));
+      return;
+    }
+    m.saving = true;
+    render();
+    withLoading(
+      fdb.uploadGroupPhoto(groupId, m.blob).then((url)=> fdb.updateGroupPhoto(groupId, url).then(()=>url))
+    ).then((url)=>{
+      const g = getGroup(groupId);
+      if(g){ g.photoUrl = url; saveGroups(); }
+      if(state.roomPhotoModal && state.roomPhotoModal.previewUrl) URL.revokeObjectURL(state.roomPhotoModal.previewUrl);
+      state.roomPhotoModal = null;
+      render();
+      showToast(T('toastRoomPhotoSaved'));
+    }).catch(err=>{
+      console.error('Room photo upload failed:', err);
+      if(state.roomPhotoModal) state.roomPhotoModal.saving = false;
+      render();
+      showToast(T('toastRoomPhotoSaveFailed'));
+    });
+  }
+  else if(action==='open-room-name-edit'){
+    if(!isRoomOwner()) return;
+    state.groupNameEditOpen = true;
+    render();
+  }
+  else if(action==='close-room-name-edit'){
+    if(state.groupNameSaving) return;
+    state.groupNameEditOpen = false;
+    render();
+  }
+  else if(action==='save-room-name'){
+    if(state.groupNameSaving) return;
+    const groupId = state.activeGroupId;
+    const input = document.getElementById('room-name-input');
+    const name = input ? input.value.trim() : '';
+    if(!name){ showToast(T('toastRoomNameEmpty')); return; }
+    if(name.length > 30){ showToast(T('toastRoomNameTooLong')); return; }
+    const fdb = window.__firebaseDB;
+    if(!groupId || !fdb || !fdb.ready || typeof fdb.updateGroupName !== 'function'){
+      showToast(T('toastRoomNameSaveFailed'));
+      return;
+    }
+    state.groupNameSaving = true;
+    render();
+    withLoading(fdb.updateGroupName(groupId, name)).then(()=>{
+      const g = getGroup(groupId);
+      if(g){ g.name = name; saveGroups(); }
+      state.groupNameSaving = false;
+      state.groupNameEditOpen = false;
+      render();
+      showToast(T('toastRoomNameSaved'));
+    }).catch(err=>{
+      console.error('Room name save failed:', err);
+      state.groupNameSaving = false;
+      render();
+      showToast(T('toastRoomNameSaveFailed'));
+    });
+  }
+  else if(action==='open-explode-confirm'){
+    if(!isRoomOwner()) return;
+    state.explodeConfirmOpen = true;
+    render();
+  }
+  else if(action==='close-explode-confirm'){
+    if(state.explodeBusy) return;
+    state.explodeConfirmOpen = false;
+    render();
+  }
+  else if(action==='confirm-explode-room'){
+    if(state.explodeBusy) return;
+    const groupId = state.activeGroupId;
+    const fdb = window.__firebaseDB;
+    if(!groupId || !fdb || !fdb.ready || typeof fdb.closeGroup !== 'function'){
+      state.explodeConfirmOpen = false;
+      render();
+      showToast(T('toastRoomCloseFailed'));
+      return;
+    }
+    state.explodeBusy = true;
+    render();
+    withLoading(fdb.closeGroup(groupId)).then(()=>{
+      groups = groups.filter(gr=>gr.id!==groupId);
+      saveGroups();
+      state.explodeBusy = false;
+      state.explodeConfirmOpen = false;
+      state.activeGroupId = null;
+      state.groupManageDoc = null;
+      state.groupInfoMembers = null;
+      state.screen = 'groups';
+      render();
+      showToast(T('toastRoomClosed'));
+    }).catch(err=>{
+      console.error('Failed to destroy chat room:', err);
+      state.explodeBusy = false;
+      render();
+      showToast(T('toastRoomCloseFailed'));
+    });
+  }
   else if(action==='open-leave-confirm'){
     state.leaveConfirmOpen = true;
     render();
@@ -2741,6 +3203,8 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       state.activeGroupId = null;
       state.groupInfoMembers = null;
       state.groupInfoError = false;
+      state.groupManageDoc = null;
+      state.groupNameEditOpen = false;
       state.screen = 'groups';
       render();
       showToast(T('toastLeftGroup'));
@@ -2771,6 +3235,8 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       name,
       color:GROUP_COLORS[groups.length % GROUP_COLORS.length],
       code:makeCode(),
+      ownerUid: state.user && state.user.uid,
+      photoUrl:null,
       memberCount:2,
       messages:[{id:'m-'+Date.now(), from:'시스템', isMe:false, type:'system', text:'그룹방이 만들어졌어요. 링크로 초대해 함께 말씀을 나눠보세요.'}]
     };

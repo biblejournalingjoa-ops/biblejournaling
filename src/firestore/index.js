@@ -6,3 +6,4 @@ export * from "./groups.js";
 export * from "./chats.js";
 export * from "./bibles.js";
 export * from "./journals.js";
+export * from "./groupPhoto.js";
