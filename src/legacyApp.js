@@ -1,4 +1,5 @@
 import kjvData from './data/kjv.json';
+import thKjvData from './data/th_kjv.json';
 
 /* ---------------- data ---------------- */
 const BOOKS = [
@@ -38,6 +39,14 @@ function kjvVerses(m, c){
   const chapters = b && KJV_BY_BOOK[b.en];
   const verses = (chapters && chapters[c-1]) || [];
   return verses.map(cleanKjvText);
+}
+
+const TH_BY_BOOK = {};
+thKjvData.forEach(b=>{ TH_BY_BOOK[b.book] = b.chapters; });
+function thVerses(m, c){
+  const b = BOOKS.find(x=>x.m===m);
+  const chapters = b && TH_BY_BOOK[b.en];
+  return (chapters && chapters[c-1]) || [];
 }
 const PALETTE = [
   {top:'#E7B7B9', bottom:'#3F5670'},
@@ -2580,7 +2589,9 @@ function renderDaily(){
 }
 
 function renderBibleTab(){
-  const verseTexts = state.lang==='en' ? kjvVerses(state.activeMonth, state.activeChapter) : CHAPTER.verses;
+  const verseTexts = state.lang==='en' ? kjvVerses(state.activeMonth, state.activeChapter)
+    : state.lang==='th' ? thVerses(state.activeMonth, state.activeChapter)
+    : CHAPTER.verses;
   const verses = verseTexts.map((text,idx)=>{
     const n = idx+1;
     return `<div class="verse" id="verse-${n}"><span class="vnum">${n}</span><span>${text}</span></div>`;
