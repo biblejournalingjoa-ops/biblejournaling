@@ -278,12 +278,12 @@ const STRINGS = {
     toastShareUnsupported:'이 기기·브라우저에서는 바로 공유가 지원되지 않아 이미지를 다운로드했어요. 카카오톡에서 직접 첨부해 주세요.',
     toastDownloadDone:'이미지가 다운로드되었어요',
     groupInfoParticipants:(n)=>`참여자 ${n}명`,
-    chatEnterBtn:'채팅하기', leaveGroupBtn:'그룹 나가기',
-    leaveConfirmTitle:'정말 이 그룹에서 나가시겠어요?',
-    leaveConfirmBody:'그룹을 나가면 더 이상 이 채팅방의 메시지를 볼 수 없습니다.',
-    leaveConfirmBtn:'그룹 나가기',
-    toastLeftGroup:'그룹에서 나갔어요',
-    toastLeaveFailed:'그룹 나가기에 실패했어요. 다시 시도해 주세요',
+    leaveGroupBtn:'채팅방 나가기',
+    leaveConfirmTitle:'채팅방에서 나가시겠어요?',
+    leaveConfirmBody:'나가면 이 채팅방의 메시지와 멤버 목록에 더 이상 접근할 수 없습니다.',
+    leaveConfirmBtn:'채팅방 나가기',
+    toastLeftGroup:'채팅방에서 나갔어요',
+    toastLeaveFailed:'채팅방 나가기에 실패했어요. 다시 시도해 주세요',
     toastMembersLoadFailed:'참여자 정보를 불러오지 못했어요',
     memberFallbackName:'팀원', youTag:'(나)', loadingLabel:'불러오는 중...',
     groupManageTitle:'채팅방 관리',
@@ -291,18 +291,14 @@ const STRINGS = {
     renameRoomTitle:'채팅방 이름 변경',
     changeRoomPhotoTitle:'채팅방 프로필 사진 변경',
     ownerTag:'방장',
-    explodeRoomBtn:'채팅방 폭파',
-    explodeConfirmTitle:'채팅방을 폭파하시겠습니까?',
-    explodeConfirmBody:'채팅방을 폭파하면 모든 참여자가 이 채팅방에 접근할 수 없게 됩니다.\n이 작업은 되돌릴 수 없습니다.',
-    explodeConfirmBtn:'채팅방 폭파',
+    streakLabel:'연속 기록',
+    streakDaysSuffix:(n)=>`${n}일 연속 기록`,
     toastRoomNameEmpty:'채팅방 이름을 입력해 주세요',
     toastRoomNameTooLong:'채팅방 이름은 30자 이내로 입력해 주세요',
     toastRoomNameSaved:'채팅방 이름이 변경되었습니다',
     toastRoomNameSaveFailed:'채팅방 이름 저장에 실패했어요. 다시 시도해 주세요',
     toastRoomPhotoSaved:'채팅방 프로필 사진이 변경되었습니다',
     toastRoomPhotoSaveFailed:'채팅방 프로필 사진 업로드에 실패했어요. 다시 시도해 주세요',
-    toastRoomClosed:'채팅방을 폭파했어요',
-    toastRoomCloseFailed:'채팅방 폭파에 실패했어요. 다시 시도해 주세요',
     toastRoomGone:'더 이상 존재하지 않는 채팅방이에요',
   },
   en:{
@@ -421,12 +417,12 @@ const STRINGS = {
     toastShareUnsupported:"Direct sharing isn't supported on this device/browser, so the image was downloaded instead. Please attach it in KakaoTalk yourself.",
     toastDownloadDone:'Image downloaded',
     groupInfoParticipants:(n)=>`${n} participant${n===1?'':'s'}`,
-    chatEnterBtn:'Chat', leaveGroupBtn:'Leave group',
-    leaveConfirmTitle:'Leave this group?',
-    leaveConfirmBody:"Once you leave, you won't be able to see this chat room's messages anymore.",
-    leaveConfirmBtn:'Leave group',
-    toastLeftGroup:'You left the group',
-    toastLeaveFailed:'Failed to leave the group. Please try again',
+    leaveGroupBtn:'Leave chat room',
+    leaveConfirmTitle:'Leave this chat room?',
+    leaveConfirmBody:"Once you leave, you won't be able to access this chat room's messages or member list anymore.",
+    leaveConfirmBtn:'Leave chat room',
+    toastLeftGroup:'You left the chat room',
+    toastLeaveFailed:'Failed to leave the chat room. Please try again',
     toastMembersLoadFailed:'Could not load participants',
     memberFallbackName:'Member', youTag:'(You)', loadingLabel:'Loading...',
     groupManageTitle:'Chat room settings',
@@ -434,18 +430,14 @@ const STRINGS = {
     renameRoomTitle:'Rename chat room',
     changeRoomPhotoTitle:'Change chat room photo',
     ownerTag:'Owner',
-    explodeRoomBtn:'Destroy chat room',
-    explodeConfirmTitle:'Destroy this chat room?',
-    explodeConfirmBody:"Destroying this chat room will remove access for every participant.\nThis cannot be undone.",
-    explodeConfirmBtn:'Destroy chat room',
+    streakLabel:'Streak',
+    streakDaysSuffix:(n)=>`${n}-day streak`,
     toastRoomNameEmpty:'Please enter a chat room name',
     toastRoomNameTooLong:'Chat room names must be 30 characters or fewer',
     toastRoomNameSaved:'Chat room name updated',
     toastRoomNameSaveFailed:'Could not save the chat room name. Please try again',
     toastRoomPhotoSaved:'Chat room photo updated',
     toastRoomPhotoSaveFailed:'Could not upload the chat room photo. Please try again',
-    toastRoomClosed:'Chat room destroyed',
-    toastRoomCloseFailed:'Could not destroy the chat room. Please try again',
     toastRoomGone:'This chat room no longer exists',
   },
   ja:{
@@ -564,11 +556,11 @@ const STRINGS = {
     toastShareUnsupported:'この端末・ブラウザでは直接共有がサポートされていないため、画像をダウンロードしました。カカオトークで直接添付してください。',
     toastDownloadDone:'画像がダウンロードされました',
     groupInfoParticipants:(n)=>`参加者 ${n}人`,
-    chatEnterBtn:'チャットする', leaveGroupBtn:'グループを退出',
-    leaveConfirmTitle:'本当にこのグループから退出しますか?',
-    leaveConfirmBody:'退出すると、このチャットルームのメッセージはもう見られなくなります。',
-    leaveConfirmBtn:'グループを退出',
-    toastLeftGroup:'グループから退出しました',
+    leaveGroupBtn:'チャットルームを退出',
+    leaveConfirmTitle:'このチャットルームから退出しますか?',
+    leaveConfirmBody:'退出すると、このチャットルームのメッセージやメンバー一覧に二度とアクセスできなくなります。',
+    leaveConfirmBtn:'チャットルームを退出',
+    toastLeftGroup:'チャットルームから退出しました',
     toastLeaveFailed:'退出に失敗しました。もう一度お試しください',
     toastMembersLoadFailed:'参加者情報を読み込めませんでした',
     memberFallbackName:'メンバー', youTag:'(自分)', loadingLabel:'読み込み中...',
@@ -577,18 +569,14 @@ const STRINGS = {
     renameRoomTitle:'チャットルーム名を変更',
     changeRoomPhotoTitle:'チャットルームのプロフィール写真を変更',
     ownerTag:'ルームリーダー',
-    explodeRoomBtn:'チャットルームを削除',
-    explodeConfirmTitle:'このチャットルームを削除しますか?',
-    explodeConfirmBody:'チャットルームを削除すると、すべての参加者がこのチャットルームにアクセスできなくなります。\nこの操作は元に戻せません。',
-    explodeConfirmBtn:'チャットルームを削除',
+    streakLabel:'連続記録',
+    streakDaysSuffix:(n)=>`${n}日連続記録`,
     toastRoomNameEmpty:'チャットルーム名を入力してください',
     toastRoomNameTooLong:'チャットルーム名は30文字以内で入力してください',
     toastRoomNameSaved:'チャットルーム名が変更されました',
     toastRoomNameSaveFailed:'チャットルーム名の保存に失敗しました。もう一度お試しください',
     toastRoomPhotoSaved:'チャットルームのプロフィール写真が変更されました',
     toastRoomPhotoSaveFailed:'チャットルームのプロフィール写真のアップロードに失敗しました。もう一度お試しください',
-    toastRoomClosed:'チャットルームを削除しました',
-    toastRoomCloseFailed:'チャットルームの削除に失敗しました。もう一度お試しください',
     toastRoomGone:'これ以上存在しないチャットルームです',
   },
   th:{
@@ -707,12 +695,12 @@ const STRINGS = {
     toastShareUnsupported:'อุปกรณ์/เบราว์เซอร์นี้ไม่รองรับการแบ่งปันโดยตรง จึงดาวน์โหลดภาพให้แทน กรุณาแนบไฟล์ใน KakaoTalk ด้วยตนเอง',
     toastDownloadDone:'ดาวน์โหลดภาพแล้ว',
     groupInfoParticipants:(n)=>`ผู้เข้าร่วม ${n} คน`,
-    chatEnterBtn:'แชท', leaveGroupBtn:'ออกจากกลุ่ม',
-    leaveConfirmTitle:'ต้องการออกจากกลุ่มนี้จริงหรือไม่?',
-    leaveConfirmBody:'เมื่อออกจากกลุ่มแล้ว คุณจะไม่สามารถดูข้อความในห้องแชทนี้ได้อีก',
-    leaveConfirmBtn:'ออกจากกลุ่ม',
-    toastLeftGroup:'ออกจากกลุ่มแล้ว',
-    toastLeaveFailed:'ออกจากกลุ่มไม่สำเร็จ กรุณาลองอีกครั้ง',
+    leaveGroupBtn:'ออกจากห้องแชท',
+    leaveConfirmTitle:'ต้องการออกจากห้องแชทนี้หรือไม่?',
+    leaveConfirmBody:'เมื่อออกแล้ว คุณจะไม่สามารถเข้าถึงข้อความและรายชื่อสมาชิกของห้องแชทนี้ได้อีก',
+    leaveConfirmBtn:'ออกจากห้องแชท',
+    toastLeftGroup:'ออกจากห้องแชทแล้ว',
+    toastLeaveFailed:'ออกจากห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastMembersLoadFailed:'ไม่สามารถโหลดข้อมูลผู้เข้าร่วมได้',
     memberFallbackName:'สมาชิก', youTag:'(ฉัน)', loadingLabel:'กำลังโหลด...',
     groupManageTitle:'จัดการห้องแชท',
@@ -720,18 +708,14 @@ const STRINGS = {
     renameRoomTitle:'เปลี่ยนชื่อห้องแชท',
     changeRoomPhotoTitle:'เปลี่ยนรูปโปรไฟล์ห้องแชท',
     ownerTag:'เจ้าของห้อง',
-    explodeRoomBtn:'ทำลายห้องแชท',
-    explodeConfirmTitle:'ต้องการทำลายห้องแชทนี้หรือไม่?',
-    explodeConfirmBody:'เมื่อทำลายห้องแชทแล้ว ผู้เข้าร่วมทุกคนจะไม่สามารถเข้าถึงห้องแชทนี้ได้อีก\nไม่สามารถย้อนกลับการทำงานนี้ได้',
-    explodeConfirmBtn:'ทำลายห้องแชท',
+    streakLabel:'สถิติต่อเนื่อง',
+    streakDaysSuffix:(n)=>`บันทึกต่อเนื่อง ${n} วัน`,
     toastRoomNameEmpty:'กรุณากรอกชื่อห้องแชท',
     toastRoomNameTooLong:'ชื่อห้องแชทต้องไม่เกิน 30 ตัวอักษร',
     toastRoomNameSaved:'เปลี่ยนชื่อห้องแชทแล้ว',
     toastRoomNameSaveFailed:'บันทึกชื่อห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastRoomPhotoSaved:'เปลี่ยนรูปโปรไฟล์ห้องแชทแล้ว',
     toastRoomPhotoSaveFailed:'อัปโหลดรูปโปรไฟล์ห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
-    toastRoomClosed:'ทำลายห้องแชทแล้ว',
-    toastRoomCloseFailed:'ทำลายห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastRoomGone:'ห้องแชทนี้ไม่มีอยู่แล้ว',
   },
 };
@@ -774,12 +758,11 @@ const ICON = {
   chatBubble:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12a7.5 7.5 0 01-11 6.6L4 20l1.4-4.5A7.5 7.5 0 1120 12z"/></svg>`,
   copy:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M5 15.5H4a1 1 0 01-1-1V4a1 1 0 011-1h10.5a1 1 0 011 1v1"/></svg>`,
   menu:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`,
-  bomb:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="14" r="7"/><path d="M16 9l2.5-2.5M17 4l1.5 1.5M19.5 6.5L21 8"/></svg>`,
 };
 
 /* ---------------- state ---------------- */
 let state = {
-  screen:'loading',         // loading | main | login | signup | chapters | daily | groups | group-info | group-room | group-manage | settings
+  screen:'loading',         // loading | main | login | signup | chapters | daily | groups | group-room | group-manage | settings
   purchased:[1,2,3,4,5], // all 5 Pentateuch books are free/unlocked
   loggedIn:false,
   user:null,                // { name, email, photoUrl } of the signed-in user
@@ -791,16 +774,15 @@ let state = {
   selectedPlan:'year',      // year | month  (chosen inside purchase modal)
   askOpen:false,
   activeGroupId:null,       // group room currently open
-  groupInfoMembers:null,    // [{uid,name,photoUrl}] for the open group-info/group-manage screen; null while loading
+  groupInfoMembers:null,    // [{uid,name,photoUrl,streak}] for the open group-manage screen; null while loading
   groupInfoError:false,     // true if the participant list failed to load from Firestore
-  leaveConfirmOpen:false,   // whether the "leave group" confirm dialog is open
-  leaveBusy:false,          // true while a leave-group request is in flight
+  leaveConfirmOpen:false,   // whether the "leave chat room" confirm dialog is open
+  leaveBusy:false,          // true while a leave-room request is in flight
   groupManageDoc:null,      // { id, name, photoUrl, ownerUid, closed, ... } the live Firestore doc for the open group-manage/group-room screen
   groupNameEditOpen:false,  // whether the room-name edit field is showing on the manage screen
   groupNameSaving:false,    // true while a room-name save is in flight
   roomPhotoModal:null,      // { blob, previewUrl, saving } while a newly picked room photo awaits confirmation
-  explodeConfirmOpen:false, // whether the "destroy chat room" confirm dialog is open
-  explodeBusy:false,        // true while a destroy-chat-room request is in flight
+  memberProfileUid:null,    // uid whose profile card is open (from the group-manage participant list)
   createGroupOpen:false,
   inviteGroupId:null,       // group id whose invite sheet is open
   shareGroupId:null,        // group id whose share-picker sheet is open
@@ -911,10 +893,11 @@ function syncMessageToFirestore(g, msg){
     .catch(err=>console.error('Firestore chat save failed:', err));
 }
 
-/* Loads the group-info screen's participant list from Firestore (groups/{id}.members,
-   with each member's users/{uid} profile for nickname + photo). Also makes sure the
-   group document exists and includes the current user, so a group that was only ever
-   created locally still has real member data to show and to leave later. */
+/* Loads the group-manage screen's participant list from Firestore (groups/{id}.members,
+   with each member's users/{uid} profile for nickname + photo + journalEntryCount, shown
+   to other members as their "streak"). Also makes sure the group document exists and
+   includes the current user, so a group that was only ever created locally still has real
+   member data to show and to leave later. */
 function loadGroupMembers(groupId){
   state.groupInfoMembers = null;
   state.groupInfoError = false;
@@ -943,10 +926,11 @@ function loadGroupMembers(groupId){
               uid,
               name: (u && (u.nickname || u.name)) || T('memberFallbackName'),
               photoUrl: (u && u.photoUrl) || null,
+              streak: (u && typeof u.journalEntryCount === 'number') ? u.journalEntryCount : 0,
             };
           }catch(err){
             console.error('Failed to load member profile:', uid, err);
-            return { uid, name: T('memberFallbackName'), photoUrl: null };
+            return { uid, name: T('memberFallbackName'), photoUrl: null, streak: 0 };
           }
         }));
         if(state.activeGroupId===groupId) state.groupInfoMembers = members;
@@ -958,15 +942,50 @@ function loadGroupMembers(groupId){
       state.groupInfoMembers = [];
     }
   }).finally(()=>{
-    if(state.screen==='group-info' || state.screen==='group-manage') render();
+    if(state.activeGroupId===groupId && state.screen==='group-manage'){
+      subscribeGroupMembersLive(groupId);
+      render();
+    }
   });
+}
+
+/* Keeps each participant's nickname/photo/streak live-synced while the group-manage
+   screen is open, so if someone changes their nickname or profile photo, other members
+   in the same chat room see the update without a reload. */
+let memberProfileUnsubs = {};
+function subscribeGroupMembersLive(groupId){
+  unsubscribeGroupMembersLive();
+  const fdb = window.__firebaseDB;
+  const members = state.groupInfoMembers;
+  if(!fdb || !fdb.ready || typeof fdb.subscribeToUser !== 'function' || !members) return;
+  members.forEach(m=>{
+    memberProfileUnsubs[m.uid] = fdb.subscribeToUser(m.uid, (u)=>{
+      if(state.activeGroupId !== groupId) return;
+      const list = state.groupInfoMembers;
+      if(!list) return;
+      const idx = list.findIndex(x=>x.uid===m.uid);
+      if(idx===-1) return;
+      list[idx] = {
+        uid: m.uid,
+        name: (u && (u.nickname || u.name)) || T('memberFallbackName'),
+        photoUrl: (u && u.photoUrl) || null,
+        streak: (u && typeof u.journalEntryCount === 'number') ? u.journalEntryCount : 0,
+      };
+      render();
+    });
+  });
+}
+function unsubscribeGroupMembersLive(){
+  Object.values(memberProfileUnsubs).forEach(unsub=>{ try{ unsub(); }catch(e){} });
+  memberProfileUnsubs = {};
 }
 
 /* Keeps the room's Firestore doc (name/photoUrl/ownerUid/closed) live-synced while the
    user is inside the group-room or group-manage screen: local `groups` cache is patched
    immediately so the room header / manage screen / groups list all reflect the latest
-   name & photo without a reload, and if the owner "explodes" the room while someone else
-   is looking at it, that someone is bounced back out to the groups list right away. */
+   name & photo without a reload. The `closed` check is a defensive fallback only (no UI
+   can set it anymore since chat-room "destroy" was removed in favor of "leave") - it just
+   bounces someone back to the groups list if a room is ever closed by other means. */
 function ensureGroupDocSub(groupId){
   if(groupDocUnsubId === groupId && groupDocUnsub) return;
   subscribeToGroupDoc(groupId);
@@ -1358,6 +1377,7 @@ function subscribeToAuthUser(){
     state.loggedIn = true;
     window.storage.set('user-profile', JSON.stringify(state.user), false).catch(()=>{});
     saveAuth();
+    syncStreakToFirestore();
     if(groupsLoaded) render();
   });
 }
@@ -1383,7 +1403,22 @@ function syncJournalToFirestore(book, chapter, entry){
     book, chapter,
     contentAnswers: entry.content,
     thoughtAnswers: entry.thought,
-  }).catch(err=>console.error('Firestore journal save failed:', err));
+  }).then(()=> syncStreakToFirestore())
+    .catch(err=>console.error('Firestore journal save failed:', err));
+}
+/* Persists the same count computeStreak() already shows on the home screen badge into
+   users/{uid}.journalEntryCount, so other members of a shared chat room can see this
+   user's streak on their profile card without ever reading their private journal
+   entries (see firestore.rules: journals subcollection stays owner-only). */
+let lastPushedStreak = null;
+function syncStreakToFirestore(){
+  if(!(state.user && state.user.uid)) return;
+  const fdb = window.__firebaseDB;
+  if(!fdb || !fdb.ready || typeof fdb.updateUserStreak !== 'function') return;
+  const streak = computeStreak();
+  if(streak === lastPushedStreak) return;
+  lastPushedStreak = streak;
+  fdb.updateUserStreak(state.user.uid, streak).catch(err=>console.error('Failed to sync streak count:', err));
 }
 
 /* ---------------- helpers ---------------- */
@@ -1577,7 +1612,6 @@ function render(){
   else if(state.screen==='chapters') html = renderChapterGrid();
   else if(state.screen==='daily') html = renderDaily();
   else if(state.screen==='groups') html = renderGroupsList();
-  else if(state.screen==='group-info') html = renderGroupInfo();
   else if(state.screen==='group-room') html = renderGroupRoom();
   else if(state.screen==='group-manage') html = renderGroupManage();
   else if(state.screen==='settings') html = renderSettingsScreen();
@@ -1600,7 +1634,7 @@ function render(){
   if(state.languageModal) overlays += renderLanguageModal();
   if(state.leaveConfirmOpen) overlays += renderLeaveConfirmModal();
   if(state.roomPhotoModal) overlays += renderRoomPhotoModal();
-  if(state.explodeConfirmOpen) overlays += renderExplodeConfirmModal();
+  if(state.memberProfileUid) overlays += renderMemberProfileSheet();
 
   app.innerHTML = html + overlays + renderLoadingOverlay() + `<div class="toast" id="toast"></div>`;
 
@@ -1621,6 +1655,9 @@ function render(){
     ensureGroupDocSub(state.activeGroupId);
   } else if(state.screen!=='group-room' && state.screen!=='group-manage'){
     unsubscribeGroupDoc();
+  }
+  if(state.screen!=='group-manage'){
+    unsubscribeGroupMembersLive();
   }
   if(state.screen==='group-manage' && state.groupNameEditOpen){
     requestAnimationFrame(()=>{
@@ -2101,55 +2138,7 @@ function renderGroupsList(){
   `;
 }
 
-/* ---------------- group info (participants) ---------------- */
-function renderGroupInfo(){
-  const g = getGroup(state.activeGroupId);
-  if(!g){
-    return `<div class="groups-header"><button class="icon-btn" data-action="go-groups">${ICON.back}</button></div>`;
-  }
-  const members = state.groupInfoMembers;
-  const count = members ? members.length : (g.memberCount || 1);
-
-  let membersHtml;
-  if(members === null){
-    membersHtml = `<div class="member-list-status">${T('loadingLabel')}</div>`;
-  } else if(members.length === 0){
-    membersHtml = state.groupInfoError
-      ? `<div class="member-list-status error">${T('toastMembersLoadFailed')}</div>`
-      : '';
-  } else {
-    membersHtml = members.map(m=>`
-      <div class="member-row">
-        <div class="member-avatar">${m.photoUrl ? `<img src="${escapeHtml(m.photoUrl)}" alt="">` : ICON.person}</div>
-        <div class="member-name">${escapeHtml(m.name)}${state.user && state.user.uid===m.uid ? ` <span class="member-you">${T('youTag')}</span>` : ''}</div>
-      </div>
-    `).join('');
-  }
-
-  return `
-    <div class="groups-header">
-      <button class="icon-btn" data-action="go-groups">${ICON.back}</button>
-      <div class="titles">
-        <div class="cap">Together</div>
-        <h2>${escapeHtml(g.name)}</h2>
-      </div>
-    </div>
-    <div class="group-info-body">
-      <div class="group-info-summary">
-        ${groupAvatarHtml(g, 'group-avatar-lg')}
-        <div class="gi-name">${escapeHtml(g.name)}</div>
-        <div class="gi-count">${T('groupInfoParticipants', count)}</div>
-      </div>
-      <div class="member-list">${membersHtml}</div>
-      <div class="group-info-actions">
-        <button class="btn btn-primary" data-action="open-group-chat">${T('chatEnterBtn')}</button>
-        <button class="btn btn-danger" data-action="open-leave-confirm">${T('leaveGroupBtn')}</button>
-      </div>
-    </div>
-  `;
-}
-
-/* ---------------- chat room management (rename / photo / destroy) ---------------- */
+/* ---------------- chat room management (rename / photo / leave) ---------------- */
 function renderGroupManage(){
   const g = getGroup(state.activeGroupId);
   if(!g){
@@ -2168,14 +2157,16 @@ function renderGroupManage(){
       ? `<div class="member-list-status error">${T('toastMembersLoadFailed')}</div>`
       : '';
   } else {
+    // each participant is a button: tapping their photo/nickname opens their profile
+    // card (photo + nickname + streak only - see renderMemberProfileSheet).
     membersHtml = members.map(m=>`
-      <div class="member-row">
+      <button type="button" class="member-row member-row-btn" data-action="open-member-profile" data-uid="${escapeHtml(m.uid)}">
         <div class="member-avatar">${m.photoUrl ? `<img src="${escapeHtml(m.photoUrl)}" alt="">` : ICON.person}</div>
         <div class="member-name">${escapeHtml(m.name)}
           ${ownerUid && m.uid===ownerUid ? ` <span class="member-you">${T('ownerTag')}</span>` : ''}
           ${state.user && state.user.uid===m.uid ? ` <span class="member-you">${T('youTag')}</span>` : ''}
         </div>
-      </div>
+      </button>
     `).join('');
   }
 
@@ -2216,9 +2207,7 @@ function renderGroupManage(){
       </div>
       <div class="member-list">${membersHtml}</div>
       <div class="group-info-actions">
-        ${owner
-          ? `<button class="btn btn-danger" data-action="open-explode-confirm">${ICON.bomb} ${T('explodeRoomBtn')}</button>`
-          : `<button class="btn btn-danger" data-action="open-leave-confirm">${T('leaveGroupBtn')}</button>`}
+        <button class="btn btn-danger" data-action="open-leave-confirm">${T('leaveGroupBtn')}</button>
       </div>
     </div>
   `;
@@ -2242,16 +2231,25 @@ function renderRoomPhotoModal(){
     </div>
   </div>`;
 }
-function renderExplodeConfirmModal(){
+/* Small bottom-sheet profile card for a fellow chat room member: photo + nickname +
+   streak only (no email/uid/phone/other personal or account info). Data comes straight
+   from state.groupInfoMembers, which is only ever populated for members of a group the
+   current user is themselves a member of (see loadGroupMembers / firestore.rules). */
+function renderMemberProfileSheet(){
+  const uid = state.memberProfileUid;
+  if(!uid) return '';
+  const members = state.groupInfoMembers || [];
+  const m = members.find(x=>x.uid===uid);
+  const name = m ? m.name : T('memberFallbackName');
+  const photoUrl = m ? m.photoUrl : null;
+  const streak = (m && typeof m.streak === 'number') ? m.streak : 0;
   return `
-  <div class="overlay center" data-action="${state.explodeBusy?'noop':'close-explode-confirm'}">
-    <div class="modal-card" data-action="noop">
-      <div class="modal-title">${T('explodeConfirmTitle')}</div>
-      <p class="modal-sub" style="white-space:pre-line;">${T('explodeConfirmBody')}</p>
-      <div class="modal-actions">
-        <button class="btn btn-cancel" data-action="close-explode-confirm" ${state.explodeBusy?'disabled':''}>${T('cancel')}</button>
-        <button class="btn btn-danger" data-action="confirm-explode-room" ${state.explodeBusy?'disabled':''}>${T('explodeConfirmBtn')}</button>
-      </div>
+  <div class="overlay center" data-action="close-member-profile">
+    <div class="modal-card member-profile-card" data-action="noop">
+      <div class="member-profile-avatar">${photoUrl ? `<img src="${escapeHtml(photoUrl)}" alt="">` : ICON.person}</div>
+      <div class="member-profile-name">${escapeHtml(name)}</div>
+      <div class="member-profile-streak">${ICON.flame}<span>${T('streakDaysSuffix', streak)}</span></div>
+      <button class="btn btn-cancel" data-action="close-member-profile" style="margin-top:20px;">${T('cancel')}</button>
     </div>
   </div>`;
 }
@@ -2836,7 +2834,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='do-logout'){
     const finishLogout = ()=>{
-      state.loggedIn=false; state.user=null; saveAuth(); state.screen='login'; render(); showToast(T('toastLogout'));
+      state.loggedIn=false; state.user=null; lastPushedStreak=null; saveAuth(); state.screen='login'; render(); showToast(T('toastLogout'));
     };
     if(window.__firebaseAuth && window.__firebaseAuth.ready){
       window.__firebaseAuth.signOutOfGoogle().then(finishLogout).catch(err=>{
@@ -3063,13 +3061,6 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='open-group'){
     state.activeGroupId = el.dataset.id;
-    state.screen='group-info';
-    state.groupInfoMembers = null;
-    state.groupInfoError = false;
-    render();
-    loadGroupMembers(state.activeGroupId);
-  }
-  else if(action==='open-group-chat'){
     state.screen='group-room';
     render();
   }
@@ -3163,45 +3154,14 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       showToast(T('toastRoomNameSaveFailed'));
     });
   }
-  else if(action==='open-explode-confirm'){
-    if(!isRoomOwner()) return;
-    state.explodeConfirmOpen = true;
+  else if(action==='open-member-profile'){
+    if(!el.dataset.uid) return;
+    state.memberProfileUid = el.dataset.uid;
     render();
   }
-  else if(action==='close-explode-confirm'){
-    if(state.explodeBusy) return;
-    state.explodeConfirmOpen = false;
+  else if(action==='close-member-profile'){
+    state.memberProfileUid = null;
     render();
-  }
-  else if(action==='confirm-explode-room'){
-    if(state.explodeBusy) return;
-    const groupId = state.activeGroupId;
-    const fdb = window.__firebaseDB;
-    if(!groupId || !fdb || !fdb.ready || typeof fdb.closeGroup !== 'function'){
-      state.explodeConfirmOpen = false;
-      render();
-      showToast(T('toastRoomCloseFailed'));
-      return;
-    }
-    state.explodeBusy = true;
-    render();
-    withLoading(fdb.closeGroup(groupId)).then(()=>{
-      groups = groups.filter(gr=>gr.id!==groupId);
-      saveGroups();
-      state.explodeBusy = false;
-      state.explodeConfirmOpen = false;
-      state.activeGroupId = null;
-      state.groupManageDoc = null;
-      state.groupInfoMembers = null;
-      state.screen = 'groups';
-      render();
-      showToast(T('toastRoomClosed'));
-    }).catch(err=>{
-      console.error('Failed to destroy chat room:', err);
-      state.explodeBusy = false;
-      render();
-      showToast(T('toastRoomCloseFailed'));
-    });
   }
   else if(action==='open-leave-confirm'){
     state.leaveConfirmOpen = true;
@@ -3234,6 +3194,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       state.groupInfoError = false;
       state.groupManageDoc = null;
       state.groupNameEditOpen = false;
+      state.memberProfileUid = null;
       state.screen = 'groups';
       render();
       showToast(T('toastLeftGroup'));

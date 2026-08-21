@@ -93,16 +93,6 @@ export async function updateGroupPhoto(groupId, photoUrl) {
 }
 
 /**
- * 채팅방을 "폭파"합니다. 대화 기록을 실제로 지우는 대신(비용·되돌릴 수 없음 문제),
- * closed 플래그만 세워 이후 모든 read/write를 Security Rules에서 차단하는 소프트 삭제
- * 방식을 씁니다. Security Rules 상 방장만 허용됩니다.
- */
-export async function closeGroup(groupId) {
-  if (!groupId) throw new Error("closeGroup: groupId is required");
-  await updateDoc(doc(db, "groups", groupId), { closed: true, closedAt: serverTimestamp() });
-}
-
-/**
  * 그룹 문서 실시간 구독. 채팅방 이름/프로필 사진/폭파 여부가 바뀌면 즉시 콜백을 호출합니다.
  * @returns {() => void} unsubscribe
  */
