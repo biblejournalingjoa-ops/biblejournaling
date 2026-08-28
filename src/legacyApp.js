@@ -1,5 +1,6 @@
 import kjvData from './data/kjv.json';
 import thKjvData from './data/th_kjv.json';
+import { getBibleInfo } from './data/bibleInfo.js';
 
 /* ---------------- data ---------------- */
 const BOOKS = [
@@ -227,6 +228,7 @@ const STRINGS = {
     chapterInfoEmptyBody:'이 책의 배경 설명은 곧 추가될 예정이에요.',
     copyVerseBtn:'구절 복사하기',
     toastVerseCopied:'구절이 복사되었습니다.',
+    bibleInfoOriginLabel:'기원', bibleInfoAuthorLabel:'저자', bibleInfoEraLabel:'기록연대', bibleInfoOutlineLabel:'개요',
     qPlaceholder:'생각한 답을 적어보세요',
     verseLabel:'나에게 주신 말씀 한 구절', versePh:'예: 출애굽기 8:10',
     passageLabel:'본문 내용', passagePh:'오늘 본문의 흐름을 요약해 보세요',
@@ -368,6 +370,7 @@ const STRINGS = {
     chapterInfoEmptyBody:"Background notes for this book will be added soon.",
     copyVerseBtn:'Copy Verse',
     toastVerseCopied:'Verse copied.',
+    bibleInfoOriginLabel:'Origin', bibleInfoAuthorLabel:'Author', bibleInfoEraLabel:'Written', bibleInfoOutlineLabel:'Outline',
     qPlaceholder:'Write your answer here',
     verseLabel:'A verse given to me', versePh:'e.g. Exodus 8:10',
     passageLabel:'Passage summary', passagePh:'Summarize the flow of today\u2019s passage',
@@ -509,6 +512,7 @@ const STRINGS = {
     chapterInfoEmptyBody:'この書の背景説明は近日追加予定です。',
     copyVerseBtn:'聖句をコピー',
     toastVerseCopied:'聖句をコピーしました。',
+    bibleInfoOriginLabel:'起源', bibleInfoAuthorLabel:'著者', bibleInfoEraLabel:'執筆年代', bibleInfoOutlineLabel:'概要',
     qPlaceholder:'考えた答えを書いてみましょう',
     verseLabel:'私に与えられた御言葉一節', versePh:'例: 出エジプト記8:10',
     passageLabel:'本文の内容', passagePh:'今日の本文の流れをまとめてみましょう',
@@ -650,6 +654,7 @@ const STRINGS = {
     chapterInfoEmptyBody:'ข้อมูลพื้นหลังของหนังสือเล่มนี้จะเพิ่มเข้ามาเร็วๆ นี้',
     copyVerseBtn:'คัดลอกข้อพระคัมภีร์',
     toastVerseCopied:'คัดลอกข้อพระคัมภีร์แล้ว',
+    bibleInfoOriginLabel:'ที่มา', bibleInfoAuthorLabel:'ผู้เขียน', bibleInfoEraLabel:'ช่วงเวลาที่เขียน', bibleInfoOutlineLabel:'โครงร่าง',
     qPlaceholder:'ลองเขียนคำตอบที่คุณคิดไว้',
     verseLabel:'ข้อพระคัมภีร์ที่ได้รับ', versePh:'เช่น อพยพ 8:10',
     passageLabel:'สรุปเนื้อหาบทนี้', passagePh:'ลองสรุปเนื้อหาของบทนี้ในวันนี้',
@@ -2997,16 +3002,59 @@ function renderVerseActionSheet(){
 
 /* ---------------- chapter background info sheet ---------------- */
 function renderChapterInfoSheet(){
+  const info = getBibleInfo(state.activeMonth, state.lang);
+
+  const titleHtml = info
+    ? `${info.titleNative}${info.titleNative!==info.titleEn ? ` <span class="bible-info-title-en">(${info.titleEn})</span>` : ''}`
+    : T('chapterInfoTitle', bookName(state.activeMonth));
+
+  const bodyHtml = info ? `
+    <div class="bi-card">
+      <span class="bi-card-label">${T('bibleInfoOriginLabel')}</span>
+      <p class="bi-origin-text">${info.origin}</p>
+    </div>
+    <div class="bi-meta-row">
+      <div class="bi-meta-badge">
+        <span class="bi-meta-label">${T('bibleInfoAuthorLabel')}</span>
+        <span class="bi-meta-value">${info.author}</span>
+      </div>
+      <div class="bi-meta-badge">
+        <span class="bi-meta-label">${T('bibleInfoEraLabel')}</span>
+        <span class="bi-meta-value">${info.era}</span>
+      </div>
+    </div>
+    <div class="bi-outline">
+      <div class="bi-outline-label">${T('bibleInfoOutlineLabel')}</div>
+      ${info.sections.map(sec=>`
+        <div class="bi-section">
+          <div class="bi-section-title"><span class="mark">✦</span>${sec.label}</div>
+          <div class="bi-chips">
+            ${sec.items.map(it=>`
+              <div class="bi-chip">
+                <span class="bi-chip-num">${it.num}</span>
+                <span class="bi-chip-name">${it.label}</span>
+                <span class="bi-chip-range">${it.range}</span>
+              </div>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>
+  ` : `
+    <div class="guide-empty" style="padding:30px 4px 10px;">
+      <div class="guide-empty-icon">${ICON.info}</div>
+      <div class="guide-empty-title">${T('chapterInfoEmptyTitle')}</div>
+      <p class="guide-empty-body">${T('chapterInfoEmptyBody')}</p>
+    </div>
+  `;
+
   return `
   <div class="overlay" data-action="close-chapter-info">
-    <div class="sheet" data-action="noop">
+    <div class="sheet bible-info-sheet" data-action="noop">
       <div class="sheet-handle"></div>
-      <div class="modal-title">${T('chapterInfoTitle', bookName(state.activeMonth))}</div>
-      <div class="guide-empty" style="padding:30px 4px 10px;">
-        <div class="guide-empty-icon">${ICON.info}</div>
-        <div class="guide-empty-title">${T('chapterInfoEmptyTitle')}</div>
-        <p class="guide-empty-body">${T('chapterInfoEmptyBody')}</p>
+      <div class="bible-info-header">
+        <div class="modal-title">${titleHtml}</div>
+        <button class="icon-btn" data-action="close-chapter-info">${ICON.close}</button>
       </div>
+      ${bodyHtml}
     </div>
   </div>`;
 }
