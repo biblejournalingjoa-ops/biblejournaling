@@ -727,6 +727,211 @@ const STRINGS = {
     toastRoomGone:'ห้องแชทนี้ไม่มีอยู่แล้ว',
   },
 };
+
+/* ---------------- usage guide i18n ----------------
+   저널링 노트 사용가이드 화면 전용 문자열. 기존 STRINGS 사전에 언어별로 합칩니다.
+   실제 기록 화면(renderThoughtTab / renderBibleTab)의 라벨은 기존 키를 그대로 재사용하고,
+   여기서는 각 단계 설명과 12가지 질문만 추가로 정의합니다. */
+const GUIDE_STRINGS = {
+  ko:{
+    guideHowToTitle:'저널링 노트 사용하는 방법',
+    guideHowToLead:'하루의 말씀을 읽고, 묵상하고, 하나님께 묻고,\n삶에 적용하고 기도로 기록해보세요.',
+    guideShotLabel:'실제 기록 화면',
+    guideTapHint:'단계를 누르면 해당 설명으로 이동해요.',
+    guideFlow:['고요하게 하기','말씀 묵상','하나님께 여쭙기','들은 음성 기록','삶에 적용','기도'],
+    guideS1Title:'1. 마음을 고요하게 하기',
+    guideS1En:'Quiet Time',
+    guideS1Desc:'하나님과 일대일로 만나는 시간입니다.\n평안한 마음으로 조용히 말씀을 듣고, 그 말씀에 응답하여 마음을 아룁니다.',
+    guideS1Ref:'출애굽기 8장',
+    guideS1Verse1:'여호와께서 모세에게 바로에게 가서 백성을 보내라고 전하라 말씀하신다.',
+    guideS1Verse2:'모세가 여호와와 같은 이 없음을 알게 되리라 말한다.',
+    guideS1Callout:'먼저 오늘의 말씀을 조용히 읽으며 마음을 준비하세요.',
+    guideS2Title:'2. 말씀 묵상',
+    guideS2En:'Scripture Listening',
+    guideS2Desc:'오늘 본문에서 들은 말씀을 세 곳에 나누어 기록합니다.',
+    guideS2VerseDesc:'마음에 와닿은 한 구절을 기록하세요.',
+    guideS2PassageDesc:'본문의 핵심 내용을 요약해 보세요.',
+    guideS2GodDesc:'오늘 말씀을 통해 알게 된 하나님은 어떤 분인가요?',
+    guideS3Title:'3. 하나님께 여쭙기',
+    guideS3En:'Asking',
+    guideS3Desc:'아래 질문 중 하루 한 가지를 선택해 묻고, 떠오른 답을 기록하세요.',
+    guideS3Callout:'▼ 를 눌러 질문을 고르고, 마음에 떠오른 답을 적으세요.',
+    guideS3ListTitle:'하나님께 드리는 주요 질문 12가지',
+    guideAsk:[
+      '주님, 오늘 제게 주시는 마음의 감동은 무엇입니까?',
+      '제가 놓치고 있는 죄/교만/두려움이 있습니까?',
+      '주님이 오늘 제게 알려주고 싶은 진리는 무엇입니까?',
+      '제가 오늘 사랑해야 할 사람은 누구입니까?',
+      '제가 멈춰야 할 것은 무엇입니까?',
+      '제가 오늘 행동해야 할 작은 한 걸음은 무엇입니까?',
+      '저의 가정, 사역, 사업(일, 공부) 가운데 정리해주시는 방향성이 있습니까?',
+      '제가 걱정하는 문제를 주님은 어떻게 보십니까?',
+      '제가 오늘 내려놓아야 할 짐은 무엇입니까?',
+      '제 삶에서 회복시키길 원하시는 영역은 어디입니까?',
+      '주님이 제게 말씀하시는 위로는 무엇입니까?',
+      '주님, 지금 제게 무엇을 말씀하십니까?',
+    ],
+    guideS4Title:'4. 들은 음성 기록하기',
+    guideS4En:'Listening & Writing',
+    guideS4Desc:'고요하게 들리는 감동·생각·그림·성경 말씀 등을 기록합니다.',
+    guideS4Note:'기록한 내용이 성경의 원리와 일치하는지 검증하면서 적어요.',
+    guideS5Title:'5. 삶으로의 적용',
+    guideS5Desc:'오늘 말씀 중에 즉시 적용할 한 가지 실천을 기록하세요.',
+    guideS6Title:'6. 기도',
+    guideS6Desc:'기도제목과 오늘의 감사를 나누어 기록합니다.',
+    guideS6PrayerDesc:'하나님께 감사함으로 드릴 기도를 기록하세요.',
+    guideS6ThanksDesc:'말씀과 성령의 인도 중에 주시는 감사 내용을 기록하세요.',
+  },
+  en:{
+    guideHowToTitle:'How to use the journaling note',
+    guideHowToLead:'Read the day’s Word, reflect on it, ask God,\napply it to your life, and record it as prayer.',
+    guideShotLabel:'Actual entry screen',
+    guideTapHint:'Tap a step to jump to its explanation.',
+    guideFlow:['Stilling your heart','Reflect','Ask God','Write what you heard','Apply','Pray'],
+    guideS1Title:'1. Stilling your heart',
+    guideS1En:'Quiet Time',
+    guideS1Desc:'A time to meet God one on one.\nQuietly listen to the Word with a calm heart, and respond to Him from your heart.',
+    guideS1Ref:'Exodus 8',
+    guideS1Verse1:'The LORD tells Moses to go to Pharaoh and say, “Let my people go.”',
+    guideS1Verse2:'Moses says Pharaoh will come to know there is no one like the LORD.',
+    guideS1Callout:'First, quietly read today’s passage and prepare your heart.',
+    guideS2Title:'2. Scripture reflection',
+    guideS2En:'Scripture Listening',
+    guideS2Desc:'Record what you heard in today’s passage in three places.',
+    guideS2VerseDesc:'Write down the one verse that touched your heart.',
+    guideS2PassageDesc:'Summarize the key content of the passage.',
+    guideS2GodDesc:'Who is the God you came to know through today’s Word?',
+    guideS3Title:'3. Asking God',
+    guideS3En:'Asking',
+    guideS3Desc:'Choose one question for the day, ask it, and write down what comes to mind.',
+    guideS3Callout:'Tap ▼ to choose a question, then write what comes to mind.',
+    guideS3ListTitle:'12 key questions to ask God',
+    guideAsk:[
+      'Lord, what is on Your heart for me today?',
+      'Is there sin, pride, or fear that I am overlooking?',
+      'What truth do You want to show me today?',
+      'Who is someone You want me to love today?',
+      'What is something I need to stop doing?',
+      'What is one small step You want me to take today?',
+      'Is there direction You are giving me for my family, ministry, or work/study?',
+      'How do You see the problem that worries me?',
+      'What burden do You want me to lay down today?',
+      'In what area of my life do You want to bring restoration?',
+      'What comfort do You want to speak to me?',
+      'Lord, what are You saying to me right now?',
+    ],
+    guideS4Title:'4. Writing what you heard',
+    guideS4En:'Listening & Writing',
+    guideS4Desc:'Record the impressions, thoughts, images, or Scripture that come to you quietly.',
+    guideS4Note:'As you write, check that it aligns with the principles of Scripture.',
+    guideS5Title:'5. Applying it to life',
+    guideS5Desc:'Write one thing from today’s Word that you can put into practice right away.',
+    guideS6Title:'6. Prayer',
+    guideS6Desc:'Record your prayer requests and today’s gratitude separately.',
+    guideS6PrayerDesc:'Write a prayer you want to offer to God with thanksgiving.',
+    guideS6ThanksDesc:'Write the thanks that come as you are led by the Word and the Spirit.',
+  },
+  ja:{
+    guideHowToTitle:'ジャーナリングノートの使い方',
+    guideHowToLead:'一日の御言葉を読み、黙想し、神に尋ね、\n生活に適用し、祈りとして記録してみましょう。',
+    guideShotLabel:'実際の記録画面',
+    guideTapHint:'ステップを押すと、その説明へ移動します。',
+    guideFlow:['心を静める','御言葉の黙想','神に尋ねる','聞いた声を記録','生活に適用','祈り'],
+    guideS1Title:'1. 心を静める',
+    guideS1En:'Quiet Time',
+    guideS1Desc:'神と一対一で出会う時間です。\n平安な心で静かに御言葉を聞き、その御言葉に応えて心を申し上げます。',
+    guideS1Ref:'出エジプト記 8章',
+    guideS1Verse1:'主はモーセに、パロのもとへ行き「わたしの民を去らせよ」と告げるよう命じられる。',
+    guideS1Verse2:'モーセは、主のような方はほかにいないとパロが知るようになる、と告げる。',
+    guideS1Callout:'まず今日の御言葉を静かに読み、心を整えましょう。',
+    guideS2Title:'2. 御言葉の黙想',
+    guideS2En:'Scripture Listening',
+    guideS2Desc:'今日の本文で聞いた御言葉を、3つの場所に分けて記録します。',
+    guideS2VerseDesc:'心に響いた一節を記録しましょう。',
+    guideS2PassageDesc:'本文の重要な内容を要約しましょう。',
+    guideS2GodDesc:'今日の御言葉を通して知った神は、どのような方ですか?',
+    guideS3Title:'3. 神に尋ねる',
+    guideS3En:'Asking',
+    guideS3Desc:'下の質問から一日一つを選んで尋ね、心に浮かんだ答えを記録しましょう。',
+    guideS3Callout:'▼ を押して質問を選び、心に浮かんだ答えを書きましょう。',
+    guideS3ListTitle:'神にお尋ねする主な質問12',
+    guideAsk:[
+      '主よ、今日私に与えてくださる心の感動は何ですか?',
+      '私が見落としている罪、高ぶり、恐れはありますか?',
+      '主が今日私に知らせたい真理は何ですか?',
+      '私が今日愛すべき人は誰ですか?',
+      '私がやめるべきことは何ですか?',
+      '私が今日踏み出すべき小さな一歩は何ですか?',
+      '私の家庭、奉仕、仕事(学び)の中で示してくださる方向はありますか?',
+      '私が心配している問題を主はどのようにご覧になっていますか?',
+      '私が今日手放すべき荷物は何ですか?',
+      '私の人生の中で、主が回復させたいと望んでおられる領域はどこですか?',
+      '主が私に語りたい慰めは何ですか?',
+      '主よ、今、私に何を語っておられますか?',
+    ],
+    guideS4Title:'4. 聞いた声を記録する',
+    guideS4En:'Listening & Writing',
+    guideS4Desc:'静かに聞こえる感動・思い・イメージ・聖書の御言葉などを記録します。',
+    guideS4Note:'記録した内容が聖書の原理と一致するか確かめながら書きます。',
+    guideS5Title:'5. 生活への適用',
+    guideS5Desc:'今日の御言葉の中から、すぐに実践できる一つを記録しましょう。',
+    guideS6Title:'6. 祈り',
+    guideS6Desc:'祈りの課題と今日の感謝を分けて記録します。',
+    guideS6PrayerDesc:'神に感謝をもってささげる祈りを記録しましょう。',
+    guideS6ThanksDesc:'御言葉と御霊の導きの中で与えられる感謝を記録しましょう。',
+  },
+  th:{
+    guideHowToTitle:'วิธีใช้สมุดบันทึกเฝ้าเดี่ยว',
+    guideHowToLead:'อ่านพระวจนะประจำวัน ใคร่ครวญ ทูลถามพระเจ้า\nนำไปใช้ในชีวิต และบันทึกเป็นคำอธิษฐาน',
+    guideShotLabel:'หน้าจอบันทึกจริง',
+    guideTapHint:'แตะที่ขั้นตอนเพื่อไปยังคำอธิบาย',
+    guideFlow:['ทำใจให้สงบ','ใคร่ครวญพระวจนะ','ทูลถามพระเจ้า','บันทึกเสียงที่ได้ยิน','นำไปใช้','อธิษฐาน'],
+    guideS1Title:'1. ทำใจให้สงบ',
+    guideS1En:'Quiet Time',
+    guideS1Desc:'เป็นเวลาที่ได้พบพระเจ้าแบบตัวต่อตัว\nฟังพระวจนะอย่างเงียบสงบด้วยใจสงบ แล้วตอบสนองต่อพระองค์จากใจ',
+    guideS1Ref:'อพยพ บทที่ 8',
+    guideS1Verse1:'พระยาห์เวห์ตรัสสั่งโมเสสให้ไปเข้าเฝ้าฟาโรห์และบอกว่า “จงปล่อยประชากรของเราไป”',
+    guideS1Verse2:'โมเสสกล่าวว่าฟาโรห์จะได้รู้ว่าไม่มีผู้ใดเหมือนพระยาห์เวห์',
+    guideS1Callout:'ก่อนอื่น อ่านพระวจนะของวันนี้อย่างเงียบ ๆ และเตรียมใจของคุณ',
+    guideS2Title:'2. ใคร่ครวญพระวจนะ',
+    guideS2En:'Scripture Listening',
+    guideS2Desc:'บันทึกสิ่งที่ได้ยินจากเนื้อหาวันนี้แยกเป็นสามส่วน',
+    guideS2VerseDesc:'เขียนข้อพระคัมภีร์หนึ่งข้อที่สัมผัสใจคุณ',
+    guideS2PassageDesc:'สรุปเนื้อหาสำคัญของบทนี้',
+    guideS2GodDesc:'พระเจ้าที่คุณได้รู้จักผ่านพระวจนะวันนี้เป็นอย่างไร?',
+    guideS3Title:'3. ทูลถามพระเจ้า',
+    guideS3En:'Asking',
+    guideS3Desc:'เลือกคำถามหนึ่งข้อต่อวัน ทูลถาม แล้วบันทึกสิ่งที่ผุดขึ้นในใจ',
+    guideS3Callout:'แตะ ▼ เพื่อเลือกคำถาม แล้วเขียนสิ่งที่ผุดขึ้นในใจ',
+    guideS3ListTitle:'12 คำถามสำคัญที่ทูลถามพระเจ้า',
+    guideAsk:[
+      'พระเจ้าข้า วันนี้พระองค์ทรงสัมผัสใจข้าพระองค์เรื่องอะไร?',
+      'มีบาป ความหยิ่ง หรือความกลัวใดที่ข้าพระองค์มองข้ามไปหรือไม่?',
+      'ความจริงใดที่พระองค์ทรงอยากสำแดงแก่ข้าพระองค์ในวันนี้?',
+      'มีใครบ้างที่พระองค์อยากให้ข้าพระองค์รักในวันนี้?',
+      'มีสิ่งใดที่ข้าพระองค์ควรหยุดทำ?',
+      'ก้าวเล็กๆ ก้าวหนึ่งที่พระองค์อยากให้ข้าพระองค์ทำวันนี้คืออะไร?',
+      'มีทิศทางที่พระองค์กำลังทรงนำในเรื่องครอบครัว การรับใช้ หรือการงาน/การเรียนของข้าพระองค์หรือไม่?',
+      'พระองค์ทรงมองปัญหาที่ข้าพระองค์กังวลอยู่อย่างไร?',
+      'ภาระใดที่พระองค์อยากให้ข้าพระองค์วางลงในวันนี้?',
+      'มีด้านใดในชีวิตของข้าพระองค์ที่พระองค์ทรงปรารถนาจะฟื้นฟู?',
+      'คำปลอบประโลมใดที่พระองค์อยากตรัสกับข้าพระองค์?',
+      'พระเจ้าข้า ขณะนี้พระองค์กำลังตรัสอะไรกับข้าพระองค์?',
+    ],
+    guideS4Title:'4. บันทึกเสียงที่ได้ยิน',
+    guideS4En:'Listening & Writing',
+    guideS4Desc:'บันทึกความประทับใจ ความคิด ภาพ หรือพระวจนะที่เข้ามาอย่างเงียบ ๆ',
+    guideS4Note:'ขณะเขียน ตรวจสอบว่าสอดคล้องกับหลักการของพระคัมภีร์หรือไม่',
+    guideS5Title:'5. การนำไปใช้ในชีวิต',
+    guideS5Desc:'เขียนสิ่งหนึ่งจากพระวจนะวันนี้ที่ลงมือปฏิบัติได้ทันที',
+    guideS6Title:'6. คำอธิษฐาน',
+    guideS6Desc:'บันทึกหัวข้ออธิษฐานและคำขอบพระคุณของวันนี้แยกกัน',
+    guideS6PrayerDesc:'เขียนคำอธิษฐานที่อยากทูลต่อพระเจ้าด้วยการขอบพระคุณ',
+    guideS6ThanksDesc:'เขียนคำขอบพระคุณที่ได้รับขณะได้รับการทรงนำจากพระวจนะและพระวิญญาณ',
+  },
+};
+Object.keys(GUIDE_STRINGS).forEach(l=>{ Object.assign(STRINGS[l] || (STRINGS[l]={}), GUIDE_STRINGS[l]); });
+
 function T(key, ...args){
   const dict = STRINGS[state.lang] || STRINGS.ko;
   const v = dict[key];
@@ -2045,19 +2250,169 @@ function renderContactScreen(){
   `;
 }
 
-/* ---------------- usage guide screen ---------------- */
+/* ---------------- usage guide screen ----------------
+   "저널링 노트 사용하는 방법" 가이드.
+   실제 기록 화면(renderThoughtTab / renderBibleTab)에서 쓰는 것과 동일한 마크업/클래스
+   (.section-block, .s-label, .ask-box, .chapter-card, .thanks-row ...)로 각 입력 영역을
+   비대화형(readonly) 미리보기로 보여주고, 번호 배지·강조 링·말풍선으로 "여기에 기록하세요"를
+   설명한다. 새 입력 UI를 만들지 않으며 기록 데이터/Firebase에 접근하지 않는다. */
+function guideField(labelKey, { tag='textarea', phKey, num }={}){
+  const ph = phKey ? T(phKey) : '';
+  const field = tag==='input'
+    ? `<input type="text" placeholder="${ph}" tabindex="-1" readonly>`
+    : `<textarea placeholder="${ph}" tabindex="-1" readonly></textarea>`;
+  return `
+    <div class="section-block gs-hl"${num ? ` data-gnum="${num}"` : ''}>
+      <div class="s-label"><span class="dot"></span>${T(labelKey)}</div>
+      ${field}
+    </div>`;
+}
+function guideCallouts(rows){
+  return `<ol class="guide-callouts">${rows.map(([n,label,desc])=>`
+    <li><span class="gc-num">${n}</span><div class="gc-body"><b>${label}</b><p>${desc}</p></div></li>`).join('')}</ol>`;
+}
+function guideShot1(){
+  return `
+  <div class="guide-shot">
+    <div class="chapter-card gs-hl">
+      <div class="chapter-card-head">
+        <div>
+          <div class="cap">${T('todayReading')}</div>
+          <h3>${T('guideS1Ref')}</h3>
+        </div>
+      </div>
+      <div class="verse-list">
+        <div class="verse"><span class="vnum">1</span><span>${T('guideS1Verse1')}</span></div>
+        <div class="verse"><span class="vnum">10</span><span>${T('guideS1Verse2')}</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+function guideShot3(){
+  const q = T('guideAsk');
+  return `
+  <div class="guide-shot">
+    <div class="section-block gs-hl" data-gnum="1">
+      <div class="s-label"><span class="dot"></span>${T('askLabel')}</div>
+      <div class="ask-box">
+        <div class="ask-row">
+          <div class="ask-q">${q[0]}</div>
+          <button class="ask-arrow open" tabindex="-1">${ICON.chevDown}</button>
+        </div>
+        <div class="ask-list">
+          <div class="ask-item selected">${q[0]}</div>
+          <div class="ask-item">${q[1]}</div>
+          <div class="ask-item">${q[2]}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function guideQuestionList(){
+  const q = T('guideAsk');
+  return `
+  <details class="guide-q-all">
+    <summary><span>${T('guideS3ListTitle')}</span><span class="gq-count">12</span></summary>
+    <ol class="guide-q-cards">
+      ${q.map((text,i)=>`<li><span class="gq-n">${i+1}</span><span>${text}</span></li>`).join('')}
+    </ol>
+  </details>`;
+}
+function guideShot6(){
+  return `
+  <div class="guide-shot">
+    ${guideField('prayerLabel', { phKey:'prayerPh', num:1 })}
+    <div class="section-block gs-hl" data-gnum="2">
+      <div class="s-label"><span class="dot"></span>${T('thanksLabel')}</div>
+      <div class="thanks-row"><div class="num">1</div><input type="text" style="flex:1" placeholder="${T('thanksPh',1)}" tabindex="-1" readonly></div>
+      <div class="thanks-row"><div class="num">2</div><input type="text" style="flex:1" placeholder="${T('thanksPh',2)}" tabindex="-1" readonly></div>
+    </div>
+  </div>`;
+}
+function guideStep(n, { title, en, desc, shot, callouts, extra }){
+  return `
+    <section class="guide-step" id="guide-step-${n}">
+      <div class="guide-step-head">
+        <span class="guide-step-num">${n}</span>
+        <div class="guide-step-heading">
+          <h3 class="guide-step-title">${title}</h3>
+          ${en ? `<div class="guide-step-en">${en}</div>` : ''}
+        </div>
+      </div>
+      ${desc ? `<p class="guide-step-desc">${desc}</p>` : ''}
+      <div class="guide-shot-label">${T('guideShotLabel')}</div>
+      ${shot}
+      ${callouts || ''}
+      ${extra || ''}
+    </section>`;
+}
 function renderGuideScreen(){
+  const flow = T('guideFlow');
+  const chips = flow.map((label,i)=>`
+    <button class="guide-flow-chip" data-action="guide-jump" data-step="${i+1}">
+      <span class="gfc-num">${i+1}</span><span class="gfc-label">${label}</span>
+    </button>`).join(`<span class="guide-flow-arrow">${ICON.chevDown}</span>`);
+
   return `
     <div class="settings-header">
       <button class="icon-btn" data-action="open-settings">${ICON.back}</button>
       <h2>${T('guideTitle')}</h2>
     </div>
-    <div class="settings-body">
-      <div class="guide-empty">
-        <div class="guide-empty-icon">${ICON.book}</div>
-        <div class="guide-empty-title">${T('guideEmptyTitle')}</div>
-        <p class="guide-empty-body">${T('guideEmptyBody')}</p>
+    <div class="settings-body guide-body">
+      <div class="guide-intro">
+        <h2 class="guide-hero-title">${T('guideHowToTitle')}</h2>
+        <p class="guide-lead">${T('guideHowToLead')}</p>
       </div>
+
+      <div class="guide-flow">${chips}</div>
+      <p class="guide-flow-hint">${T('guideTapHint')}</p>
+
+      ${guideStep(1, {
+        title:T('guideS1Title'), en:T('guideS1En'), desc:T('guideS1Desc'),
+        shot:guideShot1(),
+        callouts:`<p class="guide-tip">${T('guideS1Callout')}</p>`,
+      })}
+
+      ${guideStep(2, {
+        title:T('guideS2Title'), en:T('guideS2En'), desc:T('guideS2Desc'),
+        shot:`<div class="guide-shot">
+          ${guideField('verseLabel', { tag:'input', phKey:'versePh', num:1 })}
+          ${guideField('passageLabel', { phKey:'passagePh', num:2 })}
+          ${guideField('godIsLabel', { phKey:'godIsPh', num:3 })}
+        </div>`,
+        callouts:guideCallouts([
+          [1, T('verseLabel'), T('guideS2VerseDesc')],
+          [2, T('passageLabel'), T('guideS2PassageDesc')],
+          [3, T('godIsLabel'), T('guideS2GodDesc')],
+        ]),
+      })}
+
+      ${guideStep(3, {
+        title:T('guideS3Title'), en:T('guideS3En'), desc:T('guideS3Desc'),
+        shot:guideShot3(),
+        callouts:`<p class="guide-tip">${T('guideS3Callout')}</p>`,
+        extra:guideQuestionList(),
+      })}
+
+      ${guideStep(4, {
+        title:T('guideS4Title'), en:T('guideS4En'), desc:T('guideS4Desc'),
+        shot:`<div class="guide-shot">${guideField('heardLabel', { phKey:'heardPh', num:1 })}</div>`,
+        callouts:`<p class="guide-tip">${T('guideS4Note')}</p>`,
+      })}
+
+      ${guideStep(5, {
+        title:T('guideS5Title'), desc:T('guideS5Desc'),
+        shot:`<div class="guide-shot">${guideField('appLabel', { phKey:'appPh', num:1 })}</div>`,
+      })}
+
+      ${guideStep(6, {
+        title:T('guideS6Title'), desc:T('guideS6Desc'),
+        shot:guideShot6(),
+        callouts:guideCallouts([
+          [1, T('prayerLabel'), T('guideS6PrayerDesc')],
+          [2, T('thanksLabel'), T('guideS6ThanksDesc')],
+        ]),
+      })}
     </div>
   `;
 }
@@ -2969,6 +3324,10 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     openEmailContact('biblejournalingjoa@gmail.com', T('contactMailSubject'), T('contactMailBody'));
   }
   else if(action==='go-guide'){ state.screen='guide'; render(); }
+  else if(action==='guide-jump'){
+    const target = document.getElementById('guide-step-' + el.dataset.step);
+    if(target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
   else if(action==='open-donate'){ state.donateModal=true; state.donateCopied=false; render(); }
   else if(action==='close-donate'){ state.donateModal=false; state.donateCopied=false; render(); }
   else if(action==='copy-donate-account'){
