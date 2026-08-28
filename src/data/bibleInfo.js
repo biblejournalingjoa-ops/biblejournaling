@@ -94,6 +94,59 @@ export const BIBLE_INFO = {
       ],
     },
   },
+  2: { // Exodus / 출애굽기
+    ko: {
+      titleNative: '출애굽기',
+      titleEn: 'Exodus',
+      origin:
+        "모세오경의 둘째 책으로 창세기에서 이어지는 내용을 담고 있습니다. 이집트에서 노예 생활을 하던 이스라엘 민족의 구원과, 하나님의 언약과 율법에 따라 다스려지는 이스라엘 국가의 성립 과정을 기록합니다. 히브리어 제목은 1장 1절의 첫 두 단어인 '베엘레 쉐모트'(그리고 이것들이 그 이름들이다)이며, 헬라어 제목은 '엑소도스'(탈출·출발·밖으로 나감)에서 유래했습니다.",
+      author: '모세',
+      era: '약 B.C 1406년경 (모압 평야에서 기록 추정)',
+      sections: [
+        {
+          label: '출애굽과 광야시대',
+          items: [
+            { num: 1, label: '출애굽', range: '1-18장' },
+            { num: 2, label: '시내산 언약과 율법', range: '19-40장' },
+          ],
+        },
+      ],
+    },
+    en: {
+      titleNative: 'Exodus',
+      titleEn: 'Exodus',
+      origin:
+        "The second book of the Pentateuch, continuing directly from Genesis. It records the deliverance of the Israelites from slavery in Egypt and the founding of the nation of Israel, governed by God's covenant and law. Its Hebrew title, taken from the first two words of 1:1, is 'Ve'eleh Shemot' (\"And these are the names\"); its Greek title, 'Exodus,' means departure or going out.",
+      author: 'Moses',
+      era: 'c. 1406 BC (traditionally written on the plains of Moab)',
+      sections: [
+        {
+          label: 'Exodus and the Wilderness',
+          items: [
+            { num: 1, label: 'The Exodus', range: 'Ch. 1-18' },
+            { num: 2, label: 'Covenant and Law at Sinai', range: 'Ch. 19-40' },
+          ],
+        },
+      ],
+    },
+    th: {
+      titleNative: 'อพยพ',
+      titleEn: 'Exodus',
+      origin:
+        "หนังสือเล่มที่สองของโทราห์ ต่อเนื่องจากปฐมกาล บันทึกการช่วยกู้ชนชาติอิสราเอลจากความเป็นทาสในอียิปต์ และการสถาปนาประชาชาติอิสราเอลภายใต้พันธสัญญาและธรรมบัญญัติของพระเจ้า ชื่อภาษาฮีบรูมาจากสองคำแรกของข้อ 1:1 คือ 'เวเอเลห์ เชโมท' (และนี่คือชื่อทั้งหลาย) ส่วนชื่อภาษากรีก 'เอ็กโซโดส' หมายถึงการออกไป",
+      author: 'โมเสส',
+      era: 'ประมาณ 1406 ปีก่อนคริสตกาล (สันนิษฐานว่าเขียนที่ที่ราบโมอับ)',
+      sections: [
+        {
+          label: 'ยุคอพยพและถิ่นทุรกันดาร',
+          items: [
+            { num: 1, label: 'การอพยพ', range: 'บทที่ 1-18' },
+            { num: 2, label: 'พันธสัญญาและธรรมบัญญัติที่ซีนาย', range: 'บทที่ 19-40' },
+          ],
+        },
+      ],
+    },
+  },
 };
 
 export function getBibleInfo(bookId, lang) {
