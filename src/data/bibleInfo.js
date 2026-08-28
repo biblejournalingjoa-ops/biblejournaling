@@ -93,6 +93,34 @@ export const BIBLE_INFO = {
         },
       ],
     },
+    zh: {
+      titleNative: '创世记',
+      titleEn: 'Genesis',
+      origin:
+        '“创世记”一词源自希腊语，意为起源、根源、诞生与开端。它是希伯来圣经的第一卷，也是摩西五经(妥拉)的开篇，记载了世界与人类的起源、罪的开端，以及神藉着祂所拣选的百姓——以色列的列祖，开启救恩历史的过程。',
+      author: '摩西',
+      era: '约公元前 1450 年',
+      sections: [
+        {
+          label: '创造时代',
+          items: [
+            { num: 1, label: '创造', range: '1-2章' },
+            { num: 2, label: '堕落', range: '3-5章' },
+            { num: 3, label: '洪水', range: '6-9章' },
+            { num: 4, label: '巴别塔', range: '10-11章' },
+          ],
+        },
+        {
+          label: '族长时代',
+          items: [
+            { num: 1, label: '亚伯拉罕', range: '11-25章' },
+            { num: 2, label: '以撒', range: '24-27章' },
+            { num: 3, label: '雅各', range: '27-36章' },
+            { num: 4, label: '约瑟', range: '37-50章' },
+          ],
+        },
+      ],
+    },
   },
 };
 

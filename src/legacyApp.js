@@ -4,11 +4,11 @@ import { getBibleInfo } from './data/bibleInfo.js';
 
 /* ---------------- data ---------------- */
 const BOOKS = [
-  { m:1, ko:'창세기', en:'Genesis', ja:'創世記', th:'ปฐมกาล' },
-  { m:2, ko:'출애굽기', en:'Exodus', ja:'出エジプト記', th:'อพยพ' },
-  { m:3, ko:'레위기', en:'Leviticus', ja:'レビ記', th:'เลวีนิติ' },
-  { m:4, ko:'민수기', en:'Numbers', ja:'民数記', th:'กันดารวิถี' },
-  { m:5, ko:'신명기', en:'Deuteronomy', ja:'申命記', th:'เฉลยธรรมบัญญัติ' },
+  { m:1, ko:'창세기', en:'Genesis', ja:'創世記', th:'ปฐมกาล', zh:'创世记' },
+  { m:2, ko:'출애굽기', en:'Exodus', ja:'出エジプト記', th:'อพยพ', zh:'出埃及记' },
+  { m:3, ko:'레위기', en:'Leviticus', ja:'レビ記', th:'เลวีนิติ', zh:'利未记' },
+  { m:4, ko:'민수기', en:'Numbers', ja:'民数記', th:'กันดารวิถี', zh:'民数记' },
+  { m:5, ko:'신명기', en:'Deuteronomy', ja:'申命記', th:'เฉลยธรรมบัญญัติ', zh:'申命记' },
 ];
 function bookDisplayName(b){
   return b[state.lang] || b.en || b.ko;
@@ -22,6 +22,7 @@ function chapterLabel(name, c){
   if(state.lang==='en') return `${name} ${c}`;
   if(state.lang==='ja') return `${name} ${c}章`;
   if(state.lang==='th') return `${name} บทที่ ${c}`;
+  if(state.lang==='zh') return `${name}第${c}章`;
   return `${name} ${c}장`;
 }
 const CHAPTER_COUNTS = { 1:50, 2:40, 3:27, 4:36, 5:34 }; // Genesis, Exodus, Leviticus, Numbers, Deuteronomy
@@ -154,10 +155,25 @@ const ASK_QUESTIONS_TH = [
   'พระเจ้าข้า ขณะนี้พระองค์กำลังตรัสอะไรกับข้าพระองค์?',
 ];
 
+const ASK_QUESTIONS_ZH = [
+  '主啊，今天祢放在我心里的感动是什么?',
+  '我是否忽略了某些罪、骄傲或惧怕?',
+  '祢今天想让我明白的真理是什么?',
+  '今天祢要我去爱的人是谁?',
+  '有什么是我该停下来的?',
+  '今天祢要我迈出的一小步是什么?',
+  '在我的家庭、事奉、工作(学习)当中，祢给我怎样的方向?',
+  '对于我所担忧的问题，主如何看待?',
+  '今天祢要我放下的重担是什么?',
+  '祢想对我说的安慰是什么?',
+  '主啊，此刻祢正对我说什么?',
+];
+
 function getAskQuestions(){
   if(state.lang==='en') return ASK_QUESTIONS_EN;
   if(state.lang==='ja') return ASK_QUESTIONS_JA;
   if(state.lang==='th') return ASK_QUESTIONS_TH;
+  if(state.lang==='zh') return ASK_QUESTIONS_ZH;
   return ASK_QUESTIONS;
 }
 
@@ -175,7 +191,7 @@ const STRINGS = {
     monthPlanName:'1권 노트 구매', monthPlanDesc:(name)=>`${name} 저널만 이용`, monthPlanPrice:'₩2,000',
     cancel:'취소', buyBtn:'구매하기',
     settingsTitle:'설정', fontSizeLabel:'글자 크기', fontSmall:'작게', fontDefault:'기본', fontLarge:'크게',
-    langLabel:'언어', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    langLabel:'언어', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'简体中文',
     languageMenu:'언어 설정', languageModalTitle:'언어 선택',
     themeLabel:'다크 모드', themeLight:'라이트', themeDark:'다크',
     signupTitle:'회원가입', signupSub:'가입에 필요한 정보를 입력해 주세요.',
@@ -317,7 +333,7 @@ const STRINGS = {
     monthPlanName:'Single book', monthPlanDesc:(name)=>`${name} journal only`, monthPlanPrice:'₩2,000',
     cancel:'Cancel', buyBtn:'Unlock',
     settingsTitle:'Settings', fontSizeLabel:'Text size', fontSmall:'Small', fontDefault:'Default', fontLarge:'Large',
-    langLabel:'Language', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    langLabel:'Language', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'简体中文',
     languageMenu:'Language', languageModalTitle:'Select language',
     themeLabel:'Dark mode', themeLight:'Light', themeDark:'Dark',
     signupTitle:'Sign up', signupSub:'Please fill in the details below to create your account.',
@@ -459,7 +475,7 @@ const STRINGS = {
     monthPlanName:'1冊ノート購入', monthPlanDesc:(name)=>`${name}ジャーナルのみ利用`, monthPlanPrice:'₩2,000',
     cancel:'キャンセル', buyBtn:'購入する',
     settingsTitle:'設定', fontSizeLabel:'文字サイズ', fontSmall:'小', fontDefault:'標準', fontLarge:'大',
-    langLabel:'言語', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    langLabel:'言語', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'简体中文',
     languageMenu:'言語設定', languageModalTitle:'言語を選択',
     themeLabel:'ダークモード', themeLight:'ライト', themeDark:'ダーク',
     signupTitle:'新規登録', signupSub:'登録に必要な情報を入力してください。',
@@ -601,7 +617,7 @@ const STRINGS = {
     monthPlanName:'ซื้อสมุดบันทึกเล่มเดียว', monthPlanDesc:(name)=>`ใช้ได้เฉพาะสมุดบันทึก ${name}`, monthPlanPrice:'₩2,000',
     cancel:'ยกเลิก', buyBtn:'ซื้อเลย',
     settingsTitle:'การตั้งค่า', fontSizeLabel:'ขนาดตัวอักษร', fontSmall:'เล็ก', fontDefault:'ปกติ', fontLarge:'ใหญ่',
-    langLabel:'ภาษา', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    langLabel:'ภาษา', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'简体中文',
     languageMenu:'ตั้งค่าภาษา', languageModalTitle:'เลือกภาษา',
     themeLabel:'โหมดมืด', themeLight:'สว่าง', themeDark:'มืด',
     signupTitle:'สมัครสมาชิก', signupSub:'กรุณากรอกข้อมูลที่จำเป็นสำหรับการสมัครสมาชิก',
@@ -730,6 +746,148 @@ const STRINGS = {
     toastRoomPhotoSaved:'เปลี่ยนรูปโปรไฟล์ห้องแชทแล้ว',
     toastRoomPhotoSaveFailed:'อัปโหลดรูปโปรไฟล์ห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastRoomGone:'ห้องแชทนี้ไม่มีอยู่แล้ว',
+  },
+  zh:{
+    yearTag:'Bible Journaling', yearSub:'一月一本，与话语同行的十二个月',
+    buyLabel:'购买', todayNavTitle:'前往今天的灵修', groupsNavTitle:'一起分享',
+    loginWelcome:'欢迎回来', loginTitle:'话语灵修笔记',
+    emailLabel:'邮箱', pwLabel:'密码', emailPh:'you@example.com', pwPh:'请输入密码',
+    loginBtn:'登录', or:'或', googleLogin:'使用 Google 账号登录', kakaoLogin:'使用 Kakao 账号登录', signup:'注册',
+    purchaseTitle:(name)=>`${name} 圣经灵修笔记`,
+    purchaseSub:'购买包含话语阅读、内容问题与灵修问题的笔记，从今天的话语开始吧。',
+    yearPlanName:'全年通行证', yearPlanBadge:'推荐', yearPlanDesc:'一次拥有 12 个月的笔记', yearPlanPrice:'₩19,000',
+    monthPlanName:'购买单本笔记', monthPlanDesc:(name)=>`仅使用 ${name} 笔记`, monthPlanPrice:'₩2,000',
+    cancel:'取消', buyBtn:'购买',
+    settingsTitle:'设置', fontSizeLabel:'字体大小', fontSmall:'小', fontDefault:'默认', fontLarge:'大',
+    langLabel:'语言', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'简体中文',
+    languageMenu:'语言设置', languageModalTitle:'选择语言',
+    themeLabel:'深色模式', themeLight:'浅色', themeDark:'深色',
+    signupTitle:'注册', signupSub:'请填写注册所需的信息。',
+    nameLabel:'姓名', namePh:'请输入真实姓名',
+    birthLabel:'出生日期', birthPh:'YYYY-MM-DD',
+    usernameLabel:'账号', usernamePh:'用于登录的账号',
+    nicknameLabel:'昵称', nicknamePh:'将在群组聊天室中显示的昵称',
+    signupTermsLabel:'同意服务使用条款(必填)',
+    signupTermsBody:'这是使用话语灵修笔记所提供的圣经阅读、灵修问题记录及群组分享功能的基本条款。如发现不当使用，服务使用可能会受到限制。',
+    signupConsentLabel:'同意收集和使用个人信息(必填)',
+    signupConsentBody:'收集项目：姓名、出生日期、账号、昵称、密码(加密存储)\n收集及使用目的：会员识别与登录、提供服务\n保留期限：至会员注销为止\n您可以拒绝，但拒绝后将无法完成注册。',
+    viewDetail:'查看', hideDetail:'收起',
+    submitSignup:'注册',
+    toastFillAll:'请填写所有项目', toastNeedConsent:'请同意收集个人信息',
+    toastSignupDone:'注册完成',
+    notif:'通知设置', contact:'联系我们', logout:'退出登录', donate:'支持我们',
+    dayUnit:'天', snapNoAnswerContent:'尚未填写答案', snapNoAnswerThought:'尚未填写', snapNoQuestionSelected:'尚未选择问题',
+    notifTitle:'通知设置', notifSub:'选择星期几来设置灵修提醒时间。',
+    dayMon:'星期一', dayTue:'星期二', dayWed:'星期三', dayThu:'星期四', dayFri:'星期五', daySat:'星期六', daySun:'星期日',
+    notifOff:'通知已关闭',
+    notifOnLabel:'开启通知',
+    notifTimeLabel:'提醒时间',
+    notifSave:'保存',
+    notifDelete:'关闭通知',
+    contactTitle:'联系我们',
+    guideMenu:'使用指南',
+    guideTitle:'使用指南',
+    guideEmptyTitle:'正在准备中',
+    guideEmptyBody:'使用指南内容即将推出，请稍候。',
+    contactBody:'在使用话语灵修笔记的过程中，如有任何疑问或不便，欢迎随时联系我们。我们会尽快回复。',
+    contactEmailBtn:'通过邮件联系',
+    contactEmailNote:'点击按钮后会打开默认邮件应用，并自动填入收件人。',
+    contactMailSubject:'[话语灵修笔记] 咨询',
+    contactMailBody:'您好，我在使用话语灵修笔记时有一些问题想咨询。\n\n咨询内容：\n',
+    donateModalTitle:'支持 Bible Journaling',
+    donateDesc:'请为 Bible Journaling 服务的持续运营与开发加油。您宝贵的赞助将用于服务改进及服务器维护费用。谢谢 🤍',
+    donateBankLabel:'银行', donateHolderLabel:'账户持有人', donateAccountLabel:'账号',
+    donateBankName:'Toss Bank', donateHolderName:'朴有娜', donateAccountNumber:'1002-7159-7116',
+    copyAccountBtn:'复制账号', copyAccountDone:'复制完成! ✓',
+    toastAccountCopied:'账号已复制!',
+    todayWord:'今天', moveToday:'回到今天', calLegend:'有灵修记录的日期',
+    calTitle:(name)=>`${name} 灵修日历`, calCap:'2026 · Bible Journal',
+    chapterGridSub:'请选择想阅读的章。',
+    dailyCap:(name)=>`${name} 的话语旅程`,
+    navBible:'圣经', navContent:'内容问题记录', navThought:'思考问题记录',
+    todayReading:'今天的话语', chapterNote:'本文是为帮助理解而提供的摘要示例。',
+    chapterInfoBtn:'查看背景说明',
+    chapterInfoTitle:(book)=>`${book} 背景说明`,
+    chapterInfoEmptyTitle:'正在准备中',
+    chapterInfoEmptyBody:'这卷书的背景说明即将推出。',
+    copyVerseBtn:'复制经文',
+    toastVerseCopied:'经文已复制。',
+    bibleInfoOriginLabel:'起源', bibleInfoAuthorLabel:'作者', bibleInfoEraLabel:'成书年代', bibleInfoOutlineLabel:'概要',
+    qPlaceholder:'写下你所想到的答案',
+    verseLabel:'赐给我的一节话语', versePh:'例：出埃及记 8:10',
+    passageLabel:'本文内容', passagePh:'试着概括今天本文的脉络',
+    godIsLabel:'神是这样的一位', godIsPh:'在本文中发现的神的属性',
+    askLabel:'向神提问', askPlaceholderQ:'请选择一个问题',
+    heardLabel:'记录所听见的声音', heardPh:'写下灵修中在心里听见的声音',
+    appLabel:'落实到生活', appPh:'今天要在生活中实践的一件事',
+    prayerLabel:'祷告事项', prayerPh:'写下今天的祷告事项',
+    thanksLabel:'今天的感恩', thanksPh:(i)=>`感恩的事 ${i}`, addThanks:'添加感恩事项',
+    toastLogin:'已登录', toastLogout:'已退出登录',
+    toastGoogleFailed:'Google 登录失败，请重试',
+    toastGoogleCancelled:'已取消 Google 登录',
+    toastPopupBlocked:'弹出窗口被拦截，无法登录。请解除弹窗拦截后重试',
+    toastNetworkError:'请检查网络连接',
+    toastLogoutFailed:'退出登录失败，请重试',
+    toastKakaoFailed:'Kakao 登录失败，请重试',
+    toastEmailLoginFailed:'邮箱或密码不正确',
+    toastEmailInUse:'该邮箱已注册',
+    toastWeakPassword:'密码请至少输入 6 位',
+    toastSignupFailed:'注册失败，请重试',
+    toastFirebaseNotSet:'Firebase 尚未配置(请填写 firebaseConfig)',
+    nicknameModalTitle:'修改昵称', saveBtn:'保存',
+    toastNicknameEmpty:'请输入昵称',
+    toastNicknameSaved:'昵称已更改',
+    toastNicknameSaveFailed:'昵称保存失败，请重试',
+    avatarModalTitle:'更换头像', avatarModalSub:'要用所选照片更换头像吗?',
+    toastAvatarInvalidType:'只能选择图片文件',
+    toastAvatarSaved:'头像已更换',
+    toastAvatarSaveFailed:'头像上传失败，请重试',
+    toastAvatarTooLarge:'图片体积过大，请换一张更小的照片重试',
+    toastAvatarPermissionDenied:'没有保存头像的权限，请重新登录后重试',
+    toastAvatarLoginRequired:'登录信息已过期，请重新登录后重试',
+    toastPurchaseYear:'全年通行证购买完成', toastPurchaseMonth:(name)=>`${name} 笔记购买完成`,
+    toastNeedPurchase:(name)=>`请先购买 ${name} 灵修笔记`,
+    sharePickTitle:'要分享什么?', sharePickSub:'把今天的记录做成图片来分享。',
+    shareContentName:'内容问题记录', shareContentDesc:'关于今天本文的问题与答案',
+    shareThoughtName:'思考问题记录', shareThoughtDesc:'今天的灵修、祷告与感恩',
+    shareBothName:'两者都分享', shareBothDesc:'一起发送内容问题与思考问题的记录',
+    shareGenerating:'正在生成图片...', shareDone:'已分享灵修记录', shareFailed:'图片生成失败，请重试',
+    sharedImageCap:(kind,date)=>`${kind==='content'?'内容问题记录':'思考问题记录'} · ${date}`,
+    pageShareBtn:'分享',
+    pageShareTitle:'要分享到哪里?',
+    shareToChatName:'分享到应用内聊天室',
+    shareToChatDesc:'发送到“一起分享”聊天室',
+    shareToKakaoName:'分享到 KakaoTalk',
+    shareToKakaoDesc:'通过 KakaoTalk 等已安装的应用分享',
+    shareDownloadName:'下载为图片',
+    shareDownloadDesc:'将图片文件保存到设备',
+    pickGroupTitle:'请选择要发送的聊天室',
+    noGroupsYet:'还没有创建的聊天室',
+    toastShareUnsupported:'此设备/浏览器不支持直接分享，已改为下载图片。请在 KakaoTalk 中手动添加附件。',
+    toastDownloadDone:'图片已下载',
+    groupInfoParticipants:(n)=>`${n} 位成员`,
+    leaveGroupBtn:'退出聊天室',
+    leaveConfirmTitle:'要退出这个聊天室吗?',
+    leaveConfirmBody:'退出后，你将无法再访问该聊天室的消息和成员列表。',
+    leaveConfirmBtn:'退出聊天室',
+    toastLeftGroup:'已退出聊天室',
+    toastLeaveFailed:'退出聊天室失败，请重试',
+    toastMembersLoadFailed:'无法加载成员信息',
+    memberFallbackName:'成员', youTag:'(我)', loadingLabel:'加载中...',
+    groupManageTitle:'聊天室管理',
+    roomNameLabel:'聊天室名称',
+    renameRoomTitle:'修改聊天室名称',
+    changeRoomPhotoTitle:'更换聊天室头像',
+    ownerTag:'群主',
+    streakLabel:'连续记录',
+    streakDaysSuffix:(n)=>`连续记录 ${n} 天`,
+    toastRoomNameEmpty:'请输入聊天室名称',
+    toastRoomNameTooLong:'聊天室名称请控制在 30 个字符以内',
+    toastRoomNameSaved:'聊天室名称已更改',
+    toastRoomNameSaveFailed:'聊天室名称保存失败，请重试',
+    toastRoomPhotoSaved:'聊天室头像已更换',
+    toastRoomPhotoSaveFailed:'聊天室头像上传失败，请重试',
+    toastRoomGone:'该聊天室已不存在',
   },
 };
 
@@ -934,6 +1092,55 @@ const GUIDE_STRINGS = {
     guideS6PrayerDesc:'เขียนคำอธิษฐานที่อยากทูลต่อพระเจ้าด้วยการขอบพระคุณ',
     guideS6ThanksDesc:'เขียนคำขอบพระคุณที่ได้รับขณะได้รับการทรงนำจากพระวจนะและพระวิญญาณ',
   },
+  zh:{
+    guideHowToTitle:'灵修笔记的使用方法',
+    guideHowToLead:'阅读每天的话语，默想，向神发问，\n落实到生活中，并以祷告记录下来。',
+    guideShotLabel:'实际记录界面',
+    guideTapHint:'点击步骤即可跳转到对应说明。',
+    guideFlow:['安静心灵','默想话语','向神发问','记录所听见的','落实生活','祷告'],
+    guideS1Title:'1. 让心安静下来',
+    guideS1En:'Quiet Time',
+    guideS1Desc:'这是与神一对一相会的时间。\n以平静的心安静地聆听话语，并从心里回应祂。',
+    guideS1Ref:'出埃及记第8章',
+    guideS1Verse1:'耶和华吩咐摩西去见法老，对他说：“容我的百姓去。”',
+    guideS1Verse2:'摩西说，法老必知道没有像耶和华的。',
+    guideS1Callout:'首先，安静地读今天的话语，预备你的心。',
+    guideS2Title:'2. 默想话语',
+    guideS2En:'Scripture Listening',
+    guideS2Desc:'把今天本文中所听见的话语，分成三处来记录。',
+    guideS2VerseDesc:'写下触动你心的那一节。',
+    guideS2PassageDesc:'概括本文的核心内容。',
+    guideS2GodDesc:'透过今天的话语，你所认识的神是怎样的一位?',
+    guideS3Title:'3. 向神发问',
+    guideS3En:'Asking',
+    guideS3Desc:'从下面的问题中每天选一个来问，并记录浮现在心中的答案。',
+    guideS3Callout:'点击 ▼ 选择问题，然后写下心中浮现的答案。',
+    guideS3ListTitle:'向神发问的 12 个主要问题',
+    guideAsk:[
+      '主啊，今天祢放在我心里的感动是什么?',
+      '我是否忽略了某些罪／骄傲／惧怕?',
+      '主今天想让我明白的真理是什么?',
+      '我今天该去爱的人是谁?',
+      '我该停下来的是什么?',
+      '我今天该迈出的一小步是什么?',
+      '在我的家庭、事奉、事业(工作、学习)当中，祢为我理清的方向是什么?',
+      '对于我所担忧的问题，主怎样看?',
+      '我今天该放下的重担是什么?',
+      '在我生命中，祢想恢复的领域是哪里?',
+      '主对我说的安慰是什么?',
+      '主啊，此刻祢对我说什么?',
+    ],
+    guideS4Title:'4. 记录所听见的声音',
+    guideS4En:'Listening & Writing',
+    guideS4Desc:'记录在安静中浮现的感动、想法、画面或圣经话语等。',
+    guideS4Note:'一边写，一边查验是否与圣经的原则一致。',
+    guideS5Title:'5. 落实到生活',
+    guideS5Desc:'写下今天话语中可以立刻实践的一件事。',
+    guideS6Title:'6. 祷告',
+    guideS6Desc:'把祷告事项和今天的感恩分开记录。',
+    guideS6PrayerDesc:'写下想带着感恩向神献上的祷告。',
+    guideS6ThanksDesc:'写下在话语与圣灵引导中所领受的感恩。',
+  },
 };
 Object.keys(GUIDE_STRINGS).forEach(l=>{ Object.assign(STRINGS[l] || (STRINGS[l]={}), GUIDE_STRINGS[l]); });
 
@@ -943,8 +1150,8 @@ function T(key, ...args){
   if(v===undefined) return '';
   return typeof v==='function' ? v(...args) : v;
 }
-const LANG_CODES = ['ko','en','ja','th'];
-const LANG_LABEL_KEYS = { ko:'langKo', en:'langEn', ja:'langJa', th:'langTh' };
+const LANG_CODES = ['ko','en','ja','th','zh'];
+const LANG_LABEL_KEYS = { ko:'langKo', en:'langEn', ja:'langJa', th:'langTh', zh:'langZh' };
 
 /* ---------------- icons ---------------- */
 const ICON = {
@@ -3771,7 +3978,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     render();
     showToast(T('shareGenerating'));
     const key = ckey(state.activeMonth, state.activeChapter);
-    const label = `${bookName(state.activeMonth)} ${state.activeChapter}${state.lang==='en'?'':'장'}`;
+    const label = chapterLabel(bookName(state.activeMonth), state.activeChapter);
     const html = kind==='content' ? buildContentSnapshotHTML(key) : buildThoughtSnapshotHTML(key);
     const cap = T('sharedImageCap', kind, label);
     captureSnapshotImage(html).then(dataUrl=>{
@@ -3793,7 +4000,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     render();
     showToast(T('shareGenerating'));
     const key = ckey(state.activeMonth, state.activeChapter);
-    const label = `${bookName(state.activeMonth)} ${state.activeChapter}${state.lang==='en'?'':'장'}`;
+    const label = chapterLabel(bookName(state.activeMonth), state.activeChapter);
     const html = kind==='content' ? buildContentSnapshotHTML(key) : buildThoughtSnapshotHTML(key);
     const filename = `${kind}-${key}.png`;
     captureSnapshotImage(html).then(async dataUrl=>{
@@ -3840,7 +4047,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     render();
     showToast(T('shareGenerating'));
     const key = ckey(state.activeMonth, state.activeChapter);
-    const label = `${bookName(state.activeMonth)} ${state.activeChapter}${state.lang==='en'?'':'장'}`;
+    const label = chapterLabel(bookName(state.activeMonth), state.activeChapter);
 
     if(kind==='both'){
       Promise.all([
