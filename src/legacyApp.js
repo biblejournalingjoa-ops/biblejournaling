@@ -225,6 +225,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`${book} 배경 설명`,
     chapterInfoEmptyTitle:'준비 중이에요',
     chapterInfoEmptyBody:'이 책의 배경 설명은 곧 추가될 예정이에요.',
+    copyVerseBtn:'구절 복사하기',
+    toastVerseCopied:'구절이 복사되었습니다.',
     qPlaceholder:'생각한 답을 적어보세요',
     verseLabel:'나에게 주신 말씀 한 구절', versePh:'예: 출애굽기 8:10',
     passageLabel:'본문 내용', passagePh:'오늘 본문의 흐름을 요약해 보세요',
@@ -364,6 +366,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`Background: ${book}`,
     chapterInfoEmptyTitle:'Coming soon',
     chapterInfoEmptyBody:"Background notes for this book will be added soon.",
+    copyVerseBtn:'Copy Verse',
+    toastVerseCopied:'Verse copied.',
     qPlaceholder:'Write your answer here',
     verseLabel:'A verse given to me', versePh:'e.g. Exodus 8:10',
     passageLabel:'Passage summary', passagePh:'Summarize the flow of today\u2019s passage',
@@ -503,6 +507,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`${book} 背景説明`,
     chapterInfoEmptyTitle:'準備中です',
     chapterInfoEmptyBody:'この書の背景説明は近日追加予定です。',
+    copyVerseBtn:'聖句をコピー',
+    toastVerseCopied:'聖句をコピーしました。',
     qPlaceholder:'考えた答えを書いてみましょう',
     verseLabel:'私に与えられた御言葉一節', versePh:'例: 出エジプト記8:10',
     passageLabel:'本文の内容', passagePh:'今日の本文の流れをまとめてみましょう',
@@ -642,6 +648,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`ข้อมูลพื้นหลัง: ${book}`,
     chapterInfoEmptyTitle:'กำลังเตรียมการ',
     chapterInfoEmptyBody:'ข้อมูลพื้นหลังของหนังสือเล่มนี้จะเพิ่มเข้ามาเร็วๆ นี้',
+    copyVerseBtn:'คัดลอกข้อพระคัมภีร์',
+    toastVerseCopied:'คัดลอกข้อพระคัมภีร์แล้ว',
     qPlaceholder:'ลองเขียนคำตอบที่คุณคิดไว้',
     verseLabel:'ข้อพระคัมภีร์ที่ได้รับ', versePh:'เช่น อพยพ 8:10',
     passageLabel:'สรุปเนื้อหาบทนี้', passagePh:'ลองสรุปเนื้อหาของบทนี้ในวันนี้',
@@ -789,6 +797,7 @@ let state = {
   shareBusy:false,          // true while generating the snapshot image
   imageViewer:null,         // { groupId, msgId, index } when the full-screen image viewer is open
   chapterInfoOpen:false,    // whether the chapter background info sheet is open
+  verseActionMenu:null,     // { n } verse number whose long-press copy sheet is open
   notifDayOpen:null,        // which weekday's time-set sheet is open ('mon'..'sun')
   pageShare:null,           // { kind:'content'|'thought', step:'menu'|'pickGroup' } when the page share menu is open
   fontSize:'default',       // small | default | large
@@ -1628,6 +1637,7 @@ function render(){
   if(state.shareGroupId) overlays += renderSharePicker();
   if(state.imageViewer) overlays += renderImageViewer();
   if(state.chapterInfoOpen) overlays += renderChapterInfoSheet();
+  if(state.verseActionMenu) overlays += renderVerseActionSheet();
   if(state.notifDayOpen) overlays += renderNotifDaySheet();
   if(state.pageShare) overlays += renderPageShareSheet();
   if(state.donateModal) overlays += renderDonateModal();
@@ -2586,13 +2596,19 @@ function renderDaily(){
   `;
 }
 
-function renderBibleTab(){
-  const verseTexts = state.lang==='en' ? kjvVerses(state.activeMonth, state.activeChapter)
-    : state.lang==='th' ? thVerses(state.activeMonth, state.activeChapter)
+function chapterVerseTexts(m, c){
+  return state.lang==='en' ? kjvVerses(m, c)
+    : state.lang==='th' ? thVerses(m, c)
     : CHAPTER.verses;
+}
+function verseRef(m, c, n){
+  return `${bookName(m)} ${c}:${n}`;
+}
+function renderBibleTab(){
+  const verseTexts = chapterVerseTexts(state.activeMonth, state.activeChapter);
   const verses = verseTexts.map((text,idx)=>{
     const n = idx+1;
-    return `<div class="verse" id="verse-${n}"><span class="vnum">${n}</span><span>${text}</span></div>`;
+    return `<div class="verse" id="verse-${n}" data-verse-num="${n}"><span class="vnum">${n}</span><span>${text}</span></div>`;
   }).join('');
   return `
     <div class="chapter-card">
@@ -2605,6 +2621,23 @@ function renderBibleTab(){
       <div class="verse-list">${verses}</div>
     </div>
   `;
+}
+
+/* ---------------- verse long-press copy sheet ---------------- */
+function renderVerseActionSheet(){
+  const { n } = state.verseActionMenu;
+  const ref = verseRef(state.activeMonth, state.activeChapter, n);
+  return `
+  <div class="overlay" data-action="close-verse-menu">
+    <div class="sheet verse-action-sheet" data-action="noop">
+      <div class="sheet-handle"></div>
+      <div class="verse-action-ref">${escapeHtml(ref)}</div>
+      <button class="verse-action-btn" data-action="copy-verse">
+        <span class="va-icon">${ICON.copy}</span>
+        <span>${T('copyVerseBtn')}</span>
+      </button>
+    </div>
+  </div>`;
 }
 
 /* ---------------- chapter background info sheet ---------------- */
@@ -3286,6 +3319,25 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     state.chapterInfoOpen = false;
     render();
   }
+  else if(action==='close-verse-menu'){
+    state.verseActionMenu = null;
+    render();
+  }
+  else if(action==='copy-verse'){
+    const vm = state.verseActionMenu;
+    if(!vm) return;
+    const m = state.activeMonth, c = state.activeChapter;
+    const verseTexts = chapterVerseTexts(m, c);
+    const text = verseTexts[vm.n-1] || '';
+    const ref = verseRef(m, c, vm.n);
+    const copyText = text ? `${ref}\n${text}` : ref;
+    try{
+      navigator.clipboard && navigator.clipboard.writeText(copyText);
+    }catch(err){}
+    state.verseActionMenu = null;
+    render();
+    showToast(T('toastVerseCopied'));
+  }
   else if(action==='open-page-share'){
     state.pageShare = { kind: el.dataset.kind, step:'menu' };
     render();
@@ -3456,6 +3508,42 @@ document.getElementById('shell').addEventListener('input', (e)=>{
     entry.thought.thanks[Number(t.dataset.index)] = t.value;
   }
   saveAnswersDebounced();
+});
+
+/* ---------------- verse long-press to copy ---------------- */
+const VERSE_LONGPRESS_MS = 450;
+const VERSE_LONGPRESS_MOVE_TOLERANCE = 10;
+let versePressTimer = null;
+let versePressStart = null;
+function cancelVersePress(){
+  clearTimeout(versePressTimer);
+  versePressTimer = null;
+  versePressStart = null;
+}
+document.getElementById('shell').addEventListener('pointerdown', (e)=>{
+  const el = e.target.closest('.verse');
+  if(!el || state.screen!=='daily' || state.activeTab!=='bible' || state.verseActionMenu) return;
+  if(e.pointerType==='mouse' && e.button!==0) return;
+  const n = Number(el.dataset.verseNum);
+  if(!n) return;
+  versePressStart = { x:e.clientX, y:e.clientY };
+  clearTimeout(versePressTimer);
+  versePressTimer = setTimeout(()=>{
+    versePressTimer = null;
+    if(navigator.vibrate){ try{ navigator.vibrate(10); }catch(err){} }
+    state.verseActionMenu = { n };
+    render();
+  }, VERSE_LONGPRESS_MS);
+});
+document.getElementById('shell').addEventListener('pointermove', (e)=>{
+  if(!versePressTimer || !versePressStart) return;
+  const dx = e.clientX - versePressStart.x, dy = e.clientY - versePressStart.y;
+  if(Math.hypot(dx, dy) > VERSE_LONGPRESS_MOVE_TOLERANCE) cancelVersePress();
+});
+document.getElementById('shell').addEventListener('pointerup', cancelVersePress);
+document.getElementById('shell').addEventListener('pointercancel', cancelVersePress);
+document.getElementById('shell').addEventListener('contextmenu', (e)=>{
+  if(e.target.closest('.verse')) e.preventDefault();
 });
 
 initAuthGate();

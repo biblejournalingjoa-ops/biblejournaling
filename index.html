@@ -430,12 +430,30 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line);
   font-size:calc(13.5px * var(--fs-scale));line-height:1.6;transition:background .5s ease;
   border-radius:8px;scroll-margin-top:100px;
+  touch-action:pan-y;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;
 }
 .verse .vnum{
   font-family:'Noto Serif KR',serif;font-weight:700;color:var(--ink-faint);
   font-size:calc(12px * var(--fs-scale));width:20px;flex-shrink:0;padding-top:1px;
 }
 .verse.highlight{background:#FBEFCB;}
+
+/* ---------- verse long-press copy sheet ---------- */
+.verse-action-sheet{padding-top:14px;}
+.verse-action-ref{
+  font-family:'Noto Serif KR',serif;font-weight:700;color:var(--ink-faint);
+  font-size:calc(12px * var(--fs-scale));letter-spacing:.02em;margin-bottom:10px;
+}
+.verse-action-btn{
+  display:flex;align-items:center;gap:10px;width:100%;padding:14px 16px;
+  background:var(--paper);border-radius:14px;box-shadow:var(--shadow-sm);
+  font-size:calc(13.5px * var(--fs-scale));font-weight:700;color:var(--ink);text-align:left;
+}
+.verse-action-btn .va-icon{
+  width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--rose-deep);
+}
+.verse-action-btn .va-icon svg{width:18px;height:18px;}
+.verse-action-btn:active{transform:scale(.98);}
 
 /* content questions tab */
 .q-card{
