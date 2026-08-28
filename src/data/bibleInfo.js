@@ -104,10 +104,30 @@ export const BIBLE_INFO = {
       era: '약 B.C 1406년경 (모압 평야에서 기록 추정)',
       sections: [
         {
+          label: '창조시대',
+          items: [
+            { num: 1, label: '창조', range: '1-2장' },
+            { num: 2, label: '타락', range: '3-5장' },
+            { num: 3, label: '홍수', range: '6-9장' },
+            { num: 4, label: '바벨탑', range: '10-11장' },
+          ],
+        },
+        {
+          label: '족장시대',
+          items: [
+            { num: 1, label: '아브라함', range: '11-25장' },
+            { num: 2, label: '이삭', range: '24-27장' },
+            { num: 3, label: '야곱', range: '27-36장' },
+            { num: 4, label: '요셉', range: '37-50장' },
+          ],
+        },
+        {
           label: '출애굽과 광야시대',
           items: [
             { num: 1, label: '출애굽', range: '1-18장' },
-            { num: 2, label: '시내산 언약과 율법', range: '19-40장' },
+            { num: 2, label: '시내산훈련', range: '19-40장, 레위기, 민수기1-9장' },
+            { num: 3, label: '불신앙', range: '민10-14장' },
+            { num: 4, label: '40년의 재훈련', range: '민20-36장, 신명기' },
           ],
         },
       ],
@@ -121,10 +141,30 @@ export const BIBLE_INFO = {
       era: 'c. 1406 BC (traditionally written on the plains of Moab)',
       sections: [
         {
+          label: 'Age of Creation',
+          items: [
+            { num: 1, label: 'Creation', range: 'Ch. 1-2' },
+            { num: 2, label: 'The Fall', range: 'Ch. 3-5' },
+            { num: 3, label: 'The Flood', range: 'Ch. 6-9' },
+            { num: 4, label: 'Tower of Babel', range: 'Ch. 10-11' },
+          ],
+        },
+        {
+          label: 'Age of the Patriarchs',
+          items: [
+            { num: 1, label: 'Abraham', range: 'Ch. 11-25' },
+            { num: 2, label: 'Isaac', range: 'Ch. 24-27' },
+            { num: 3, label: 'Jacob', range: 'Ch. 27-36' },
+            { num: 4, label: 'Joseph', range: 'Ch. 37-50' },
+          ],
+        },
+        {
           label: 'Exodus and the Wilderness',
           items: [
             { num: 1, label: 'The Exodus', range: 'Ch. 1-18' },
-            { num: 2, label: 'Covenant and Law at Sinai', range: 'Ch. 19-40' },
+            { num: 2, label: 'Training at Sinai', range: 'Ch. 19-40, Leviticus, Numbers 1-9' },
+            { num: 3, label: 'Unbelief', range: 'Numbers 10-14' },
+            { num: 4, label: '40 Years of Retraining', range: 'Numbers 20-36, Deuteronomy' },
           ],
         },
       ],
@@ -138,10 +178,30 @@ export const BIBLE_INFO = {
       era: 'ประมาณ 1406 ปีก่อนคริสตกาล (สันนิษฐานว่าเขียนที่ที่ราบโมอับ)',
       sections: [
         {
+          label: 'ยุคแห่งการทรงสร้าง',
+          items: [
+            { num: 1, label: 'การทรงสร้าง', range: 'บทที่ 1-2' },
+            { num: 2, label: 'การตกในบาป', range: 'บทที่ 3-5' },
+            { num: 3, label: 'น้ำท่วมโลก', range: 'บทที่ 6-9' },
+            { num: 4, label: 'หอบาเบล', range: 'บทที่ 10-11' },
+          ],
+        },
+        {
+          label: 'ยุคบรรพบุรุษ',
+          items: [
+            { num: 1, label: 'อับราฮัม', range: 'บทที่ 11-25' },
+            { num: 2, label: 'อิสอัค', range: 'บทที่ 24-27' },
+            { num: 3, label: 'ยาโคบ', range: 'บทที่ 27-36' },
+            { num: 4, label: 'โยเซฟ', range: 'บทที่ 37-50' },
+          ],
+        },
+        {
           label: 'ยุคอพยพและถิ่นทุรกันดาร',
           items: [
             { num: 1, label: 'การอพยพ', range: 'บทที่ 1-18' },
-            { num: 2, label: 'พันธสัญญาและธรรมบัญญัติที่ซีนาย', range: 'บทที่ 19-40' },
+            { num: 2, label: 'การฝึกที่ซีนาย', range: 'บทที่ 19-40, เลวีนิติ, กันดารวิถี 1-9' },
+            { num: 3, label: 'ความไม่เชื่อ', range: 'กันดารวิถี 10-14' },
+            { num: 4, label: 'การฝึกใหม่ 40 ปี', range: 'กันดารวิถี 20-36, เฉลยธรรมบัญญัติ' },
           ],
         },
       ],
