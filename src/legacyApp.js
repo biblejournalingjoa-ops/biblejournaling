@@ -3,14 +3,15 @@ import thKjvData from './data/th_kjv.json';
 import jaKougoData from './data/ja_kougo.json';
 import zhCuvData from './data/zh_cuv.json';
 import { getBibleInfo } from './data/bibleInfo.js';
+import { getContentQuestions } from './data/contentQuestions.js';
 
 /* ---------------- data ---------------- */
 const BOOKS = [
-  { m:1, ko:'창세기', en:'Genesis', ja:'創世記', th:'ปฐมกาล', zh:'创世记' },
-  { m:2, ko:'출애굽기', en:'Exodus', ja:'出エジプト記', th:'อพยพ', zh:'出埃及记' },
-  { m:3, ko:'레위기', en:'Leviticus', ja:'レビ記', th:'เลวีนิติ', zh:'利未记' },
-  { m:4, ko:'민수기', en:'Numbers', ja:'民数記', th:'กันดารวิถี', zh:'民数记' },
-  { m:5, ko:'신명기', en:'Deuteronomy', ja:'申命記', th:'เฉลยธรรมบัญญัติ', zh:'申命记' },
+  { m:1, id:'genesis', ko:'창세기', en:'Genesis', ja:'創世記', th:'ปฐมกาล', zh:'创世记' },
+  { m:2, id:'exodus', ko:'출애굽기', en:'Exodus', ja:'出エジプト記', th:'อพยพ', zh:'出埃及记' },
+  { m:3, id:'leviticus', ko:'레위기', en:'Leviticus', ja:'レビ記', th:'เลวีนิติ', zh:'利未记' },
+  { m:4, id:'numbers', ko:'민수기', en:'Numbers', ja:'民数記', th:'กันดารวิถี', zh:'民数记' },
+  { m:5, id:'deuteronomy', ko:'신명기', en:'Deuteronomy', ja:'申命記', th:'เฉลยธรรมบัญญัติ', zh:'申命记' },
 ];
 function bookDisplayName(b){
   return b[state.lang] || b.en || b.ko;
@@ -19,6 +20,10 @@ function bookName(m){
   const b = BOOKS.find(x=>x.m===m);
   if(!b) return '';
   return bookDisplayName(b);
+}
+function bookDataId(m){
+  const b = BOOKS.find(x=>x.m===m);
+  return b && b.id;
 }
 function chapterLabel(name, c){
   if(state.lang==='en') return `${name} ${c}`;
@@ -108,14 +113,6 @@ const CHAPTER = {
     '바로가 너무 멀리 가지는 말라 하며 자신을 위해 구하라 청한다.',
   ]
 };
-
-const CONTENT_QUESTIONS = [
-  {id:'q1', v:1, ref:'출 8:1', text:'출 8:1에 따르면, 하나님이 하실 일을 누구에게 말씀하실까?'},
-  {id:'q2', v:2, ref:'출 8:2', text:'출 8:2에 따르면, 하나님이 이집트에서 백성들을 내보내기 위해 내리신 재앙은 무엇일까?'},
-  {id:'q3', v:6, ref:'출 8:6', text:'출 8:6에서 아론이 지팡이를 들었을 때 애굽 온 땅에 나타난 것은 무엇일까?'},
-  {id:'q4', v:15, ref:'출 8:15', text:'출 8:15에 따르면, 재앙이 그친 것을 본 바로의 마음은 어떻게 되었을까?'},
-  {id:'q5', v:19, ref:'출 8:19', text:'출 8:19에서 요술사들이 재앙을 보고 바로에게 무엇이라고 말했을까?'},
-];
 
 const ASK_QUESTIONS = [
   '주님, 오늘 제게 주시는 마음의 감동은 무엇입니까?',
@@ -260,6 +257,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`${book} 배경 설명`,
     chapterInfoEmptyTitle:'준비 중이에요',
     chapterInfoEmptyBody:'이 책의 배경 설명은 곧 추가될 예정이에요.',
+    contentQuestionsEmptyTitle:'준비 중이에요',
+    contentQuestionsEmptyBody:'이 장의 내용 질문은 아직 준비되지 않았어요. 곧 추가할게요.',
     bibleInfoOriginLabel:'기원', bibleInfoAuthorLabel:'저자', bibleInfoEraLabel:'기록연대', bibleInfoOutlineLabel:'개요',
     bibleInfoThemeLabel:'주제', bibleInfoCharacterLabel:'성격', bibleInfoKeyContentLabel:'핵심 내용',
     qPlaceholder:'생각한 답을 적어보세요',
@@ -405,6 +404,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`Background: ${book}`,
     chapterInfoEmptyTitle:'Coming soon',
     chapterInfoEmptyBody:"Background notes for this book will be added soon.",
+    contentQuestionsEmptyTitle:'Coming soon',
+    contentQuestionsEmptyBody:"Content questions for this chapter aren't ready yet. We'll add them soon.",
     bibleInfoOriginLabel:'Origin', bibleInfoAuthorLabel:'Author', bibleInfoEraLabel:'Written', bibleInfoOutlineLabel:'Outline',
     bibleInfoThemeLabel:'Theme', bibleInfoCharacterLabel:'Character', bibleInfoKeyContentLabel:'Key Content',
     qPlaceholder:'Write your answer here',
@@ -550,6 +551,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`${book} 背景説明`,
     chapterInfoEmptyTitle:'準備中です',
     chapterInfoEmptyBody:'この書の背景説明は近日追加予定です。',
+    contentQuestionsEmptyTitle:'準備中です',
+    contentQuestionsEmptyBody:'この章の内容質問はまだ準備できていません。近日追加予定です。',
     bibleInfoOriginLabel:'起源', bibleInfoAuthorLabel:'著者', bibleInfoEraLabel:'執筆年代', bibleInfoOutlineLabel:'概要',
     bibleInfoThemeLabel:'主題', bibleInfoCharacterLabel:'性格', bibleInfoKeyContentLabel:'核心内容',
     qPlaceholder:'考えた答えを書いてみましょう',
@@ -695,6 +698,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`ข้อมูลพื้นหลัง: ${book}`,
     chapterInfoEmptyTitle:'กำลังเตรียมการ',
     chapterInfoEmptyBody:'ข้อมูลพื้นหลังของหนังสือเล่มนี้จะเพิ่มเข้ามาเร็วๆ นี้',
+    contentQuestionsEmptyTitle:'กำลังเตรียมการ',
+    contentQuestionsEmptyBody:'คำถามเนื้อหาของบทนี้ยังไม่พร้อม เราจะเพิ่มเข้ามาเร็วๆ นี้',
     bibleInfoOriginLabel:'ที่มา', bibleInfoAuthorLabel:'ผู้เขียน', bibleInfoEraLabel:'ช่วงเวลาที่เขียน', bibleInfoOutlineLabel:'โครงร่าง',
     bibleInfoThemeLabel:'หัวข้อหลัก', bibleInfoCharacterLabel:'ลักษณะ', bibleInfoKeyContentLabel:'เนื้อหาสำคัญ',
     qPlaceholder:'ลองเขียนคำตอบที่คุณคิดไว้',
@@ -840,6 +845,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`${book} 背景介绍`,
     chapterInfoEmptyTitle:'准备中',
     chapterInfoEmptyBody:'该卷书的背景介绍即将上线。',
+    contentQuestionsEmptyTitle:'准备中',
+    contentQuestionsEmptyBody:'本章的内容问题还未准备好，我们会尽快添加。',
     bibleInfoOriginLabel:'起源', bibleInfoAuthorLabel:'作者', bibleInfoEraLabel:'写作年代', bibleInfoOutlineLabel:'概要',
     bibleInfoThemeLabel:'主题', bibleInfoCharacterLabel:'性格', bibleInfoKeyContentLabel:'核心内容',
     qPlaceholder:'请写下你的想法',
@@ -1235,6 +1242,9 @@ function computeStreak(){
 function escapeHtml(s){
   return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
+function nl2br(s){
+  return String(s||'').replace(/\n/g, '<br>');
+}
 function todayDateLabelKorean(){
   const now = new Date();
   const days=['일','월','화','수','목','금','토'];
@@ -1243,12 +1253,14 @@ function todayDateLabelKorean(){
 function buildContentSnapshotHTML(key){
   const entry = getEntry(key);
   const noAnswer = T('snapNoAnswerContent');
-  const cards = CONTENT_QUESTIONS.map(q=>{
-    const val = (entry.content[q.id]||'').trim();
+  const data = getContentQuestions(bookDataId(state.activeMonth), state.activeChapter);
+  const questions = data ? data.questions : [];
+  const cards = questions.map(q=>{
+    const qid = 'q'+q.questionNumber;
+    const val = (entry.content[qid]||'').trim();
     return `
       <div class="snap-qcard">
-        <div class="snap-ref">${escapeHtml(q.ref)}</div>
-        <div class="snap-qtext">${escapeHtml(q.text)}</div>
+        <div class="snap-qtext">${nl2br(escapeHtml(`${q.questionNumber}. ${q.question}`))}</div>
         <div class="snap-answer ${val?'':'empty'}">${val?escapeHtml(val):noAnswer}</div>
       </div>`;
   }).join('');
@@ -2870,13 +2882,22 @@ function renderChapterInfoSheet(){
 
 function renderContentTab(ds){
   const entry = getEntry(ds);
-  const cards = CONTENT_QUESTIONS.map(q=>{
-    const val = entry.content[q.id] || '';
+  const data = getContentQuestions(bookDataId(state.activeMonth), state.activeChapter);
+  if(!data){
+    return `
+    <div class="guide-empty" style="padding:60px 20px 20px;">
+      <div class="guide-empty-icon">${ICON.chat}</div>
+      <div class="guide-empty-title">${T('contentQuestionsEmptyTitle')}</div>
+      <p class="guide-empty-body">${T('contentQuestionsEmptyBody')}</p>
+    </div>`;
+  }
+  const cards = data.questions.map(q=>{
+    const qid = 'q'+q.questionNumber;
+    const val = entry.content[qid] || '';
     return `
     <div class="q-card">
-      <button class="q-ref" data-action="goto-verse" data-verse="${q.v}">${q.ref} ${ICON.linkArrow}</button>
-      <div class="q-text">${q.text}</div>
-      <textarea class="q-answer" data-kind="content" data-qid="${q.id}" placeholder="${T('qPlaceholder')}">${val}</textarea>
+      <div class="q-text">${nl2br(escapeHtml(`${q.questionNumber}. ${q.question}`))}</div>
+      <textarea class="q-answer" data-kind="content" data-qid="${qid}" placeholder="${T('qPlaceholder')}">${escapeHtml(val)}</textarea>
     </div>`;
   }).join('');
   return cards;
