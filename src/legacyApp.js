@@ -1,5 +1,6 @@
 import kjvData from './data/kjv.json';
 import thKjvData from './data/th_kjv.json';
+import jaKougoData from './data/ja_kougo.json';
 import { getBibleInfo } from './data/bibleInfo.js';
 
 /* ---------------- data ---------------- */
@@ -47,6 +48,14 @@ thKjvData.forEach(b=>{ TH_BY_BOOK[b.book] = b.chapters; });
 function thVerses(m, c){
   const b = BOOKS.find(x=>x.m===m);
   const chapters = b && TH_BY_BOOK[b.en];
+  return (chapters && chapters[c-1]) || [];
+}
+
+const JA_BY_BOOK = {};
+jaKougoData.forEach(b=>{ JA_BY_BOOK[b.book] = b.chapters; });
+function jaVerses(m, c){
+  const b = BOOKS.find(x=>x.m===m);
+  const chapters = b && JA_BY_BOOK[b.en];
   return (chapters && chapters[c-1]) || [];
 }
 const PALETTE = [
@@ -2600,6 +2609,7 @@ function renderDaily(){
 function renderBibleTab(){
   const verseTexts = state.lang==='en' ? kjvVerses(state.activeMonth, state.activeChapter)
     : state.lang==='th' ? thVerses(state.activeMonth, state.activeChapter)
+    : state.lang==='ja' ? jaVerses(state.activeMonth, state.activeChapter)
     : CHAPTER.verses;
   const verses = verseTexts.map((text,idx)=>{
     const n = idx+1;
