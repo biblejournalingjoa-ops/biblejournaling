@@ -1,15 +1,16 @@
 import kjvData from './data/kjv.json';
 import thKjvData from './data/th_kjv.json';
 import jaKougoData from './data/ja_kougo.json';
+import zhCuvData from './data/zh_cuv.json';
 import { getBibleInfo } from './data/bibleInfo.js';
 
 /* ---------------- data ---------------- */
 const BOOKS = [
-  { m:1, ko:'창세기', en:'Genesis', ja:'創世記', th:'ปฐมกาล' },
-  { m:2, ko:'출애굽기', en:'Exodus', ja:'出エジプト記', th:'อพยพ' },
-  { m:3, ko:'레위기', en:'Leviticus', ja:'レビ記', th:'เลวีนิติ' },
-  { m:4, ko:'민수기', en:'Numbers', ja:'民数記', th:'กันดารวิถี' },
-  { m:5, ko:'신명기', en:'Deuteronomy', ja:'申命記', th:'เฉลยธรรมบัญญัติ' },
+  { m:1, ko:'창세기', en:'Genesis', ja:'創世記', th:'ปฐมกาล', zh:'创世记' },
+  { m:2, ko:'출애굽기', en:'Exodus', ja:'出エジプト記', th:'อพยพ', zh:'出埃及记' },
+  { m:3, ko:'레위기', en:'Leviticus', ja:'レビ記', th:'เลวีนิติ', zh:'利未记' },
+  { m:4, ko:'민수기', en:'Numbers', ja:'民数記', th:'กันดารวิถี', zh:'民数记' },
+  { m:5, ko:'신명기', en:'Deuteronomy', ja:'申命記', th:'เฉลยธรรมบัญญัติ', zh:'申命记' },
 ];
 function bookDisplayName(b){
   return b[state.lang] || b.en || b.ko;
@@ -23,6 +24,7 @@ function chapterLabel(name, c){
   if(state.lang==='en') return `${name} ${c}`;
   if(state.lang==='ja') return `${name} ${c}章`;
   if(state.lang==='th') return `${name} บทที่ ${c}`;
+  if(state.lang==='zh') return `${name} 第${c}章`;
   return `${name} ${c}장`;
 }
 const CHAPTER_COUNTS = { 1:50, 2:40, 3:27, 4:36, 5:34 }; // Genesis, Exodus, Leviticus, Numbers, Deuteronomy
@@ -56,6 +58,14 @@ jaKougoData.forEach(b=>{ JA_BY_BOOK[b.book] = b.chapters; });
 function jaVerses(m, c){
   const b = BOOKS.find(x=>x.m===m);
   const chapters = b && JA_BY_BOOK[b.en];
+  return (chapters && chapters[c-1]) || [];
+}
+
+const ZH_BY_BOOK = {};
+zhCuvData.forEach(b=>{ ZH_BY_BOOK[b.book] = b.chapters; });
+function zhVerses(m, c){
+  const b = BOOKS.find(x=>x.m===m);
+  const chapters = b && ZH_BY_BOOK[b.en];
   return (chapters && chapters[c-1]) || [];
 }
 const PALETTE = [
@@ -184,7 +194,7 @@ const STRINGS = {
     monthPlanName:'1권 노트 구매', monthPlanDesc:(name)=>`${name} 저널만 이용`, monthPlanPrice:'₩2,000',
     cancel:'취소', buyBtn:'구매하기',
     settingsTitle:'설정', fontSizeLabel:'글자 크기', fontSmall:'작게', fontDefault:'기본', fontLarge:'크게',
-    langLabel:'언어', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    langLabel:'언어', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'中文',
     languageMenu:'언어 설정', languageModalTitle:'언어 선택',
     themeLabel:'다크 모드', themeLight:'라이트', themeDark:'다크',
     signupTitle:'회원가입', signupSub:'가입에 필요한 정보를 입력해 주세요.',
@@ -329,7 +339,7 @@ const STRINGS = {
     monthPlanName:'Single book', monthPlanDesc:(name)=>`${name} journal only`, monthPlanPrice:'₩2,000',
     cancel:'Cancel', buyBtn:'Unlock',
     settingsTitle:'Settings', fontSizeLabel:'Text size', fontSmall:'Small', fontDefault:'Default', fontLarge:'Large',
-    langLabel:'Language', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    langLabel:'Language', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'中文',
     languageMenu:'Language', languageModalTitle:'Select language',
     themeLabel:'Dark mode', themeLight:'Light', themeDark:'Dark',
     signupTitle:'Sign up', signupSub:'Please fill in the details below to create your account.',
@@ -474,7 +484,7 @@ const STRINGS = {
     monthPlanName:'1冊ノート購入', monthPlanDesc:(name)=>`${name}ジャーナルのみ利用`, monthPlanPrice:'₩2,000',
     cancel:'キャンセル', buyBtn:'購入する',
     settingsTitle:'設定', fontSizeLabel:'文字サイズ', fontSmall:'小', fontDefault:'標準', fontLarge:'大',
-    langLabel:'言語', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    langLabel:'言語', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'中文',
     languageMenu:'言語設定', languageModalTitle:'言語を選択',
     themeLabel:'ダークモード', themeLight:'ライト', themeDark:'ダーク',
     signupTitle:'新規登録', signupSub:'登録に必要な情報を入力してください。',
@@ -619,7 +629,7 @@ const STRINGS = {
     monthPlanName:'ซื้อสมุดบันทึกเล่มเดียว', monthPlanDesc:(name)=>`ใช้ได้เฉพาะสมุดบันทึก ${name}`, monthPlanPrice:'₩2,000',
     cancel:'ยกเลิก', buyBtn:'ซื้อเลย',
     settingsTitle:'การตั้งค่า', fontSizeLabel:'ขนาดตัวอักษร', fontSmall:'เล็ก', fontDefault:'ปกติ', fontLarge:'ใหญ่',
-    langLabel:'ภาษา', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย',
+    langLabel:'ภาษา', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'中文',
     languageMenu:'ตั้งค่าภาษา', languageModalTitle:'เลือกภาษา',
     themeLabel:'โหมดมืด', themeLight:'สว่าง', themeDark:'มืด',
     signupTitle:'สมัครสมาชิก', signupSub:'กรุณากรอกข้อมูลที่จำเป็นสำหรับการสมัครสมาชิก',
@@ -759,8 +769,8 @@ function T(key, ...args){
   if(v===undefined) return '';
   return typeof v==='function' ? v(...args) : v;
 }
-const LANG_CODES = ['ko','en','ja','th'];
-const LANG_LABEL_KEYS = { ko:'langKo', en:'langEn', ja:'langJa', th:'langTh' };
+const LANG_CODES = ['ko','en','ja','th','zh'];
+const LANG_LABEL_KEYS = { ko:'langKo', en:'langEn', ja:'langJa', th:'langTh', zh:'langZh' };
 
 /* ---------------- icons ---------------- */
 const ICON = {
@@ -2610,6 +2620,7 @@ function renderBibleTab(){
   const verseTexts = state.lang==='en' ? kjvVerses(state.activeMonth, state.activeChapter)
     : state.lang==='th' ? thVerses(state.activeMonth, state.activeChapter)
     : state.lang==='ja' ? jaVerses(state.activeMonth, state.activeChapter)
+    : state.lang==='zh' ? zhVerses(state.activeMonth, state.activeChapter)
     : CHAPTER.verses;
   const verses = verseTexts.map((text,idx)=>{
     const n = idx+1;
