@@ -3594,7 +3594,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     render();
     showToast(T('shareGenerating'));
     const key = ckey(state.activeMonth, state.activeChapter);
-    const label = `${bookName(state.activeMonth)} ${state.activeChapter}${state.lang==='en'?'':'장'}`;
+    const label = chapterLabel(bookName(state.activeMonth), state.activeChapter);
     const html = kind==='content' ? buildContentSnapshotHTML(key) : buildThoughtSnapshotHTML(key);
     const cap = T('sharedImageCap', kind, label);
     captureSnapshotImage(html).then(dataUrl=>{
@@ -3616,7 +3616,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     render();
     showToast(T('shareGenerating'));
     const key = ckey(state.activeMonth, state.activeChapter);
-    const label = `${bookName(state.activeMonth)} ${state.activeChapter}${state.lang==='en'?'':'장'}`;
+    const label = chapterLabel(bookName(state.activeMonth), state.activeChapter);
     const html = kind==='content' ? buildContentSnapshotHTML(key) : buildThoughtSnapshotHTML(key);
     const filename = `${kind}-${key}.png`;
     captureSnapshotImage(html).then(async dataUrl=>{
@@ -3663,7 +3663,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     render();
     showToast(T('shareGenerating'));
     const key = ckey(state.activeMonth, state.activeChapter);
-    const label = `${bookName(state.activeMonth)} ${state.activeChapter}${state.lang==='en'?'':'장'}`;
+    const label = chapterLabel(bookName(state.activeMonth), state.activeChapter);
 
     if(kind==='both'){
       Promise.all([

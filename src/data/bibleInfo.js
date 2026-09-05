@@ -1,6 +1,6 @@
 /* ---------------- bible book overview data ----------------
  * Keyed by book id (matches BOOKS[].m in legacyApp.js).
- * Each book entry holds one variant per language code (ko/en/th, …).
+ * Each book entry holds one variant per language code (ko/en/ja/th/zh, …).
  * getBibleInfo() falls back en -> ko -> first available when the
  * active language has no translation yet, so a book only needs one
  * language filled in to start showing content.
@@ -89,6 +89,62 @@ export const BIBLE_INFO = {
             { num: 2, label: 'อิสอัค', range: 'บทที่ 24-27' },
             { num: 3, label: 'ยาโคบ', range: 'บทที่ 27-36' },
             { num: 4, label: 'โยเซฟ', range: 'บทที่ 37-50' },
+          ],
+        },
+      ],
+    },
+    ja: {
+      titleNative: '創世記',
+      titleEn: 'Genesis',
+      origin:
+        "「創世記」という言葉は、起源、根源、誕生、始まりを意味するギリシャ語に由来します。ヘブライ語聖書の最初の書であり、モーセ五書(トーラー)の始まりとして、世界と人類の起源、罪の始まり、そして神が選ばれた民であるイスラエルの祖先たちを通して救いの歴史が始まる過程を記しています。",
+      author: 'モーセ',
+      era: '紀元前1450年頃',
+      sections: [
+        {
+          label: '創造の時代',
+          items: [
+            { num: 1, label: '創造', range: '1-2章' },
+            { num: 2, label: '堕落', range: '3-5章' },
+            { num: 3, label: '洪水', range: '6-9章' },
+            { num: 4, label: 'バベルの塔', range: '10-11章' },
+          ],
+        },
+        {
+          label: '族長の時代',
+          items: [
+            { num: 1, label: 'アブラハム', range: '11-25章' },
+            { num: 2, label: 'イサク', range: '24-27章' },
+            { num: 3, label: 'ヤコブ', range: '27-36章' },
+            { num: 4, label: 'ヨセフ', range: '37-50章' },
+          ],
+        },
+      ],
+    },
+    zh: {
+      titleNative: '创世记',
+      titleEn: 'Genesis',
+      origin:
+        "'创世记'一词源自希腊语，意为起源、根源、诞生和开端。它是希伯来圣经的第一卷书，也是摩西五经(妥拉)的开篇，记载了世界与人类的起源、罪的开始，以及神藉着祂所拣选的百姓——以色列的列祖，开始救赎历史的过程。",
+      author: '摩西',
+      era: '约主前1450年',
+      sections: [
+        {
+          label: '创造时代',
+          items: [
+            { num: 1, label: '创造', range: '1-2章' },
+            { num: 2, label: '堕落', range: '3-5章' },
+            { num: 3, label: '洪水', range: '6-9章' },
+            { num: 4, label: '巴别塔', range: '10-11章' },
+          ],
+        },
+        {
+          label: '族长时代',
+          items: [
+            { num: 1, label: '亚伯拉罕', range: '11-25章' },
+            { num: 2, label: '以撒', range: '24-27章' },
+            { num: 3, label: '雅各', range: '27-36章' },
+            { num: 4, label: '约瑟', range: '37-50章' },
           ],
         },
       ],
@@ -202,6 +258,80 @@ export const BIBLE_INFO = {
             { num: 2, label: 'การฝึกที่ซีนาย', range: 'บทที่ 19-40, เลวีนิติ, กันดารวิถี 1-9' },
             { num: 3, label: 'ความไม่เชื่อ', range: 'กันดารวิถี 10-14' },
             { num: 4, label: 'การฝึกใหม่ 40 ปี', range: 'กันดารวิถี 20-36, เฉลยธรรมบัญญัติ' },
+          ],
+        },
+      ],
+    },
+    ja: {
+      titleNative: '出エジプト記',
+      titleEn: 'Exodus',
+      origin:
+        "モーセ五書の第二の書であり、創世記に続く内容を記しています。エジプトで奴隷生活を送っていたイスラエル民族の救い、そして神の契約と律法によって治められるイスラエル国家の成立過程を記録しています。ヘブライ語の題名は1章1節の最初の二語「ヴェエレ・シェモト」(そしてこれらが名前である)であり、ギリシャ語の題名は「エクソドス」(脱出・出発・外へ出ること)に由来します。",
+      author: 'モーセ',
+      era: '紀元前1406年頃(モアブの平野で記されたと推定される)',
+      sections: [
+        {
+          label: '創造の時代',
+          items: [
+            { num: 1, label: '創造', range: '1-2章' },
+            { num: 2, label: '堕落', range: '3-5章' },
+            { num: 3, label: '洪水', range: '6-9章' },
+            { num: 4, label: 'バベルの塔', range: '10-11章' },
+          ],
+        },
+        {
+          label: '族長の時代',
+          items: [
+            { num: 1, label: 'アブラハム', range: '11-25章' },
+            { num: 2, label: 'イサク', range: '24-27章' },
+            { num: 3, label: 'ヤコブ', range: '27-36章' },
+            { num: 4, label: 'ヨセフ', range: '37-50章' },
+          ],
+        },
+        {
+          label: '出エジプトと荒野の時代',
+          items: [
+            { num: 1, label: '出エジプト', range: '1-18章' },
+            { num: 2, label: 'シナイ山での訓練', range: '19-40章, レビ記, 民数記1-9章' },
+            { num: 3, label: '不信仰', range: '民数記10-14章' },
+            { num: 4, label: '40年間の再訓練', range: '民数記20-36章, 申命記' },
+          ],
+        },
+      ],
+    },
+    zh: {
+      titleNative: '出埃及记',
+      titleEn: 'Exodus',
+      origin:
+        "摩西五经的第二卷书，承接创世记的内容。记载了在埃及为奴的以色列民族蒙拯救，以及按神的约与律法治理的以色列国家建立的过程。希伯来语书名取自1章1节开头的两个词'这些是名字'(Ve'eleh Shemot)，希腊语书名'出埃及记'(Exodus)则意为离开、出去。",
+      author: '摩西',
+      era: '约主前1406年(相传写于摩押平原)',
+      sections: [
+        {
+          label: '创造时代',
+          items: [
+            { num: 1, label: '创造', range: '1-2章' },
+            { num: 2, label: '堕落', range: '3-5章' },
+            { num: 3, label: '洪水', range: '6-9章' },
+            { num: 4, label: '巴别塔', range: '10-11章' },
+          ],
+        },
+        {
+          label: '族长时代',
+          items: [
+            { num: 1, label: '亚伯拉罕', range: '11-25章' },
+            { num: 2, label: '以撒', range: '24-27章' },
+            { num: 3, label: '雅各', range: '27-36章' },
+            { num: 4, label: '约瑟', range: '37-50章' },
+          ],
+        },
+        {
+          label: '出埃及与旷野时代',
+          items: [
+            { num: 1, label: '出埃及', range: '1-18章' },
+            { num: 2, label: '西奈山训练', range: '19-40章、利未记、民数记1-9章' },
+            { num: 3, label: '不信', range: '民数记10-14章' },
+            { num: 4, label: '40年的再训练', range: '民数记20-36章、申命记' },
           ],
         },
       ],
@@ -345,6 +475,100 @@ export const BIBLE_INFO = {
           items: [
             { num: 1, label: 'หนทางเข้าเฝ้าพระเจ้าผู้บริสุทธิ์', range: 'บทที่ 1-16' },
             { num: 2, label: 'การดำเนินชีวิตร่วมกับพระเจ้าผู้บริสุทธิ์', range: 'บทที่ 17-27' },
+          ],
+        },
+      ],
+    },
+    ja: {
+      titleNative: 'レビ記',
+      titleEn: 'Leviticus',
+      origin:
+        "ヘブライ語では「ワイイクラー」(主が呼ばれた)を意味し、ギリシャ語では「レウィティコン」(レビ人に関する書)を意味します。",
+      author: 'モーセ(シナイ山のふもとに留まっていた約1か月間)',
+      era: '紀元前1450年頃',
+      theme: '神に近づく方法(いけにえ、供え物、祭儀の律法など)と共に歩む生活',
+      character: '神と正しい関係を築いて生きる聖徒たち',
+      keyContent: '様々な儀式と祭り(イエス・キリストを予表する)、ヘブル人への手紙(レビ記の注解書と見ることができる)',
+      sections: [
+        {
+          label: '創造の時代',
+          items: [
+            { num: 1, label: '創造', range: '1-2章' },
+            { num: 2, label: '堕落', range: '3-5章' },
+            { num: 3, label: '洪水', range: '6-9章' },
+            { num: 4, label: 'バベルの塔', range: '10-11章' },
+          ],
+        },
+        {
+          label: '族長の時代',
+          items: [
+            { num: 1, label: 'アブラハム', range: '11-25章' },
+            { num: 2, label: 'イサク', range: '24-27章' },
+            { num: 3, label: 'ヤコブ', range: '27-36章' },
+            { num: 4, label: 'ヨセフ', range: '37-50章' },
+          ],
+        },
+        {
+          label: '出エジプトと荒野の時代',
+          items: [
+            { num: 1, label: '出エジプト', range: '1-18章' },
+            { num: 2, label: 'シナイ山での訓練', range: '19-40章, レビ記, 民数記1-9章' },
+            { num: 3, label: '不信仰', range: '民数記10-14章' },
+            { num: 4, label: '40年間の再訓練', range: '民数記20-36章, 申命記' },
+          ],
+        },
+        {
+          label: 'レビ記の構造',
+          items: [
+            { num: 1, label: '聖なる神に近づく方法', range: '1-16章' },
+            { num: 2, label: '聖なる神と共に歩む道', range: '17-27章' },
+          ],
+        },
+      ],
+    },
+    zh: {
+      titleNative: '利未记',
+      titleEn: 'Leviticus',
+      origin:
+        "希伯来语'瓦耶克拉'(Vayikra)意为'祂呼叫说'，希腊语'利未提康'(Leuitikon)意为'关于利未人的书'。",
+      author: '摩西(在西奈山脚下停留约一个月期间)',
+      era: '约主前1450年',
+      theme: '亲近神的方法(祭祀、供物、敬拜的律法等)以及与神同行的生活',
+      character: '与神保持正确关系而生活的圣徒们',
+      keyContent: '各种仪式与节期(预表耶稣基督)；希伯来书可视为利未记的注释书',
+      sections: [
+        {
+          label: '创造时代',
+          items: [
+            { num: 1, label: '创造', range: '1-2章' },
+            { num: 2, label: '堕落', range: '3-5章' },
+            { num: 3, label: '洪水', range: '6-9章' },
+            { num: 4, label: '巴别塔', range: '10-11章' },
+          ],
+        },
+        {
+          label: '族长时代',
+          items: [
+            { num: 1, label: '亚伯拉罕', range: '11-25章' },
+            { num: 2, label: '以撒', range: '24-27章' },
+            { num: 3, label: '雅各', range: '27-36章' },
+            { num: 4, label: '约瑟', range: '37-50章' },
+          ],
+        },
+        {
+          label: '出埃及与旷野时代',
+          items: [
+            { num: 1, label: '出埃及', range: '1-18章' },
+            { num: 2, label: '西奈山训练', range: '19-40章、利未记、民数记1-9章' },
+            { num: 3, label: '不信', range: '民数记10-14章' },
+            { num: 4, label: '40年的再训练', range: '民数记20-36章、申命记' },
+          ],
+        },
+        {
+          label: '利未记的结构',
+          items: [
+            { num: 1, label: '亲近圣洁之神的方法', range: '1-16章' },
+            { num: 2, label: '与圣洁之神同行的道路', range: '17-27章' },
           ],
         },
       ],
