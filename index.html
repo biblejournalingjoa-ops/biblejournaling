@@ -420,8 +420,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   padding:4px 10px;border-radius:20px;margin-bottom:9px;
 }
 .bi-origin-text{font-size:calc(12.5px * var(--fs-scale));line-height:1.65;color:var(--ink);margin:0;}
-.bi-meta-row{display:flex;gap:8px;margin-bottom:18px;}
-.bi-meta-badge{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0;}
+.bi-meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.bi-meta-badge{flex:1 1 calc(50% - 4px);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:110px;}
 .bi-meta-label{
   display:block;font-size:calc(10px * var(--fs-scale));color:var(--ink-faint);
   letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px;
@@ -1171,6 +1171,42 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   background:var(--rose-deep);color:#fff;font-size:calc(10px * var(--fs-scale));font-weight:700;
   display:flex;align-items:center;justify-content:center;
 }
+
+/* ---------- usage guide: "성경으로 성령 인도 받기" intro ---------- */
+.guide-verses-card{
+  background:var(--paper);border-radius:18px;box-shadow:var(--shadow-sm);
+  padding:22px 18px 20px;margin-bottom:20px;
+}
+.guide-verses-card .guide-section-title{text-align:center;}
+.guide-verse-text{
+  font-size:calc(13px * var(--fs-scale));line-height:1.8;color:var(--ink);
+  margin:0 0 16px;padding-left:12px;border-left:2px solid var(--gold);
+}
+.guide-verse-text:last-child{margin-bottom:0;}
+.guide-verse-ref{display:block;margin-top:5px;font-size:calc(11.5px * var(--fs-scale));color:var(--gold);font-weight:700;}
+.guide-list-section{margin-top:20px;}
+.guide-section-title{
+  font-family:'Noto Serif KR',serif;font-size:calc(16px * var(--fs-scale));font-weight:700;
+  margin:0 0 10px;color:var(--ink);line-height:1.4;
+}
+.guide-num-list{list-style:none;margin:0;padding:0;background:var(--paper);border-radius:14px;box-shadow:var(--shadow-sm);overflow:hidden;}
+.guide-num-list li{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-top:1px solid var(--line);}
+.guide-num-list li:first-child{border-top:none;}
+.gnl-num{
+  width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:var(--gold);color:#fff;font-size:calc(10.5px * var(--fs-scale));font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.gnl-body{flex:1;min-width:0;}
+.gnl-body p{margin:0;font-size:calc(12.5px * var(--fs-scale));line-height:1.65;color:var(--ink);}
+.guide-note{margin:9px 0 0;font-size:calc(11.5px * var(--fs-scale));color:var(--ink-soft);line-height:1.6;}
+.gnl-body .guide-note{margin-top:6px;}
+.guide-quote{
+  margin:20px 0 0;padding:16px 16px 14px;background:var(--bg);
+  border-left:3px solid var(--gold);border-radius:0 14px 14px 0;
+}
+.guide-quote p{margin:0 0 8px;font-size:calc(12px * var(--fs-scale));line-height:1.75;color:var(--ink-soft);}
+.guide-quote cite{font-style:normal;font-size:calc(11px * var(--fs-scale));color:var(--gold);font-weight:700;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>

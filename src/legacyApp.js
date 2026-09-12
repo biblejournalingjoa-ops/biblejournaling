@@ -1,14 +1,17 @@
 import kjvData from './data/kjv.json';
 import thKjvData from './data/th_kjv.json';
+import jaKougoData from './data/ja_kougo.json';
+import zhCuvData from './data/zh_cuv.json';
 import { getBibleInfo } from './data/bibleInfo.js';
+import { getContentQuestions } from './data/contentQuestions.js';
 
 /* ---------------- data ---------------- */
 const BOOKS = [
-  { m:1, ko:'창세기', en:'Genesis', ja:'創世記', th:'ปฐมกาล', zh:'创世记' },
-  { m:2, ko:'출애굽기', en:'Exodus', ja:'出エジプト記', th:'อพยพ', zh:'出埃及记' },
-  { m:3, ko:'레위기', en:'Leviticus', ja:'レビ記', th:'เลวีนิติ', zh:'利未记' },
-  { m:4, ko:'민수기', en:'Numbers', ja:'民数記', th:'กันดารวิถี', zh:'民数记' },
-  { m:5, ko:'신명기', en:'Deuteronomy', ja:'申命記', th:'เฉลยธรรมบัญญัติ', zh:'申命记' },
+  { m:1, id:'genesis', ko:'창세기', en:'Genesis', ja:'創世記', th:'ปฐมกาล', zh:'创世记' },
+  { m:2, id:'exodus', ko:'출애굽기', en:'Exodus', ja:'出エジプト記', th:'อพยพ', zh:'出埃及记' },
+  { m:3, id:'leviticus', ko:'레위기', en:'Leviticus', ja:'レビ記', th:'เลวีนิติ', zh:'利未记' },
+  { m:4, id:'numbers', ko:'민수기', en:'Numbers', ja:'民数記', th:'กันดารวิถี', zh:'民数记' },
+  { m:5, id:'deuteronomy', ko:'신명기', en:'Deuteronomy', ja:'申命記', th:'เฉลยธรรมบัญญัติ', zh:'申命记' },
 ];
 function bookDisplayName(b){
   return b[state.lang] || b.en || b.ko;
@@ -18,11 +21,15 @@ function bookName(m){
   if(!b) return '';
   return bookDisplayName(b);
 }
+function bookDataId(m){
+  const b = BOOKS.find(x=>x.m===m);
+  return b && b.id;
+}
 function chapterLabel(name, c){
   if(state.lang==='en') return `${name} ${c}`;
   if(state.lang==='ja') return `${name} ${c}章`;
   if(state.lang==='th') return `${name} บทที่ ${c}`;
-  if(state.lang==='zh') return `${name}第${c}章`;
+  if(state.lang==='zh') return `${name} 第${c}章`;
   return `${name} ${c}장`;
 }
 const CHAPTER_COUNTS = { 1:50, 2:40, 3:27, 4:36, 5:34 }; // Genesis, Exodus, Leviticus, Numbers, Deuteronomy
@@ -48,6 +55,22 @@ thKjvData.forEach(b=>{ TH_BY_BOOK[b.book] = b.chapters; });
 function thVerses(m, c){
   const b = BOOKS.find(x=>x.m===m);
   const chapters = b && TH_BY_BOOK[b.en];
+  return (chapters && chapters[c-1]) || [];
+}
+
+const JA_BY_BOOK = {};
+jaKougoData.forEach(b=>{ JA_BY_BOOK[b.book] = b.chapters; });
+function jaVerses(m, c){
+  const b = BOOKS.find(x=>x.m===m);
+  const chapters = b && JA_BY_BOOK[b.en];
+  return (chapters && chapters[c-1]) || [];
+}
+
+const ZH_BY_BOOK = {};
+zhCuvData.forEach(b=>{ ZH_BY_BOOK[b.book] = b.chapters; });
+function zhVerses(m, c){
+  const b = BOOKS.find(x=>x.m===m);
+  const chapters = b && ZH_BY_BOOK[b.en];
   return (chapters && chapters[c-1]) || [];
 }
 const PALETTE = [
@@ -90,14 +113,6 @@ const CHAPTER = {
     '바로가 너무 멀리 가지는 말라 하며 자신을 위해 구하라 청한다.',
   ]
 };
-
-const CONTENT_QUESTIONS = [
-  {id:'q1', v:1, ref:'출 8:1', text:'출 8:1에 따르면, 하나님이 하실 일을 누구에게 말씀하실까?'},
-  {id:'q2', v:2, ref:'출 8:2', text:'출 8:2에 따르면, 하나님이 이집트에서 백성들을 내보내기 위해 내리신 재앙은 무엇일까?'},
-  {id:'q3', v:6, ref:'출 8:6', text:'출 8:6에서 아론이 지팡이를 들었을 때 애굽 온 땅에 나타난 것은 무엇일까?'},
-  {id:'q4', v:15, ref:'출 8:15', text:'출 8:15에 따르면, 재앙이 그친 것을 본 바로의 마음은 어떻게 되었을까?'},
-  {id:'q5', v:19, ref:'출 8:19', text:'출 8:19에서 요술사들이 재앙을 보고 바로에게 무엇이라고 말했을까?'},
-];
 
 const ASK_QUESTIONS = [
   '주님, 오늘 제게 주시는 마음의 감동은 무엇입니까?',
@@ -244,7 +259,10 @@ const STRINGS = {
     chapterInfoEmptyBody:'이 책의 배경 설명은 곧 추가될 예정이에요.',
     copyVerseBtn:'구절 복사하기',
     toastVerseCopied:'구절이 복사되었습니다.',
+    contentQuestionsEmptyTitle:'준비 중이에요',
+    contentQuestionsEmptyBody:'이 장의 내용 질문은 아직 준비되지 않았어요. 곧 추가할게요.',
     bibleInfoOriginLabel:'기원', bibleInfoAuthorLabel:'저자', bibleInfoEraLabel:'기록연대', bibleInfoOutlineLabel:'개요',
+    bibleInfoThemeLabel:'주제', bibleInfoCharacterLabel:'성격', bibleInfoKeyContentLabel:'핵심 내용',
     qPlaceholder:'생각한 답을 적어보세요',
     verseLabel:'나에게 주신 말씀 한 구절', versePh:'예: 출애굽기 8:10',
     passageLabel:'본문 내용', passagePh:'오늘 본문의 흐름을 요약해 보세요',
@@ -386,7 +404,10 @@ const STRINGS = {
     chapterInfoEmptyBody:"Background notes for this book will be added soon.",
     copyVerseBtn:'Copy Verse',
     toastVerseCopied:'Verse copied.',
+    contentQuestionsEmptyTitle:'Coming soon',
+    contentQuestionsEmptyBody:"Content questions for this chapter aren't ready yet. We'll add them soon.",
     bibleInfoOriginLabel:'Origin', bibleInfoAuthorLabel:'Author', bibleInfoEraLabel:'Written', bibleInfoOutlineLabel:'Outline',
+    bibleInfoThemeLabel:'Theme', bibleInfoCharacterLabel:'Character', bibleInfoKeyContentLabel:'Key Content',
     qPlaceholder:'Write your answer here',
     verseLabel:'A verse given to me', versePh:'e.g. Exodus 8:10',
     passageLabel:'Passage summary', passagePh:'Summarize the flow of today\u2019s passage',
@@ -528,7 +549,10 @@ const STRINGS = {
     chapterInfoEmptyBody:'この書の背景説明は近日追加予定です。',
     copyVerseBtn:'聖句をコピー',
     toastVerseCopied:'聖句をコピーしました。',
+    contentQuestionsEmptyTitle:'準備中です',
+    contentQuestionsEmptyBody:'この章の内容質問はまだ準備できていません。近日追加予定です。',
     bibleInfoOriginLabel:'起源', bibleInfoAuthorLabel:'著者', bibleInfoEraLabel:'執筆年代', bibleInfoOutlineLabel:'概要',
+    bibleInfoThemeLabel:'主題', bibleInfoCharacterLabel:'性格', bibleInfoKeyContentLabel:'核心内容',
     qPlaceholder:'考えた答えを書いてみましょう',
     verseLabel:'私に与えられた御言葉一節', versePh:'例: 出エジプト記8:10',
     passageLabel:'本文の内容', passagePh:'今日の本文の流れをまとめてみましょう',
@@ -670,7 +694,10 @@ const STRINGS = {
     chapterInfoEmptyBody:'ข้อมูลพื้นหลังของหนังสือเล่มนี้จะเพิ่มเข้ามาเร็วๆ นี้',
     copyVerseBtn:'คัดลอกข้อพระคัมภีร์',
     toastVerseCopied:'คัดลอกข้อพระคัมภีร์แล้ว',
+    contentQuestionsEmptyTitle:'กำลังเตรียมการ',
+    contentQuestionsEmptyBody:'คำถามเนื้อหาของบทนี้ยังไม่พร้อม เราจะเพิ่มเข้ามาเร็วๆ นี้',
     bibleInfoOriginLabel:'ที่มา', bibleInfoAuthorLabel:'ผู้เขียน', bibleInfoEraLabel:'ช่วงเวลาที่เขียน', bibleInfoOutlineLabel:'โครงร่าง',
+    bibleInfoThemeLabel:'หัวข้อหลัก', bibleInfoCharacterLabel:'ลักษณะ', bibleInfoKeyContentLabel:'เนื้อหาสำคัญ',
     qPlaceholder:'ลองเขียนคำตอบที่คุณคิดไว้',
     verseLabel:'ข้อพระคัมภีร์ที่ได้รับ', versePh:'เช่น อพยพ 8:10',
     passageLabel:'สรุปเนื้อหาบทนี้', passagePh:'ลองสรุปเนื้อหาของบทนี้ในวันนี้',
@@ -790,6 +817,8 @@ const STRINGS = {
     guideEmptyTitle:'正在准备中',
     guideEmptyBody:'使用指南内容即将推出，请稍候。',
     contactBody:'在使用话语灵修笔记的过程中，如有任何疑问或不便，欢迎随时联系我们。我们会尽快回复。',
+    contentQuestionsEmptyTitle:'准备中',
+    contentQuestionsEmptyBody:'本章的内容问题还未准备好，我们会尽快添加。',
     contactEmailBtn:'通过邮件联系',
     contactEmailNote:'点击按钮后会打开默认邮件应用，并自动填入收件人。',
     contactMailSubject:'[话语灵修笔记] 咨询',
@@ -813,6 +842,7 @@ const STRINGS = {
     copyVerseBtn:'复制经文',
     toastVerseCopied:'经文已复制。',
     bibleInfoOriginLabel:'起源', bibleInfoAuthorLabel:'作者', bibleInfoEraLabel:'成书年代', bibleInfoOutlineLabel:'概要',
+    bibleInfoThemeLabel:'主题', bibleInfoCharacterLabel:'性格', bibleInfoKeyContentLabel:'核心内容',
     qPlaceholder:'写下你所想到的答案',
     verseLabel:'赐给我的一节话语', versePh:'例：出埃及记 8:10',
     passageLabel:'本文内容', passagePh:'试着概括今天本文的脉络',
@@ -944,6 +974,29 @@ const GUIDE_STRINGS = {
     guideS6Desc:'기도제목과 오늘의 감사를 나누어 기록합니다.',
     guideS6PrayerDesc:'하나님께 감사함으로 드릴 기도를 기록하세요.',
     guideS6ThanksDesc:'말씀과 성령의 인도 중에 주시는 감사 내용을 기록하세요.',
+    guideVersesTitle:'성경으로 성령 인도 받기',
+    guideVerse1:'무릇 하나님의 영으로 인도함을 받는 사람은 곧 하나님의 아들이라',
+    guideVerse1Ref:'(롬8:14)',
+    guideVerse2:'성령이 친히 우리의 영과 더불어 우리가 하나님의 자녀인 것을 증언하시나',
+    guideVerse2Ref:'(롬8:16)',
+    guideVerse3:'말씀이 육신이 되어 우리 가운데 거하시매 우리가 그의 영광을 보니 아버지의 독생자의 영광이요 은혜와 진리가 충만하더라',
+    guideVerse3Ref:'(요1:14)',
+    guideRulesTitle:'5가지 성경 읽기 지침',
+    guideRules:['규칙적으로 통독하자','기도하며 읽자','명상하며 읽자','믿음으로 읽자','실천할 목적으로 읽자'],
+    guideRulesNote:'*준비물: 성경(킹제임스흠정역)',
+    guideBasicsTitle:'기본 수칙 및 유익',
+    guideBasics:[
+      '정해진 시간, 정해진 장소에서 성경 읽기를 한다',
+      '하루 한 장을 읽는다',
+      '혼자, 혹은 함께 읽을 수 있다',
+      '질문에 답을 하며 성경에 대해 더 깊은 이해와 묵상을 가질 수 있다',
+      '말씀으로 기도하고, 반드시 삶에 적용한다',
+    ],
+    guideBasicsNote:"(유튜브 '마인드리셋'- 새로운 피조물의 관점으로 듣는 성경 재생목록 참조)",
+    guideMuellerTitle:'말씀을 읽으면(죠지뮬러)',
+    guideMueller:['말씀을 더욱 사랑하게 된다','영적으로 성장한다','영적 진리를 깨닫는다','당부: 말씀에 대해 생각하라'],
+    guideWesleyQuote:'하나님의 성경은 성경의 기자들을 감동시켰을 뿐만 아니라 간절한 마음의 기도로 성경을 읽는 사람들을 계속적으로 감동시키며, 초자연적 능력으로 말씀의 이해를 도와준다. 그러므로 성경은 교리의 학습에 유익하며, 무식한 자에게 훈계가 되고 오류와 죄에 빠진 자들에게 견책과 확신의 말씀이 된다. 또한 어떠한 잘못에도 교정의 지침이 되며, 하나님의 자녀들을 의로 교육하는데 더없는 기준이 된다.',
+    guideWesleyAttr:'(John Wesley)',
   },
   en:{
     guideHowToTitle:'How to use the journaling note',
@@ -1492,6 +1545,9 @@ function computeStreak(){
 function escapeHtml(s){
   return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
+function nl2br(s){
+  return String(s||'').replace(/\n/g, '<br>');
+}
 function todayDateLabelKorean(){
   const now = new Date();
   const days=['일','월','화','수','목','금','토'];
@@ -1500,12 +1556,14 @@ function todayDateLabelKorean(){
 function buildContentSnapshotHTML(key){
   const entry = getEntry(key);
   const noAnswer = T('snapNoAnswerContent');
-  const cards = CONTENT_QUESTIONS.map(q=>{
-    const val = (entry.content[q.id]||'').trim();
+  const data = getContentQuestions(bookDataId(state.activeMonth), state.activeChapter);
+  const questions = data ? data.questions : [];
+  const cards = questions.map(q=>{
+    const qid = 'q'+q.questionNumber;
+    const val = (entry.content[qid]||'').trim();
     return `
       <div class="snap-qcard">
-        <div class="snap-ref">${escapeHtml(q.ref)}</div>
-        <div class="snap-qtext">${escapeHtml(q.text)}</div>
+        <div class="snap-qtext">${nl2br(escapeHtml(`${q.questionNumber}. ${q.question}`))}</div>
         <div class="snap-answer ${val?'':'empty'}">${val?escapeHtml(val):noAnswer}</div>
       </div>`;
   }).join('');
@@ -2558,6 +2616,55 @@ function guideStep(n, { title, en, desc, shot, callouts, extra }){
       ${extra || ''}
     </section>`;
 }
+function guideVerseIntro(){
+  const title = T('guideVersesTitle');
+  if(!title) return '';
+  const verses = [1,2,3].map(i=>`
+    <p class="guide-verse-text">${T('guideVerse'+i)}<span class="guide-verse-ref">${T('guideVerse'+i+'Ref')}</span></p>
+  `).join('');
+  return `
+    <div class="guide-verses-card">
+      <h3 class="guide-section-title">${title}</h3>
+      ${verses}
+    </div>
+  `;
+}
+
+function guideNumberedList(items, noteIndex, note){
+  return `<ol class="guide-num-list">${(items||[]).map((text,i)=>`
+    <li>
+      <span class="gnl-num">${i+1}</span>
+      <div class="gnl-body">
+        <p>${text}</p>
+        ${i===noteIndex && note ? `<p class="guide-note">${note}</p>` : ''}
+      </div>
+    </li>`).join('')}</ol>`;
+}
+
+function guideReadingLists(){
+  const rulesTitle = T('guideRulesTitle');
+  if(!rulesTitle) return '';
+  return `
+    <div class="guide-list-section">
+      <h3 class="guide-section-title">${rulesTitle}</h3>
+      ${guideNumberedList(T('guideRules'))}
+      <p class="guide-note">${T('guideRulesNote')}</p>
+    </div>
+    <div class="guide-list-section">
+      <h3 class="guide-section-title">${T('guideBasicsTitle')}</h3>
+      ${guideNumberedList(T('guideBasics'), 2, T('guideBasicsNote'))}
+    </div>
+    <div class="guide-list-section">
+      <h3 class="guide-section-title">${T('guideMuellerTitle')}</h3>
+      ${guideNumberedList(T('guideMueller'))}
+    </div>
+    <blockquote class="guide-quote">
+      <p>${T('guideWesleyQuote')}</p>
+      <cite>${T('guideWesleyAttr')}</cite>
+    </blockquote>
+  `;
+}
+
 function renderGuideScreen(){
   const flow = T('guideFlow');
   const chips = flow.map((label,i)=>`
@@ -2571,6 +2678,9 @@ function renderGuideScreen(){
       <h2>${T('guideTitle')}</h2>
     </div>
     <div class="settings-body guide-body">
+      ${guideVerseIntro()}
+      ${guideReadingLists()}
+
       <div class="guide-intro">
         <h2 class="guide-hero-title">${T('guideHowToTitle')}</h2>
         <p class="guide-lead">${T('guideHowToLead')}</p>
@@ -3166,6 +3276,8 @@ function renderDaily(){
 function chapterVerseTexts(m, c){
   return state.lang==='en' ? kjvVerses(m, c)
     : state.lang==='th' ? thVerses(m, c)
+    : state.lang==='ja' ? jaVerses(m, c)
+    : state.lang==='zh' ? zhVerses(m, c)
     : CHAPTER.verses;
 }
 function verseRef(m, c, n){
@@ -3215,21 +3327,31 @@ function renderChapterInfoSheet(){
     ? `${info.titleNative}${info.titleNative!==info.titleEn ? ` <span class="bible-info-title-en">(${info.titleEn})</span>` : ''}`
     : T('chapterInfoTitle', bookName(state.activeMonth));
 
+  const metaItems = info ? [
+    { key:'bibleInfoAuthorLabel', value: info.author },
+    { key:'bibleInfoEraLabel', value: info.era },
+    info.theme ? { key:'bibleInfoThemeLabel', value: info.theme } : null,
+    info.character ? { key:'bibleInfoCharacterLabel', value: info.character } : null,
+  ].filter(Boolean) : [];
+
   const bodyHtml = info ? `
     <div class="bi-card">
       <span class="bi-card-label">${T('bibleInfoOriginLabel')}</span>
       <p class="bi-origin-text">${info.origin}</p>
     </div>
     <div class="bi-meta-row">
-      <div class="bi-meta-badge">
-        <span class="bi-meta-label">${T('bibleInfoAuthorLabel')}</span>
-        <span class="bi-meta-value">${info.author}</span>
-      </div>
-      <div class="bi-meta-badge">
-        <span class="bi-meta-label">${T('bibleInfoEraLabel')}</span>
-        <span class="bi-meta-value">${info.era}</span>
-      </div>
+      ${metaItems.map(m=>`
+        <div class="bi-meta-badge">
+          <span class="bi-meta-label">${T(m.key)}</span>
+          <span class="bi-meta-value">${m.value}</span>
+        </div>`).join('')}
     </div>
+    ${info.keyContent ? `
+      <div class="bi-card">
+        <span class="bi-card-label">${T('bibleInfoKeyContentLabel')}</span>
+        <p class="bi-origin-text">${info.keyContent}</p>
+      </div>
+    ` : ''}
     <div class="bi-outline">
       <div class="bi-outline-label">${T('bibleInfoOutlineLabel')}</div>
       ${info.sections.map(sec=>`
@@ -3268,13 +3390,22 @@ function renderChapterInfoSheet(){
 
 function renderContentTab(ds){
   const entry = getEntry(ds);
-  const cards = CONTENT_QUESTIONS.map(q=>{
-    const val = entry.content[q.id] || '';
+  const data = getContentQuestions(bookDataId(state.activeMonth), state.activeChapter);
+  if(!data){
+    return `
+    <div class="guide-empty" style="padding:60px 20px 20px;">
+      <div class="guide-empty-icon">${ICON.chat}</div>
+      <div class="guide-empty-title">${T('contentQuestionsEmptyTitle')}</div>
+      <p class="guide-empty-body">${T('contentQuestionsEmptyBody')}</p>
+    </div>`;
+  }
+  const cards = data.questions.map(q=>{
+    const qid = 'q'+q.questionNumber;
+    const val = entry.content[qid] || '';
     return `
     <div class="q-card">
-      <button class="q-ref" data-action="goto-verse" data-verse="${q.v}">${q.ref} ${ICON.linkArrow}</button>
-      <div class="q-text">${q.text}</div>
-      <textarea class="q-answer" data-kind="content" data-qid="${q.id}" placeholder="${T('qPlaceholder')}">${val}</textarea>
+      <div class="q-text">${nl2br(escapeHtml(`${q.questionNumber}. ${q.question}`))}</div>
+      <textarea class="q-answer" data-kind="content" data-qid="${qid}" placeholder="${T('qPlaceholder')}">${escapeHtml(val)}</textarea>
     </div>`;
   }).join('');
   return cards;
