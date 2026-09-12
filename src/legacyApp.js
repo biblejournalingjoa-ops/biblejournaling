@@ -1018,6 +1018,8 @@ let state = {
   donateModal:false,        // whether the donation/support-us modal is open
   donateCopied:false,       // true briefly after the account number was copied, to flip the button label
   languageModal:false,      // whether the language-picker modal is open
+  streakCount:0,            // consecutive days (including today) with a completed journal entry
+  streakLastDate:null,      // 'YYYY-MM-DD' (local) of the last day the streak was credited
 };
 
 const YEAR = 2026;
@@ -1219,7 +1221,9 @@ function getEntry(dateStr){
   return journalData[dateStr];
 }
 function hasEntryContent(dStr){
-  const e = journalData[dStr];
+  return entryHasContent(journalData[dStr]);
+}
+function entryHasContent(e){
   if(!e) return false;
   const c = Object.values(e.content||{}).some(v=>v && v.trim());
   const t = e.thought||{};
@@ -1234,8 +1238,49 @@ function isBookComplete(m){
 }
 function pad(n){ return n<10 ? '0'+n : ''+n; }
 function dstr(y,m,d){ return `${y}-${pad(m)}-${pad(d)}`; }
+
+/* ---------------- streak (연속 학습 일수) ----------------
+ * A day counts as "완료" when the content-question tab or the thought-question
+ * tab for the chapter being edited has at least one text box with trim().length > 0.
+ * streakCount/streakLastDate persist to localStorage (via window.storage) so the
+ * flame badge survives closing and reopening the app. */
+function entryHasAnyText(e){
+  if(!e) return false;
+  const c = Object.values(e.content||{}).some(v=>v && v.trim().length>0);
+  const t = e.thought||{};
+  const th = ['verse','passage','godIs','heard','application','prayer'].some(k=>t[k] && t[k].trim().length>0)
+    || (t.thanks||[]).some(v=>v && v.trim().length>0);
+  return c || th;
+}
+function localDateStr(d){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function todayStr(){ return localDateStr(new Date()); }
+function yesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1); return localDateStr(d); }
+function saveStreak(){
+  window.storage.set('streak-data', JSON.stringify({ streakCount: state.streakCount, lastCompletedDate: state.streakLastDate }), false).catch(()=>{});
+}
+/* Called once at startup (after loading streak-data from storage) and whenever the app
+ * detects the date may have rolled over: if the last completed day is neither today nor
+ * yesterday, the streak was broken by a skipped day, so it resets to 0. */
+function resetStreakIfBroken(){
+  if(!state.streakLastDate) return;
+  const today = todayStr();
+  if(state.streakLastDate === today || state.streakLastDate === yesterdayStr()) return;
+  state.streakCount = 0;
+  saveStreak();
+}
+/* Called from the journal-entry input handler on every keystroke. Increments the streak
+ * exactly once per calendar day, the first time that day's entry gains any text. */
+function markStreakProgress(entry){
+  if(!entryHasAnyText(entry)) return;
+  const today = todayStr();
+  if(state.streakLastDate === today) return; // already credited today
+  state.streakCount = (state.streakCount||0) + 1;
+  state.streakLastDate = today;
+  saveStreak();
+}
 function computeStreak(){
-  return Object.keys(journalData).filter(k => hasEntryContent(k)).length;
+  resetStreakIfBroken();
+  return state.streakCount || 0;
 }
 
 /* ---------------- share snapshot (screenshot-style image) ---------------- */
@@ -1433,6 +1478,15 @@ async function loadAll(){
     const a = await window.storage.get('journal-entries');
     if(a) journalData = JSON.parse(a.value);
   }catch(e){}
+  try{
+    const s = await window.storage.get('streak-data');
+    if(s){
+      const parsed = JSON.parse(s.value);
+      state.streakCount = parsed.streakCount || 0;
+      state.streakLastDate = parsed.lastCompletedDate || null;
+    }
+  }catch(e){}
+  resetStreakIfBroken();
   try{
     // Firebase Authentication (via initAuthGate/onAuthStateChanged) is the source of truth
     // for state.loggedIn/state.user. Here we only merge in extra cached profile fields
@@ -3755,6 +3809,7 @@ document.getElementById('shell').addEventListener('input', (e)=>{
   } else if(kind==='thanks'){
     entry.thought.thanks[Number(t.dataset.index)] = t.value;
   }
+  markStreakProgress(entry);
   saveAnswersDebounced();
 });
 
