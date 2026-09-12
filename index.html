@@ -591,6 +591,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* ---------- group info (participants) ---------- */
 .group-info-body{flex:1;min-height:0;overflow-y:auto;padding:10px 20px 24px;display:flex;flex-direction:column;}
+.group-info-body.has-fab{padding-bottom:88px;}
 .group-info-summary{text-align:center;padding:14px 0 22px;}
 .group-avatar-lg{
   width:64px;height:64px;border-radius:50%;margin:0 auto 12px;
@@ -617,6 +618,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .group-info-actions .btn{margin-top:0;}
 .group-info-actions .btn-danger{display:flex;align-items:center;justify-content:center;gap:7px;}
 .group-info-actions .btn-danger svg{width:15px;height:15px;}
+.fab-chat{
+  position:absolute;right:20px;bottom:22px;z-index:20;
+  width:50px;height:50px;border-radius:50%;border:none;padding:0;
+  background:var(--surface-strong);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow);cursor:pointer;
+  transition:transform .15s ease;
+}
+.fab-chat svg{width:22px;height:22px;}
+.fab-chat:active{transform:scale(0.94);}
 
 /* ---------- chat room management ---------- */
 .group-avatar-xl{

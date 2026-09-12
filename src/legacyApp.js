@@ -2334,18 +2334,15 @@ function renderGroupInfo(){
         <h2>${escapeHtml(g.name)}</h2>
       </div>
     </div>
-    <div class="group-info-body">
+    <div class="group-info-body has-fab">
       <div class="group-info-summary">
         ${groupAvatarHtml(g, 'group-avatar-lg')}
         <div class="gi-name">${escapeHtml(g.name)}</div>
         <div class="gi-count">${T('groupInfoParticipants', count)}</div>
       </div>
       <div class="member-list">${membersHtml}</div>
-      <div class="group-info-actions">
-        <button class="btn btn-primary" data-action="open-group-chat">${T('chatEnterBtn')}</button>
-        <button class="btn btn-danger" data-action="open-leave-confirm">${T('leaveGroupBtn')}</button>
-      </div>
     </div>
+    <button class="fab-chat" data-action="open-group-chat" title="${T('chatEnterBtn')}" aria-label="${T('chatEnterBtn')}">${ICON.chat}</button>
   `;
 }
 
