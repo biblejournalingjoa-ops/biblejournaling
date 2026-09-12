@@ -1020,6 +1020,8 @@ let state = {
   languageModal:false,      // whether the language-picker modal is open
   streakCount:0,            // consecutive days (including today) with a completed journal entry
   streakLastDate:null,      // 'YYYY-MM-DD' (local) of the last day the streak was credited
+  lastActiveMonth:null,     // book (m) of the most recently opened chapter, for the "continue reading" button
+  lastActiveChapter:null,   // chapter number paired with lastActiveMonth
 };
 
 const YEAR = 2026;
@@ -1283,6 +1285,57 @@ function computeStreak(){
   return state.streakCount || 0;
 }
 
+/* ---------------- smart "continue reading" navigation ----------------
+ * Drives the topbar book-icon button: resume the last chapter the user had open
+ * if it isn't finished yet (same "any text box filled" rule as the streak), or
+ * jump to the next chapter once it is. lastActiveMonth/lastActiveChapter persist
+ * to localStorage (via window.storage) so this works across app restarts. */
+function saveLastActiveChapter(m, c){
+  state.lastActiveMonth = m;
+  state.lastActiveChapter = c;
+  window.storage.set('last-active-chapter', JSON.stringify({ month:m, chapter:c }), false).catch(()=>{});
+}
+/* Enters a chapter's daily screen and remembers it as the "continue reading" target. */
+function enterChapter(m, c){
+  state.activeMonth = m;
+  state.activeChapter = c;
+  state.screen = 'daily';
+  state.activeTab = 'bible';
+  state.highlightVerse = null;
+  state.askOpen = false;
+  saveLastActiveChapter(m, c);
+  render();
+}
+function nextChapterOf(m, c){
+  const count = CHAPTER_COUNTS[m] || 1;
+  if(c < count) return { m, c: c+1 };
+  const nextM = m+1;
+  if(CHAPTER_COUNTS[nextM]) return { m: nextM, c: 1 };
+  return { m, c }; // already at the last chapter of the last book - nothing further to advance to
+}
+/* Fallback for users who already have journal entries from before lastActiveMonth/
+ * lastActiveChapter existed as a tracked field: picks the furthest-progressed chapter
+ * that has any recorded content, so their history isn't ignored on first upgrade. */
+function findFurthestChapterWithContent(){
+  let best = null;
+  Object.keys(journalData).forEach(k=>{
+    if(!entryHasAnyText(journalData[k])) return;
+    const [mStr, cStr] = k.split('-');
+    const m = Number(mStr), c = Number(cStr);
+    if(!best || m>best.m || (m===best.m && c>best.c)) best = { m, c };
+  });
+  return best;
+}
+function computeSmartStartChapter(){
+  const last = (state.lastActiveMonth && state.lastActiveChapter)
+    ? { m: state.lastActiveMonth, c: state.lastActiveChapter }
+    : findFurthestChapterWithContent();
+  if(!last) return { m: 1, c: 1 }; // no history anywhere -> Genesis 1
+  const entry = journalData[ckey(last.m, last.c)];
+  if(!entryHasAnyText(entry)) return last; // last chapter isn't finished yet -> resume it
+  return nextChapterOf(last.m, last.c); // last chapter is done -> move on
+}
+
 /* ---------------- share snapshot (screenshot-style image) ---------------- */
 function escapeHtml(s){
   return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1487,6 +1540,14 @@ async function loadAll(){
     }
   }catch(e){}
   resetStreakIfBroken();
+  try{
+    const la = await window.storage.get('last-active-chapter');
+    if(la){
+      const parsed = JSON.parse(la.value);
+      state.lastActiveMonth = parsed.month || null;
+      state.lastActiveChapter = parsed.chapter || null;
+    }
+  }catch(e){}
   try{
     // Firebase Authentication (via initAuthGate/onAuthStateChanged) is the source of truth
     // for state.loggedIn/state.user. Here we only merge in extra cached profile fields
@@ -3296,15 +3357,10 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   else if(action==='set-lang'){ state.lang = el.dataset.lang; savePrefs(); state.languageModal=false; render(); }
   else if(action==='set-theme'){ state.theme = el.dataset.theme; savePrefs(); render(); }
   else if(action==='go-today'){
-    const m = state.purchased.length ? state.purchased[0] : 1;
+    const target = computeSmartStartChapter();
+    const m = target.m;
     if(state.purchased.includes(m)){
-      state.activeMonth = m;
-      state.activeChapter = 1;
-      state.screen = 'daily';
-      state.activeTab = 'bible';
-      state.highlightVerse = null;
-      state.askOpen = false;
-      render();
+      enterChapter(m, target.c);
     } else {
       state.purchaseModal = m;
       state.selectedPlan = 'year';
@@ -3339,13 +3395,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     render();
   }
   else if(action==='open-chapter'){
-    state.activeMonth = Number(el.dataset.month);
-    state.activeChapter = Number(el.dataset.chapter);
-    state.screen='daily';
-    state.activeTab='bible';
-    state.highlightVerse=null;
-    state.askOpen=false;
-    render();
+    enterChapter(Number(el.dataset.month), Number(el.dataset.chapter));
   }
   else if(action==='set-tab'){
     state.activeTab = el.dataset.tab;
