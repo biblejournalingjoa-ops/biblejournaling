@@ -574,6 +574,164 @@ export const BIBLE_INFO = {
       ],
     },
   },
+  5: { // Deuteronomy / 신명기
+    ko: {
+      titleNative: '신명기',
+      titleEn: 'Deuteronomy',
+      origin:
+        "헬라어 역본(70인역)의 '데우테로노미온'에서 유래된 \"두 번째 율법(율법의 재진술)\"이라는 뜻. 원래의 율법을 적용하고 확장한 것으로, 약속의 땅 가나안에 들어가기 전 모압 평지에서 선포된 모세의 고별 설교 형식.",
+      author: '모세 (단, 모세의 죽음을 다룬 마지막 34장은 여호수아나 후대 편집자가 기록한 것으로 봄)',
+      era: '주전(B.C.) 1405-1406년경',
+      theme: '신 세대에게 부모 세대의 역사를 거울삼아 하나님의 은혜를 기억하고 순종할 것을 촉구하는 신앙적 권면',
+      keyContent: '모세의 3가지 설교(과거 회고, 율법 설명, 언약 재갱신 및 모세의 마지막 당부)',
+      sections: [
+        {
+          label: '창조시대',
+          items: [
+            { num: 1, label: '창조', range: '1-2장' },
+            { num: 2, label: '타락', range: '3-5장' },
+            { num: 3, label: '홍수', range: '6-9장' },
+            { num: 4, label: '바벨탑', range: '10-11장' },
+          ],
+        },
+        {
+          label: '족장시대',
+          items: [
+            { num: 1, label: '아브라함', range: '11-25장' },
+            { num: 2, label: '이삭', range: '24-27장' },
+            { num: 3, label: '야곱', range: '27-36장' },
+            { num: 4, label: '요셉', range: '37-50장' },
+          ],
+        },
+        {
+          label: '출애굽과 광야시대',
+          items: [
+            { num: 1, label: '출애굽', range: '1-18장' },
+            { num: 2, label: '시내산훈련', range: '19-40장, 레위기, 민수기1-9장' },
+            { num: 3, label: '불신앙', range: '민10-14장' },
+            { num: 4, label: '40년의 재훈련', range: '민20-36장, 신명기' },
+          ],
+        },
+      ],
+    },
+    en: {
+      titleNative: 'Deuteronomy',
+      titleEn: 'Deuteronomy',
+      origin:
+        "The name comes from the Greek Septuagint's 'Deuteronomion,' meaning \"second law\" (a restatement of the Law). It applies and expands the original Law, taking the form of Moses' farewell sermons delivered on the plains of Moab before Israel entered the promised land of Canaan.",
+      author: "Moses (except the final chapter 34, which records his death and is regarded as having been written by Joshua or a later editor)",
+      era: 'c. 1405-1406 BC',
+      theme: "A pastoral appeal urging the new generation to remember God's grace and obey Him, viewing their parents' generation's history as a mirror",
+      keyContent: "Moses' three sermons (a review of the past, an explanation of the Law, and the renewal of the covenant with Moses' final charge)",
+      sections: [
+        {
+          label: 'Age of Creation',
+          items: [
+            { num: 1, label: 'Creation', range: 'Ch. 1-2' },
+            { num: 2, label: 'The Fall', range: 'Ch. 3-5' },
+            { num: 3, label: 'The Flood', range: 'Ch. 6-9' },
+            { num: 4, label: 'Tower of Babel', range: 'Ch. 10-11' },
+          ],
+        },
+        {
+          label: 'Age of the Patriarchs',
+          items: [
+            { num: 1, label: 'Abraham', range: 'Ch. 11-25' },
+            { num: 2, label: 'Isaac', range: 'Ch. 24-27' },
+            { num: 3, label: 'Jacob', range: 'Ch. 27-36' },
+            { num: 4, label: 'Joseph', range: 'Ch. 37-50' },
+          ],
+        },
+        {
+          label: 'Exodus and the Wilderness',
+          items: [
+            { num: 1, label: 'The Exodus', range: 'Ch. 1-18' },
+            { num: 2, label: 'Training at Sinai', range: 'Ch. 19-40, Leviticus, Numbers 1-9' },
+            { num: 3, label: 'Unbelief', range: 'Numbers 10-14' },
+            { num: 4, label: '40 Years of Retraining', range: 'Numbers 20-36, Deuteronomy' },
+          ],
+        },
+      ],
+    },
+    ja: {
+      titleNative: '申命記',
+      titleEn: 'Deuteronomy',
+      origin:
+        "ギリシャ語訳(七十人訳聖書)の「デウテロノミオン」に由来し、「第二の律法(律法の再述)」という意味です。元の律法を適用し拡大したもので、約束の地カナンに入る前にモアブの平野で語られたモーセの告別説教の形式を取っています。",
+      author: 'モーセ(ただし、モーセの死を記した最後の34章はヨシュアあるいは後代の編集者が記したものとされる)',
+      era: '紀元前1405-1406年頃',
+      theme: '新しい世代に、親の世代の歴史を鏡として神の恵みを覚え、従うことを促す信仰的勧め',
+      keyContent: 'モーセの3つの説教(過去の回顧、律法の説明、契約の更新とモーセの最後の勧め)',
+      sections: [
+        {
+          label: '創造の時代',
+          items: [
+            { num: 1, label: '創造', range: '1-2章' },
+            { num: 2, label: '堕落', range: '3-5章' },
+            { num: 3, label: '洪水', range: '6-9章' },
+            { num: 4, label: 'バベルの塔', range: '10-11章' },
+          ],
+        },
+        {
+          label: '族長の時代',
+          items: [
+            { num: 1, label: 'アブラハム', range: '11-25章' },
+            { num: 2, label: 'イサク', range: '24-27章' },
+            { num: 3, label: 'ヤコブ', range: '27-36章' },
+            { num: 4, label: 'ヨセフ', range: '37-50章' },
+          ],
+        },
+        {
+          label: '出エジプトと荒野の時代',
+          items: [
+            { num: 1, label: '出エジプト', range: '1-18章' },
+            { num: 2, label: 'シナイ山での訓練', range: '19-40章, レビ記, 民数記1-9章' },
+            { num: 3, label: '不信仰', range: '民数記10-14章' },
+            { num: 4, label: '40年間の再訓練', range: '民数記20-36章, 申命記' },
+          ],
+        },
+      ],
+    },
+    zh: {
+      titleNative: '申命记',
+      titleEn: 'Deuteronomy',
+      origin:
+        "源自希腊语译本(七十士译本)的'第二律法'(Deuteronomion)，意为'律法的重述'。是对原有律法的应用和扩展，以摩西在以色列人进入迦南应许之地之前，在摩押平原所发表的告别讲道形式呈现。",
+      author: '摩西(但记载摩西之死的最后第34章，被认为是约书亚或后代编者所写)',
+      era: '约主前1405-1406年',
+      theme: '劝勉新一代以父辈的历史为鉴，记念神的恩典并顺服祂的信仰劝勉',
+      keyContent: '摩西的三篇讲道(回顾过去、讲解律法、更新圣约并摩西的临别嘱咐)',
+      sections: [
+        {
+          label: '创造时代',
+          items: [
+            { num: 1, label: '创造', range: '1-2章' },
+            { num: 2, label: '堕落', range: '3-5章' },
+            { num: 3, label: '洪水', range: '6-9章' },
+            { num: 4, label: '巴别塔', range: '10-11章' },
+          ],
+        },
+        {
+          label: '族长时代',
+          items: [
+            { num: 1, label: '亚伯拉罕', range: '11-25章' },
+            { num: 2, label: '以撒', range: '24-27章' },
+            { num: 3, label: '雅各', range: '27-36章' },
+            { num: 4, label: '约瑟', range: '37-50章' },
+          ],
+        },
+        {
+          label: '出埃及与旷野时代',
+          items: [
+            { num: 1, label: '出埃及', range: '1-18章' },
+            { num: 2, label: '西奈山训练', range: '19-40章、利未记、民数记1-9章' },
+            { num: 3, label: '不信', range: '民数记10-14章' },
+            { num: 4, label: '40年的再训练', range: '民数记20-36章、申命记' },
+          ],
+        },
+      ],
+    },
+  },
 };
 
 export function getBibleInfo(bookId, lang) {
