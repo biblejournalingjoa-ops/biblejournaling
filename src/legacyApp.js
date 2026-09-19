@@ -2,6 +2,7 @@ import kjvData from './data/kjv.json';
 import thKjvData from './data/th_kjv.json';
 import jaKougoData from './data/ja_kougo.json';
 import zhCuvData from './data/zh_cuv.json';
+import koGenesisData from './data/ko_genesis.json';
 import { getBibleInfo } from './data/bibleInfo.js';
 import { getContentQuestions } from './data/contentQuestions.js';
 
@@ -73,6 +74,14 @@ function zhVerses(m, c){
   const chapters = b && ZH_BY_BOOK[b.en];
   return (chapters && chapters[c-1]) || [];
 }
+
+// 한글 성경 본문: 현재는 창세기(1~50장)만 보유. 출애굽기 이후는 추가되기 전까지
+// CHAPTER(데모 본문)로 대체된다.
+const KO_GENESIS_CHAPTERS = koGenesisData[0].chapters;
+function koGenesisVerses(c){
+  return KO_GENESIS_CHAPTERS[c-1] || [];
+}
+
 const PALETTE = [
   {top:'#E7B7B9', bottom:'#3F5670'},
   {top:'#A9C2A2', bottom:'#8A6A2F'},
@@ -1679,6 +1688,14 @@ function nextChapterOf(m, c){
   const nextM = m+1;
   if(CHAPTER_COUNTS[nextM]) return { m: nextM, c: 1 };
   return { m, c }; // already at the last chapter of the last book - nothing further to advance to
+}
+/* Bible-tab prev/next chapter buttons: stays within the current book (dir=-1/1),
+ * returns null at that book's first/last chapter so the caller can disable the button. */
+function chapterNavTarget(m, c, dir){
+  const count = CHAPTER_COUNTS[m] || 1;
+  const target = c + dir;
+  if(target < 1 || target > count) return null;
+  return { m, c: target };
 }
 /* Fallback for users who already have journal entries from before lastActiveMonth/
  * lastActiveChapter existed as a tracked field: picks the furthest-progressed chapter
@@ -3529,11 +3546,12 @@ function renderDaily(){
 }
 
 function chapterVerseTexts(m, c){
-  return state.lang==='en' ? kjvVerses(m, c)
-    : state.lang==='th' ? thVerses(m, c)
-    : state.lang==='ja' ? jaVerses(m, c)
-    : state.lang==='zh' ? zhVerses(m, c)
-    : CHAPTER.verses;
+  if(state.lang==='en') return kjvVerses(m, c);
+  if(state.lang==='th') return thVerses(m, c);
+  if(state.lang==='ja') return jaVerses(m, c);
+  if(state.lang==='zh') return zhVerses(m, c);
+  if(m===1) return koGenesisVerses(c); // 창세기: 실제 본문 데이터 사용
+  return CHAPTER.verses; // 출애굽기 이후: 데이터 준비 전까지 기존 데모 본문 유지
 }
 function verseRef(m, c, n){
   return `${bookName(m)} ${c}:${n}`;
@@ -3544,6 +3562,8 @@ function renderBibleTab(){
     const n = idx+1;
     return `<div class="verse" id="verse-${n}" data-verse-num="${n}"><span class="vnum">${n}</span><span>${text}</span></div>`;
   }).join('');
+  const prev = chapterNavTarget(state.activeMonth, state.activeChapter, -1);
+  const next = chapterNavTarget(state.activeMonth, state.activeChapter, 1);
   return `
     <div class="chapter-card">
       <div class="chapter-card-head">
@@ -3553,6 +3573,14 @@ function renderBibleTab(){
         </div>
       </div>
       <div class="verse-list">${verses}</div>
+    </div>
+    <div class="chapter-nav">
+      <button class="chapter-nav-btn prev" data-action="go-prev-chapter" ${prev?'':'disabled'}>
+        ${ICON.chevRight}<span>${prev ? chapterLabel(bookName(prev.m), prev.c) : ''}</span>
+      </button>
+      <button class="chapter-nav-btn next" data-action="go-next-chapter" ${next?'':'disabled'}>
+        <span>${next ? chapterLabel(bookName(next.m), next.c) : ''}</span>${ICON.chevRight}
+      </button>
     </div>
   `;
 }
@@ -4057,6 +4085,14 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='open-chapter'){
     enterChapter(Number(el.dataset.month), Number(el.dataset.chapter));
+  }
+  else if(action==='go-prev-chapter'){
+    const target = chapterNavTarget(state.activeMonth, state.activeChapter, -1);
+    if(target) enterChapter(target.m, target.c);
+  }
+  else if(action==='go-next-chapter'){
+    const target = chapterNavTarget(state.activeMonth, state.activeChapter, 1);
+    if(target) enterChapter(target.m, target.c);
   }
   else if(action==='set-tab'){
     state.activeTab = el.dataset.tab;

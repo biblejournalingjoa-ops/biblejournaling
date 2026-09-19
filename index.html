@@ -488,6 +488,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 }
 .verse.highlight{background:#FBEFCB;}
 
+.chapter-nav{display:flex;gap:10px;margin-bottom:16px;}
+.chapter-nav-btn{
+  flex:1;display:flex;align-items:center;gap:6px;padding:12px 14px;
+  background:var(--paper);border-radius:14px;box-shadow:var(--shadow-sm);
+  font-size:calc(12.5px * var(--fs-scale));font-weight:700;color:var(--ink);
+  min-width:0;
+}
+.chapter-nav-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.chapter-nav-btn svg{width:15px;height:15px;flex-shrink:0;color:var(--ink-soft);}
+.chapter-nav-btn.next{justify-content:flex-end;text-align:right;}
+.chapter-nav-btn.prev svg{transform:rotate(180deg);}
+.chapter-nav-btn:disabled{opacity:.35;}
+.chapter-nav-btn:active:not(:disabled){background:var(--bg);}
+
 /* ---------- verse long-press copy sheet ---------- */
 .verse-action-sheet{padding-top:14px;}
 .verse-action-ref{
