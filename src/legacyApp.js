@@ -336,6 +336,7 @@ const STRINGS = {
     toastLeftGroup:'채팅방에서 나갔어요',
     toastLeaveFailed:'채팅방 나가기에 실패했어요. 다시 시도해 주세요',
     toastMembersLoadFailed:'참여자 정보를 불러오지 못했어요',
+    toastMessagesLoadFailed:'대화 내용을 실시간으로 불러오지 못했어요',
     toastInviteJoined:'그룹방에 참여했어요',
     toastInviteFailed:'유효하지 않거나 만료된 초대 링크예요',
     memberFallbackName:'팀원', youTag:'(나)', loadingLabel:'불러오는 중...',
@@ -487,6 +488,7 @@ const STRINGS = {
     toastLeftGroup:'You left the chat room',
     toastLeaveFailed:'Failed to leave the chat room. Please try again',
     toastMembersLoadFailed:'Could not load participants',
+    toastMessagesLoadFailed:'Could not load messages in real time',
     toastInviteJoined:'Joined the group chat',
     toastInviteFailed:'This invite link is invalid or expired',
     memberFallbackName:'Member', youTag:'(You)', loadingLabel:'Loading...',
@@ -638,6 +640,7 @@ const STRINGS = {
     toastLeftGroup:'チャットルームから退出しました',
     toastLeaveFailed:'退出に失敗しました。もう一度お試しください',
     toastMembersLoadFailed:'参加者情報を読み込めませんでした',
+    toastMessagesLoadFailed:'メッセージをリアルタイムで読み込めませんでした',
     toastInviteJoined:'グループチャットに参加しました',
     toastInviteFailed:'招待リンクが無効か期限切れです',
     memberFallbackName:'メンバー', youTag:'(自分)', loadingLabel:'読み込み中...',
@@ -789,6 +792,7 @@ const STRINGS = {
     toastLeftGroup:'ออกจากห้องแชทแล้ว',
     toastLeaveFailed:'ออกจากห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastMembersLoadFailed:'ไม่สามารถโหลดข้อมูลผู้เข้าร่วมได้',
+    toastMessagesLoadFailed:'ไม่สามารถโหลดข้อความแบบเรียลไทม์ได้',
     toastInviteJoined:'เข้าร่วมกลุ่มแชทแล้ว',
     toastInviteFailed:'ลิงก์เชิญไม่ถูกต้องหรือหมดอายุแล้ว',
     memberFallbackName:'สมาชิก', youTag:'(ฉัน)', loadingLabel:'กำลังโหลด...',
@@ -940,6 +944,7 @@ const STRINGS = {
     toastLeftGroup:'已退出聊天室',
     toastLeaveFailed:'退出聊天室失败，请重试',
     toastMembersLoadFailed:'无法加载成员信息',
+    toastMessagesLoadFailed:'无法实时加载消息',
     toastInviteJoined:'已加入群聊',
     toastInviteFailed:'邀请链接无效或已过期',
     memberFallbackName:'成员', youTag:'(我)', loadingLabel:'加载中...',
@@ -1343,6 +1348,8 @@ let groups = [];
 let groupsLoaded = false;
 let groupDocUnsub = null; // unsubscribe fn for the live groups/{id} listener behind group-room/group-manage
 let groupDocUnsubId = null; // which group id groupDocUnsub currently listens to
+let messagesUnsub = null; // unsubscribe fn for the live groups/{id}/messages listener behind group-room
+let messagesUnsubId = null; // which group id messagesUnsub currently listens to
 
 const GROUP_COLORS = ['#3F5670','#8A6A2F','#4F6B8F','#7E9A6D','#B25C6B'];
 
@@ -1433,7 +1440,7 @@ function syncMessageToFirestore(g, msg){
     ? fdb.ensureGroup(g.id, { name:g.name, ownerUid:state.user.uid, color:g.color, code:g.code })
     : Promise.resolve();
   ensure
-    .then(()=> fdb.sendMessage(g.id, { uid: state.user.uid, name: state.user.nickname || state.user.name || null, text: msg.text }))
+    .then(()=> fdb.sendMessage(g.id, { uid: state.user.uid, name: state.user.nickname || state.user.name || null, text: msg.text, clientId: msg.id }))
     .catch(err=>console.error('Firestore chat save failed:', err));
 }
 
@@ -1570,6 +1577,80 @@ function subscribeToGroupDoc(groupId){
 function unsubscribeGroupDoc(){
   if(groupDocUnsub){ groupDocUnsub(); groupDocUnsub = null; }
   groupDocUnsubId = null;
+}
+
+/* group-room 화면에 있는 동안 groups/{id}/messages를 실시간 구독해, 다른 멤버가 보낸
+   메시지가 내 화면에도 곧바로 나타나게 합니다. (이 구독이 없으면 각자 기기의 로컬 캐시만
+   보게 되어 서로의 메시지가 실시간으로 보이지 않습니다.) */
+function ensureMessagesSub(groupId){
+  if(messagesUnsubId === groupId && messagesUnsub) return;
+  subscribeToMessagesFeed(groupId);
+}
+function subscribeToMessagesFeed(groupId){
+  unsubscribeMessagesFeed();
+  const fdb = window.__firebaseDB;
+  if(!fdb || !fdb.ready || typeof fdb.subscribeToMessages !== 'function' || !groupId) return;
+  if(!(state.user && state.user.uid)) return;
+  // 메시지 read/create는 firestore.rules상 members에 포함된 사람만 가능한데, 아직 한 번도
+  // Firestore에 동기화된 적 없는(로컬 시드 데이터 등) 그룹은 groups/{groupId} 문서 자체가
+  // 없어서 isGroupMember()의 get()이 실패해 곧바로 permission-denied가 납니다. 그래서
+  // ensureGroup으로 문서를 먼저 만들고(+ 나를 members에 넣고) 나서 구독을 붙입니다.
+  const pendingId = groupId;
+  messagesUnsubId = pendingId; // 이 groupId에 대한 구독 시도가 진행 중임을 표시해 중복 호출을 막음
+  const g = getGroup(groupId);
+  const ensure = typeof fdb.ensureGroup === 'function'
+    ? fdb.ensureGroup(groupId, { name: g ? g.name : '', ownerUid: state.user.uid, color: g ? g.color : null, code: g ? g.code : null })
+    : Promise.resolve();
+  ensure.then(()=>{
+    if(messagesUnsubId !== pendingId) return; // 그 사이 다른 방으로 이동/나감
+    messagesUnsub = fdb.subscribeToMessages(groupId, (remoteMsgs)=>{
+      applyRemoteMessages(groupId, remoteMsgs);
+    }, 50, (err)=>{
+      console.error('Message subscription failed:', err);
+      showToast(T('toastMessagesLoadFailed'));
+    });
+  }).catch(err=>{
+    console.error('ensureGroup before message subscription failed:', err);
+    if(messagesUnsubId === pendingId) messagesUnsubId = null;
+  });
+}
+function unsubscribeMessagesFeed(){
+  if(messagesUnsub){ messagesUnsub(); messagesUnsub = null; }
+  messagesUnsubId = null;
+}
+/* Firestore의 실시간 메시지 목록을 로컬 g.messages에 병합합니다. 이미지/묵상 공유 카드처럼
+   로컬에만 있는 메시지 타입은 건드리지 않고, 텍스트 메시지만 다룹니다. 내가 보낸 메시지는
+   clientId로 매칭해 이미 낙관적으로 그려둔 말풍선에 원격 id만 붙이고(중복 추가 안 함),
+   그 외(다른 멤버가 보낸, 또는 다른 기기에서 내가 보낸) 메시지만 새로 추가합니다. */
+function applyRemoteMessages(groupId, remoteMsgs){
+  const g = getGroup(groupId);
+  if(!g || !Array.isArray(remoteMsgs)) return;
+  const myUid = state.user && state.user.uid;
+  const seenRemoteIds = new Set((g.messages||[]).filter(m=>m._remoteId).map(m=>m._remoteId));
+  const localByClientId = new Map((g.messages||[]).map(m=>[m.id, m]));
+  let changed = false;
+  remoteMsgs.forEach(rm=>{
+    if(seenRemoteIds.has(rm.id)) return;
+    const localMatch = rm.clientId && localByClientId.get(rm.clientId);
+    if(localMatch && !localMatch._remoteId){
+      localMatch._remoteId = rm.id;
+      changed = true;
+      return;
+    }
+    g.messages.push({
+      id: 'r-'+rm.id,
+      _remoteId: rm.id,
+      from: rm.uid===myUid ? (state.user.nickname || state.user.name || T('memberFallbackName')) : (rm.name || T('memberFallbackName')),
+      isMe: rm.uid===myUid,
+      type: rm.type || 'text',
+      text: rm.text,
+    });
+    changed = true;
+  });
+  if(changed){
+    saveGroups();
+    if(state.screen==='group-room' && state.activeGroupId===groupId) render();
+  }
 }
 function isRoomOwner(){
   const uid = state.user && state.user.uid;
@@ -2105,18 +2186,8 @@ function joinGroupByInviteCode(code){
         g.photoUrl = doc.photoUrl || g.photoUrl;
         g.memberCount = (doc.members||[]).length || g.memberCount;
       }
-      if(typeof fdb.getMessages==='function'){
-        try{
-          const history = await fdb.getMessages(doc.id, 50);
-          g.messages = history.map(m=>({
-            id: m.id,
-            from: m.name || T('memberFallbackName'),
-            isMe: m.uid === uid,
-            type: m.type || 'text',
-            text: m.text,
-          }));
-        }catch(err){ console.error('Failed to load invited group history:', err); }
-      }
+      // 대화 내역은 여기서 한 번만 불러오지 않고, group-room 화면에 들어가는 즉시 붙는
+      // 실시간 구독(ensureMessagesSub)이 최초 스냅샷으로 채워줍니다.
       saveGroups();
       return g;
     })
@@ -2412,6 +2483,11 @@ function render(){
     ensureGroupDocSub(state.activeGroupId);
   } else if(state.screen!=='group-room' && state.screen!=='group-manage'){
     unsubscribeGroupDoc();
+  }
+  if(state.screen==='group-room' && state.activeGroupId){
+    ensureMessagesSub(state.activeGroupId);
+  } else {
+    unsubscribeMessagesFeed();
   }
   if(state.screen!=='group-manage'){
     unsubscribeGroupMembersLive();
@@ -3241,7 +3317,7 @@ function renderGroupRoom(){
     if(m.type==='journal'){
       return `
       <div class="msg-row ${m.isMe?'me':'them'}">
-        ${!m.isMe ? `<div class="msg-sender">${m.from}</div>` : ''}
+        ${!m.isMe ? `<div class="msg-sender">${escapeHtml(m.from)}</div>` : ''}
         <div class="msg-line">
           ${badge}
           <div class="journal-card">
@@ -3255,7 +3331,7 @@ function renderGroupRoom(){
     if(m.type==='image'){
       return `
       <div class="msg-row ${m.isMe?'me':'them'}">
-        ${!m.isMe ? `<div class="msg-sender">${m.from}</div>` : ''}
+        ${!m.isMe ? `<div class="msg-sender">${escapeHtml(m.from)}</div>` : ''}
         <div class="msg-line">
           ${badge}
           <div class="snap-img-wrap">
@@ -3268,7 +3344,7 @@ function renderGroupRoom(){
     if(m.type==='image-pair'){
       return `
       <div class="msg-row ${m.isMe?'me':'them'}">
-        ${!m.isMe ? `<div class="msg-sender">${m.from}</div>` : ''}
+        ${!m.isMe ? `<div class="msg-sender">${escapeHtml(m.from)}</div>` : ''}
         <div class="msg-line">
           ${badge}
           <div class="snap-img-pair-wrap">
@@ -3284,10 +3360,10 @@ function renderGroupRoom(){
     }
     return `
       <div class="msg-row ${m.isMe?'me':'them'}">
-        ${!m.isMe ? `<div class="msg-sender">${m.from}</div>` : ''}
+        ${!m.isMe ? `<div class="msg-sender">${escapeHtml(m.from)}</div>` : ''}
         <div class="msg-line">
           ${badge}
-          <div class="msg-bubble">${m.text}</div>
+          <div class="msg-bubble">${nl2br(escapeHtml(m.text))}</div>
         </div>
       </div>`;
   }).join('');

@@ -122,10 +122,14 @@ export async function updateGroupPhoto(groupId, photoUrl) {
 
 /**
  * 그룹 문서 실시간 구독. 채팅방 이름/프로필 사진/폭파 여부가 바뀌면 즉시 콜백을 호출합니다.
+ * onError를 넘기면 permission-denied 등으로 구독이 끊겼을 때 알 수 있습니다.
  * @returns {() => void} unsubscribe
  */
-export function subscribeToGroup(groupId, onChange) {
+export function subscribeToGroup(groupId, onChange, onError) {
   return onSnapshot(doc(db, "groups", groupId), (snap) => {
     onChange(snap.exists() ? { id: snap.id, ...snap.data() } : null);
+  }, (err) => {
+    console.error(`Firestore group subscription failed (group ${groupId}):`, err);
+    if (typeof onError === "function") onError(err);
   });
 }
