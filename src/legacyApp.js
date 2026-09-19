@@ -171,17 +171,17 @@ const ASK_QUESTIONS_TH = [
 ];
 
 const ASK_QUESTIONS_ZH = [
-  '主啊，今天你放在心里要对我说的是什么？',
-  '有没有我忽略了的罪、骄傲或惧怕？',
-  '今天你想让我明白的真理是什么？',
-  '今天你想让我去爱的人是谁？',
-  '有什么是我需要停止去做的？',
-  '今天你想让我迈出的一小步是什么？',
-  '在我的家庭、事奉或工作(学业)中，你是否在为我指明方向？',
-  '你怎样看待让我担忧的那个问题？',
-  '今天你想让我放下的重担是什么？',
-  '你想对我说怎样的安慰？',
-  '主啊，此刻你在对我说什么？',
+  '主啊，今天祢放在我心里的感动是什么?',
+  '我是否忽略了某些罪、骄傲或惧怕?',
+  '祢今天想让我明白的真理是什么?',
+  '今天祢要我去爱的人是谁?',
+  '有什么是我该停下来的?',
+  '今天祢要我迈出的一小步是什么?',
+  '在我的家庭、事奉、工作(学习)当中，祢给我怎样的方向?',
+  '对于我所担忧的问题，主如何看待?',
+  '今天祢要我放下的重担是什么?',
+  '祢想对我说的安慰是什么?',
+  '主啊，此刻祢正对我说什么?',
 ];
 
 function getAskQuestions(){
@@ -206,7 +206,7 @@ const STRINGS = {
     monthPlanName:'1권 노트 구매', monthPlanDesc:(name)=>`${name} 저널만 이용`, monthPlanPrice:'₩2,000',
     cancel:'취소', buyBtn:'구매하기',
     settingsTitle:'설정', fontSizeLabel:'글자 크기', fontSmall:'작게', fontDefault:'기본', fontLarge:'크게',
-    langLabel:'언어', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'中文',
+    langLabel:'언어', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'简体中文',
     languageMenu:'언어 설정', languageModalTitle:'언어 선택',
     themeLabel:'다크 모드', themeLight:'라이트', themeDark:'다크',
     signupTitle:'회원가입', signupSub:'가입에 필요한 정보를 입력해 주세요.',
@@ -257,6 +257,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`${book} 배경 설명`,
     chapterInfoEmptyTitle:'준비 중이에요',
     chapterInfoEmptyBody:'이 책의 배경 설명은 곧 추가될 예정이에요.',
+    copyVerseBtn:'구절 복사하기',
+    toastVerseCopied:'구절이 복사되었습니다.',
     contentQuestionsEmptyTitle:'준비 중이에요',
     contentQuestionsEmptyBody:'이 장의 내용 질문은 아직 준비되지 않았어요. 곧 추가할게요.',
     bibleInfoOriginLabel:'기원', bibleInfoAuthorLabel:'저자', bibleInfoEraLabel:'기록연대', bibleInfoOutlineLabel:'개요',
@@ -314,12 +316,12 @@ const STRINGS = {
     toastShareUnsupported:'이 기기·브라우저에서는 바로 공유가 지원되지 않아 이미지를 다운로드했어요. 카카오톡에서 직접 첨부해 주세요.',
     toastDownloadDone:'이미지가 다운로드되었어요',
     groupInfoParticipants:(n)=>`참여자 ${n}명`,
-    chatEnterBtn:'채팅하기', leaveGroupBtn:'그룹 나가기',
-    leaveConfirmTitle:'정말 이 그룹에서 나가시겠어요?',
-    leaveConfirmBody:'그룹을 나가면 더 이상 이 채팅방의 메시지를 볼 수 없습니다.',
-    leaveConfirmBtn:'그룹 나가기',
-    toastLeftGroup:'그룹에서 나갔어요',
-    toastLeaveFailed:'그룹 나가기에 실패했어요. 다시 시도해 주세요',
+    leaveGroupBtn:'채팅방 나가기',
+    leaveConfirmTitle:'채팅방에서 나가시겠어요?',
+    leaveConfirmBody:'나가면 이 채팅방의 메시지와 멤버 목록에 더 이상 접근할 수 없습니다.',
+    leaveConfirmBtn:'채팅방 나가기',
+    toastLeftGroup:'채팅방에서 나갔어요',
+    toastLeaveFailed:'채팅방 나가기에 실패했어요. 다시 시도해 주세요',
     toastMembersLoadFailed:'참여자 정보를 불러오지 못했어요',
     toastInviteJoined:'그룹방에 참여했어요',
     toastInviteFailed:'유효하지 않거나 만료된 초대 링크예요',
@@ -329,18 +331,14 @@ const STRINGS = {
     renameRoomTitle:'채팅방 이름 변경',
     changeRoomPhotoTitle:'채팅방 프로필 사진 변경',
     ownerTag:'방장',
-    explodeRoomBtn:'채팅방 폭파',
-    explodeConfirmTitle:'채팅방을 폭파하시겠습니까?',
-    explodeConfirmBody:'채팅방을 폭파하면 모든 참여자가 이 채팅방에 접근할 수 없게 됩니다.\n이 작업은 되돌릴 수 없습니다.',
-    explodeConfirmBtn:'채팅방 폭파',
+    streakLabel:'연속 기록',
+    streakDaysSuffix:(n)=>`${n}일 연속 기록`,
     toastRoomNameEmpty:'채팅방 이름을 입력해 주세요',
     toastRoomNameTooLong:'채팅방 이름은 30자 이내로 입력해 주세요',
     toastRoomNameSaved:'채팅방 이름이 변경되었습니다',
     toastRoomNameSaveFailed:'채팅방 이름 저장에 실패했어요. 다시 시도해 주세요',
     toastRoomPhotoSaved:'채팅방 프로필 사진이 변경되었습니다',
     toastRoomPhotoSaveFailed:'채팅방 프로필 사진 업로드에 실패했어요. 다시 시도해 주세요',
-    toastRoomClosed:'채팅방을 폭파했어요',
-    toastRoomCloseFailed:'채팅방 폭파에 실패했어요. 다시 시도해 주세요',
     toastRoomGone:'더 이상 존재하지 않는 채팅방이에요',
   },
   en:{
@@ -355,7 +353,7 @@ const STRINGS = {
     monthPlanName:'Single book', monthPlanDesc:(name)=>`${name} journal only`, monthPlanPrice:'₩2,000',
     cancel:'Cancel', buyBtn:'Unlock',
     settingsTitle:'Settings', fontSizeLabel:'Text size', fontSmall:'Small', fontDefault:'Default', fontLarge:'Large',
-    langLabel:'Language', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'中文',
+    langLabel:'Language', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'简体中文',
     languageMenu:'Language', languageModalTitle:'Select language',
     themeLabel:'Dark mode', themeLight:'Light', themeDark:'Dark',
     signupTitle:'Sign up', signupSub:'Please fill in the details below to create your account.',
@@ -406,6 +404,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`Background: ${book}`,
     chapterInfoEmptyTitle:'Coming soon',
     chapterInfoEmptyBody:"Background notes for this book will be added soon.",
+    copyVerseBtn:'Copy Verse',
+    toastVerseCopied:'Verse copied.',
     contentQuestionsEmptyTitle:'Coming soon',
     contentQuestionsEmptyBody:"Content questions for this chapter aren't ready yet. We'll add them soon.",
     bibleInfoOriginLabel:'Origin', bibleInfoAuthorLabel:'Author', bibleInfoEraLabel:'Written', bibleInfoOutlineLabel:'Outline',
@@ -463,12 +463,12 @@ const STRINGS = {
     toastShareUnsupported:"Direct sharing isn't supported on this device/browser, so the image was downloaded instead. Please attach it in KakaoTalk yourself.",
     toastDownloadDone:'Image downloaded',
     groupInfoParticipants:(n)=>`${n} participant${n===1?'':'s'}`,
-    chatEnterBtn:'Chat', leaveGroupBtn:'Leave group',
-    leaveConfirmTitle:'Leave this group?',
-    leaveConfirmBody:"Once you leave, you won't be able to see this chat room's messages anymore.",
-    leaveConfirmBtn:'Leave group',
-    toastLeftGroup:'You left the group',
-    toastLeaveFailed:'Failed to leave the group. Please try again',
+    leaveGroupBtn:'Leave chat room',
+    leaveConfirmTitle:'Leave this chat room?',
+    leaveConfirmBody:"Once you leave, you won't be able to access this chat room's messages or member list anymore.",
+    leaveConfirmBtn:'Leave chat room',
+    toastLeftGroup:'You left the chat room',
+    toastLeaveFailed:'Failed to leave the chat room. Please try again',
     toastMembersLoadFailed:'Could not load participants',
     toastInviteJoined:'Joined the group chat',
     toastInviteFailed:'This invite link is invalid or expired',
@@ -478,18 +478,14 @@ const STRINGS = {
     renameRoomTitle:'Rename chat room',
     changeRoomPhotoTitle:'Change chat room photo',
     ownerTag:'Owner',
-    explodeRoomBtn:'Destroy chat room',
-    explodeConfirmTitle:'Destroy this chat room?',
-    explodeConfirmBody:"Destroying this chat room will remove access for every participant.\nThis cannot be undone.",
-    explodeConfirmBtn:'Destroy chat room',
+    streakLabel:'Streak',
+    streakDaysSuffix:(n)=>`${n}-day streak`,
     toastRoomNameEmpty:'Please enter a chat room name',
     toastRoomNameTooLong:'Chat room names must be 30 characters or fewer',
     toastRoomNameSaved:'Chat room name updated',
     toastRoomNameSaveFailed:'Could not save the chat room name. Please try again',
     toastRoomPhotoSaved:'Chat room photo updated',
     toastRoomPhotoSaveFailed:'Could not upload the chat room photo. Please try again',
-    toastRoomClosed:'Chat room destroyed',
-    toastRoomCloseFailed:'Could not destroy the chat room. Please try again',
     toastRoomGone:'This chat room no longer exists',
   },
   ja:{
@@ -504,7 +500,7 @@ const STRINGS = {
     monthPlanName:'1冊ノート購入', monthPlanDesc:(name)=>`${name}ジャーナルのみ利用`, monthPlanPrice:'₩2,000',
     cancel:'キャンセル', buyBtn:'購入する',
     settingsTitle:'設定', fontSizeLabel:'文字サイズ', fontSmall:'小', fontDefault:'標準', fontLarge:'大',
-    langLabel:'言語', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'中文',
+    langLabel:'言語', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'简体中文',
     languageMenu:'言語設定', languageModalTitle:'言語を選択',
     themeLabel:'ダークモード', themeLight:'ライト', themeDark:'ダーク',
     signupTitle:'新規登録', signupSub:'登録に必要な情報を入力してください。',
@@ -555,6 +551,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`${book} 背景説明`,
     chapterInfoEmptyTitle:'準備中です',
     chapterInfoEmptyBody:'この書の背景説明は近日追加予定です。',
+    copyVerseBtn:'聖句をコピー',
+    toastVerseCopied:'聖句をコピーしました。',
     contentQuestionsEmptyTitle:'準備中です',
     contentQuestionsEmptyBody:'この章の内容質問はまだ準備できていません。近日追加予定です。',
     bibleInfoOriginLabel:'起源', bibleInfoAuthorLabel:'著者', bibleInfoEraLabel:'執筆年代', bibleInfoOutlineLabel:'概要',
@@ -612,11 +610,11 @@ const STRINGS = {
     toastShareUnsupported:'この端末・ブラウザでは直接共有がサポートされていないため、画像をダウンロードしました。カカオトークで直接添付してください。',
     toastDownloadDone:'画像がダウンロードされました',
     groupInfoParticipants:(n)=>`参加者 ${n}人`,
-    chatEnterBtn:'チャットする', leaveGroupBtn:'グループを退出',
-    leaveConfirmTitle:'本当にこのグループから退出しますか?',
-    leaveConfirmBody:'退出すると、このチャットルームのメッセージはもう見られなくなります。',
-    leaveConfirmBtn:'グループを退出',
-    toastLeftGroup:'グループから退出しました',
+    leaveGroupBtn:'チャットルームを退出',
+    leaveConfirmTitle:'このチャットルームから退出しますか?',
+    leaveConfirmBody:'退出すると、このチャットルームのメッセージやメンバー一覧に二度とアクセスできなくなります。',
+    leaveConfirmBtn:'チャットルームを退出',
+    toastLeftGroup:'チャットルームから退出しました',
     toastLeaveFailed:'退出に失敗しました。もう一度お試しください',
     toastMembersLoadFailed:'参加者情報を読み込めませんでした',
     toastInviteJoined:'グループチャットに参加しました',
@@ -627,18 +625,14 @@ const STRINGS = {
     renameRoomTitle:'チャットルーム名を変更',
     changeRoomPhotoTitle:'チャットルームのプロフィール写真を変更',
     ownerTag:'ルームリーダー',
-    explodeRoomBtn:'チャットルームを削除',
-    explodeConfirmTitle:'このチャットルームを削除しますか?',
-    explodeConfirmBody:'チャットルームを削除すると、すべての参加者がこのチャットルームにアクセスできなくなります。\nこの操作は元に戻せません。',
-    explodeConfirmBtn:'チャットルームを削除',
+    streakLabel:'連続記録',
+    streakDaysSuffix:(n)=>`${n}日連続記録`,
     toastRoomNameEmpty:'チャットルーム名を入力してください',
     toastRoomNameTooLong:'チャットルーム名は30文字以内で入力してください',
     toastRoomNameSaved:'チャットルーム名が変更されました',
     toastRoomNameSaveFailed:'チャットルーム名の保存に失敗しました。もう一度お試しください',
     toastRoomPhotoSaved:'チャットルームのプロフィール写真が変更されました',
     toastRoomPhotoSaveFailed:'チャットルームのプロフィール写真のアップロードに失敗しました。もう一度お試しください',
-    toastRoomClosed:'チャットルームを削除しました',
-    toastRoomCloseFailed:'チャットルームの削除に失敗しました。もう一度お試しください',
     toastRoomGone:'これ以上存在しないチャットルームです',
   },
   th:{
@@ -653,7 +647,7 @@ const STRINGS = {
     monthPlanName:'ซื้อสมุดบันทึกเล่มเดียว', monthPlanDesc:(name)=>`ใช้ได้เฉพาะสมุดบันทึก ${name}`, monthPlanPrice:'₩2,000',
     cancel:'ยกเลิก', buyBtn:'ซื้อเลย',
     settingsTitle:'การตั้งค่า', fontSizeLabel:'ขนาดตัวอักษร', fontSmall:'เล็ก', fontDefault:'ปกติ', fontLarge:'ใหญ่',
-    langLabel:'ภาษา', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'中文',
+    langLabel:'ภาษา', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'简体中文',
     languageMenu:'ตั้งค่าภาษา', languageModalTitle:'เลือกภาษา',
     themeLabel:'โหมดมืด', themeLight:'สว่าง', themeDark:'มืด',
     signupTitle:'สมัครสมาชิก', signupSub:'กรุณากรอกข้อมูลที่จำเป็นสำหรับการสมัครสมาชิก',
@@ -704,6 +698,8 @@ const STRINGS = {
     chapterInfoTitle:(book)=>`ข้อมูลพื้นหลัง: ${book}`,
     chapterInfoEmptyTitle:'กำลังเตรียมการ',
     chapterInfoEmptyBody:'ข้อมูลพื้นหลังของหนังสือเล่มนี้จะเพิ่มเข้ามาเร็วๆ นี้',
+    copyVerseBtn:'คัดลอกข้อพระคัมภีร์',
+    toastVerseCopied:'คัดลอกข้อพระคัมภีร์แล้ว',
     contentQuestionsEmptyTitle:'กำลังเตรียมการ',
     contentQuestionsEmptyBody:'คำถามเนื้อหาของบทนี้ยังไม่พร้อม เราจะเพิ่มเข้ามาเร็วๆ นี้',
     bibleInfoOriginLabel:'ที่มา', bibleInfoAuthorLabel:'ผู้เขียน', bibleInfoEraLabel:'ช่วงเวลาที่เขียน', bibleInfoOutlineLabel:'โครงร่าง',
@@ -761,12 +757,12 @@ const STRINGS = {
     toastShareUnsupported:'อุปกรณ์/เบราว์เซอร์นี้ไม่รองรับการแบ่งปันโดยตรง จึงดาวน์โหลดภาพให้แทน กรุณาแนบไฟล์ใน KakaoTalk ด้วยตนเอง',
     toastDownloadDone:'ดาวน์โหลดภาพแล้ว',
     groupInfoParticipants:(n)=>`ผู้เข้าร่วม ${n} คน`,
-    chatEnterBtn:'แชท', leaveGroupBtn:'ออกจากกลุ่ม',
-    leaveConfirmTitle:'ต้องการออกจากกลุ่มนี้จริงหรือไม่?',
-    leaveConfirmBody:'เมื่อออกจากกลุ่มแล้ว คุณจะไม่สามารถดูข้อความในห้องแชทนี้ได้อีก',
-    leaveConfirmBtn:'ออกจากกลุ่ม',
-    toastLeftGroup:'ออกจากกลุ่มแล้ว',
-    toastLeaveFailed:'ออกจากกลุ่มไม่สำเร็จ กรุณาลองอีกครั้ง',
+    leaveGroupBtn:'ออกจากห้องแชท',
+    leaveConfirmTitle:'ต้องการออกจากห้องแชทนี้หรือไม่?',
+    leaveConfirmBody:'เมื่อออกแล้ว คุณจะไม่สามารถเข้าถึงข้อความและรายชื่อสมาชิกของห้องแชทนี้ได้อีก',
+    leaveConfirmBtn:'ออกจากห้องแชท',
+    toastLeftGroup:'ออกจากห้องแชทแล้ว',
+    toastLeaveFailed:'ออกจากห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastMembersLoadFailed:'ไม่สามารถโหลดข้อมูลผู้เข้าร่วมได้',
     toastInviteJoined:'เข้าร่วมกลุ่มแชทแล้ว',
     toastInviteFailed:'ลิงก์เชิญไม่ถูกต้องหรือหมดอายุแล้ว',
@@ -776,170 +772,441 @@ const STRINGS = {
     renameRoomTitle:'เปลี่ยนชื่อห้องแชท',
     changeRoomPhotoTitle:'เปลี่ยนรูปโปรไฟล์ห้องแชท',
     ownerTag:'เจ้าของห้อง',
-    explodeRoomBtn:'ทำลายห้องแชท',
-    explodeConfirmTitle:'ต้องการทำลายห้องแชทนี้หรือไม่?',
-    explodeConfirmBody:'เมื่อทำลายห้องแชทแล้ว ผู้เข้าร่วมทุกคนจะไม่สามารถเข้าถึงห้องแชทนี้ได้อีก\nไม่สามารถย้อนกลับการทำงานนี้ได้',
-    explodeConfirmBtn:'ทำลายห้องแชท',
+    streakLabel:'สถิติต่อเนื่อง',
+    streakDaysSuffix:(n)=>`บันทึกต่อเนื่อง ${n} วัน`,
     toastRoomNameEmpty:'กรุณากรอกชื่อห้องแชท',
     toastRoomNameTooLong:'ชื่อห้องแชทต้องไม่เกิน 30 ตัวอักษร',
     toastRoomNameSaved:'เปลี่ยนชื่อห้องแชทแล้ว',
     toastRoomNameSaveFailed:'บันทึกชื่อห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastRoomPhotoSaved:'เปลี่ยนรูปโปรไฟล์ห้องแชทแล้ว',
     toastRoomPhotoSaveFailed:'อัปโหลดรูปโปรไฟล์ห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
-    toastRoomClosed:'ทำลายห้องแชทแล้ว',
-    toastRoomCloseFailed:'ทำลายห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastRoomGone:'ห้องแชทนี้ไม่มีอยู่แล้ว',
   },
   zh:{
-    yearTag:'Bible Journaling', yearSub:'每月一册，与圣言同行的十二个月',
-    buyLabel:'购买', todayNavTitle:'前往今日灵修', groupsNavTitle:'一起分享',
-    loginWelcome:'Welcome back', loginTitle:'圣言灵修日记',
+    yearTag:'Bible Journaling', yearSub:'一月一本，与话语同行的十二个月',
+    buyLabel:'购买', todayNavTitle:'前往今天的灵修', groupsNavTitle:'一起分享',
+    loginWelcome:'欢迎回来', loginTitle:'话语灵修笔记',
     emailLabel:'邮箱', pwLabel:'密码', emailPh:'you@example.com', pwPh:'请输入密码',
-    loginBtn:'登录', or:'或', googleLogin:'使用Google账号登录', kakaoLogin:'使用Kakao账号登录', signup:'注册',
-    purchaseTitle:(name)=>`${name} 圣经日记本`,
-    purchaseSub:'购买包含读经、内容问题、灵修问题的日记本，从今天的经文开始吧。',
-    yearPlanName:'一年全年使用权', yearPlanBadge:'推荐', yearPlanDesc:'一次拥有12个月的日记本', yearPlanPrice:'₩19,000',
-    monthPlanName:'购买单册笔记', monthPlanDesc:(name)=>`仅使用 ${name} 日记本`, monthPlanPrice:'₩2,000',
+    loginBtn:'登录', or:'或', googleLogin:'使用 Google 账号登录', kakaoLogin:'使用 Kakao 账号登录', signup:'注册',
+    purchaseTitle:(name)=>`${name} 圣经灵修笔记`,
+    purchaseSub:'购买包含话语阅读、内容问题与灵修问题的笔记，从今天的话语开始吧。',
+    yearPlanName:'全年通行证', yearPlanBadge:'推荐', yearPlanDesc:'一次拥有 12 个月的笔记', yearPlanPrice:'₩19,000',
+    monthPlanName:'购买单本笔记', monthPlanDesc:(name)=>`仅使用 ${name} 笔记`, monthPlanPrice:'₩2,000',
     cancel:'取消', buyBtn:'购买',
     settingsTitle:'设置', fontSizeLabel:'字体大小', fontSmall:'小', fontDefault:'默认', fontLarge:'大',
-    langLabel:'语言', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'中文',
+    langLabel:'语言', langKo:'한국어', langEn:'English', langJa:'日本語', langTh:'ไทย', langZh:'简体中文',
     languageMenu:'语言设置', languageModalTitle:'选择语言',
     themeLabel:'深色模式', themeLight:'浅色', themeDark:'深色',
-    signupTitle:'注册', signupSub:'请输入注册所需的信息。',
+    signupTitle:'注册', signupSub:'请填写注册所需的信息。',
     nameLabel:'姓名', namePh:'请输入真实姓名',
     birthLabel:'出生日期', birthPh:'YYYY-MM-DD',
     usernameLabel:'账号', usernamePh:'用于登录的账号',
-    nicknameLabel:'昵称', nicknamePh:'在群聊中显示的昵称',
-    signupTermsLabel:'同意服务使用条款（必填）',
-    signupTermsBody:'本条款是使用圣言灵修日记提供的读经、灵修问题记录、群组分享功能的基本条款。为防止不当使用，必要时服务的使用可能会受到限制。',
-    signupConsentLabel:'同意个人信息的收集与使用（必填）',
-    signupConsentBody:'收集项目：姓名、出生日期、账号、昵称、密码（加密保存）\n收集·使用目的：会员身份确认及登录、提供服务\n保留期限：至会员注销为止\n您可以拒绝同意，但拒绝时注册将受到限制。',
+    nicknameLabel:'昵称', nicknamePh:'将在群组聊天室中显示的昵称',
+    signupTermsLabel:'同意服务使用条款(必填)',
+    signupTermsBody:'这是使用话语灵修笔记所提供的圣经阅读、灵修问题记录及群组分享功能的基本条款。如发现不当使用，服务使用可能会受到限制。',
+    signupConsentLabel:'同意收集和使用个人信息(必填)',
+    signupConsentBody:'收集项目：姓名、出生日期、账号、昵称、密码(加密存储)\n收集及使用目的：会员识别与登录、提供服务\n保留期限：至会员注销为止\n您可以拒绝，但拒绝后将无法完成注册。',
     viewDetail:'查看', hideDetail:'收起',
     submitSignup:'注册',
-    toastFillAll:'请填写所有项目', toastNeedConsent:'请同意个人信息收集',
+    toastFillAll:'请填写所有项目', toastNeedConsent:'请同意收集个人信息',
     toastSignupDone:'注册完成',
-    notif:'通知设置', contact:'联系我们', logout:'登出', donate:'支持我们',
-    dayUnit:'天', snapNoAnswerContent:'还没有写下答案', snapNoAnswerThought:'还没有填写', snapNoQuestionSelected:'没有选择的问题',
+    notif:'通知设置', contact:'联系我们', logout:'退出登录', donate:'支持我们',
+    dayUnit:'天', snapNoAnswerContent:'尚未填写答案', snapNoAnswerThought:'尚未填写', snapNoQuestionSelected:'尚未选择问题',
     notifTitle:'通知设置', notifSub:'选择星期几来设置灵修提醒时间。',
     dayMon:'星期一', dayTue:'星期二', dayWed:'星期三', dayThu:'星期四', dayFri:'星期五', daySat:'星期六', daySun:'星期日',
     notifOff:'通知已关闭',
     notifOnLabel:'开启通知',
-    notifTimeLabel:'通知时间',
+    notifTimeLabel:'提醒时间',
     notifSave:'保存',
     notifDelete:'关闭通知',
     contactTitle:'联系我们',
     guideMenu:'使用指南',
     guideTitle:'使用指南',
-    guideEmptyTitle:'准备中',
-    guideEmptyBody:'使用指南内容即将上线，请稍候。',
-    contactBody:'在使用圣言灵修日记的过程中，如有任何疑问或不便，请随时与我们联系。我们会尽快回复您。',
-    contactEmailBtn:'通过邮箱联系',
-    contactEmailNote:'点击按钮将打开默认邮箱应用，并自动填写收件人。',
-    contactMailSubject:'[圣言灵修日记] 咨询',
-    contactMailBody:'您好，我想咨询有关圣言灵修日记的问题。\n\n咨询内容：\n',
-    donateModalTitle:'支持 Bible Journaling',
-    donateDesc:'请支持 Bible Journaling 服务的持续运营与开发。您宝贵的赞助将用于服务改善与服务器维护费用。谢谢您 🤍',
-    donateBankLabel:'银行', donateHolderLabel:'账户名', donateAccountLabel:'账号',
-    donateBankName:'Toss银行', donateHolderName:'Park Yuna', donateAccountNumber:'1002-7159-7116',
-    copyAccountBtn:'复制账号', copyAccountDone:'复制完成！✓',
-    toastAccountCopied:'账号已复制！',
-    todayWord:'今天', moveToday:'跳转到今天', calLegend:'有灵修记录的日子',
-    calTitle:(name)=>`${name} 日记日历`, calCap:'2026 · Bible Journal',
-    chapterGridSub:'请选择想要阅读的章节。',
-    dailyCap:(name)=>`${name}的话语旅程`,
-    navBible:'圣经', navContent:'内容问题记录', navThought:'灵修问题记录',
-    todayReading:'今日经文', chapterNote:'正文为帮助理解的摘要示例。',
-    chapterInfoBtn:'查看背景介绍',
-    chapterInfoTitle:(book)=>`${book} 背景介绍`,
-    chapterInfoEmptyTitle:'准备中',
-    chapterInfoEmptyBody:'该卷书的背景介绍即将上线。',
+    guideEmptyTitle:'正在准备中',
+    guideEmptyBody:'使用指南内容即将推出，请稍候。',
+    contactBody:'在使用话语灵修笔记的过程中，如有任何疑问或不便，欢迎随时联系我们。我们会尽快回复。',
     contentQuestionsEmptyTitle:'准备中',
     contentQuestionsEmptyBody:'本章的内容问题还未准备好，我们会尽快添加。',
-    bibleInfoOriginLabel:'起源', bibleInfoAuthorLabel:'作者', bibleInfoEraLabel:'写作年代', bibleInfoOutlineLabel:'概要',
+    contactEmailBtn:'通过邮件联系',
+    contactEmailNote:'点击按钮后会打开默认邮件应用，并自动填入收件人。',
+    contactMailSubject:'[话语灵修笔记] 咨询',
+    contactMailBody:'您好，我在使用话语灵修笔记时有一些问题想咨询。\n\n咨询内容：\n',
+    donateModalTitle:'支持 Bible Journaling',
+    donateDesc:'请为 Bible Journaling 服务的持续运营与开发加油。您宝贵的赞助将用于服务改进及服务器维护费用。谢谢 🤍',
+    donateBankLabel:'银行', donateHolderLabel:'账户持有人', donateAccountLabel:'账号',
+    donateBankName:'Toss Bank', donateHolderName:'朴有娜', donateAccountNumber:'1002-7159-7116',
+    copyAccountBtn:'复制账号', copyAccountDone:'复制完成! ✓',
+    toastAccountCopied:'账号已复制!',
+    todayWord:'今天', moveToday:'回到今天', calLegend:'有灵修记录的日期',
+    calTitle:(name)=>`${name} 灵修日历`, calCap:'2026 · Bible Journal',
+    chapterGridSub:'请选择想阅读的章。',
+    dailyCap:(name)=>`${name} 的话语旅程`,
+    navBible:'圣经', navContent:'内容问题记录', navThought:'思考问题记录',
+    todayReading:'今天的话语', chapterNote:'本文是为帮助理解而提供的摘要示例。',
+    chapterInfoBtn:'查看背景说明',
+    chapterInfoTitle:(book)=>`${book} 背景说明`,
+    chapterInfoEmptyTitle:'正在准备中',
+    chapterInfoEmptyBody:'这卷书的背景说明即将推出。',
+    copyVerseBtn:'复制经文',
+    toastVerseCopied:'经文已复制。',
+    bibleInfoOriginLabel:'起源', bibleInfoAuthorLabel:'作者', bibleInfoEraLabel:'成书年代', bibleInfoOutlineLabel:'概要',
     bibleInfoThemeLabel:'主题', bibleInfoCharacterLabel:'性格', bibleInfoKeyContentLabel:'核心内容',
-    qPlaceholder:'请写下你的想法',
-    verseLabel:'赐给我的一节经文', versePh:'例：出埃及记8:10',
-    passageLabel:'正文内容', passagePh:'试着总结今天正文的脉络',
-    godIsLabel:'神是这样的一位', godIsPh:'从正文中发现的神的性情',
-    askLabel:'向神发问', askPlaceholderQ:'请选择问题',
-    heardLabel:'记录所听到的声音', heardPh:'写下灵修中心里响起的声音',
-    appLabel:'生活中的应用', appPh:'今天生活中要实践的一件事',
+    qPlaceholder:'写下你所想到的答案',
+    verseLabel:'赐给我的一节话语', versePh:'例：出埃及记 8:10',
+    passageLabel:'本文内容', passagePh:'试着概括今天本文的脉络',
+    godIsLabel:'神是这样的一位', godIsPh:'在本文中发现的神的属性',
+    askLabel:'向神提问', askPlaceholderQ:'请选择一个问题',
+    heardLabel:'记录所听见的声音', heardPh:'写下灵修中在心里听见的声音',
+    appLabel:'落实到生活', appPh:'今天要在生活中实践的一件事',
     prayerLabel:'祷告事项', prayerPh:'写下今天的祷告事项',
-    thanksLabel:'今日感恩', thanksPh:(i)=>`感恩事项 ${i}`, addThanks:'添加感恩事项',
-    toastLogin:'已登录', toastLogout:'已登出',
-    toastGoogleFailed:'Google登录失败，请重试',
-    toastGoogleCancelled:'已取消Google登录',
-    toastPopupBlocked:'弹出窗口被拦截，无法登录。请解除弹出窗口拦截后重试',
+    thanksLabel:'今天的感恩', thanksPh:(i)=>`感恩的事 ${i}`, addThanks:'添加感恩事项',
+    toastLogin:'已登录', toastLogout:'已退出登录',
+    toastGoogleFailed:'Google 登录失败，请重试',
+    toastGoogleCancelled:'已取消 Google 登录',
+    toastPopupBlocked:'弹出窗口被拦截，无法登录。请解除弹窗拦截后重试',
     toastNetworkError:'请检查网络连接',
-    toastLogoutFailed:'登出失败，请重试',
-    toastKakaoFailed:'Kakao登录失败，请重试',
+    toastLogoutFailed:'退出登录失败，请重试',
+    toastKakaoFailed:'Kakao 登录失败，请重试',
     toastEmailLoginFailed:'邮箱或密码不正确',
-    toastEmailInUse:'该邮箱已被注册',
-    toastWeakPassword:'密码需至少6位以上',
+    toastEmailInUse:'该邮箱已注册',
+    toastWeakPassword:'密码请至少输入 6 位',
     toastSignupFailed:'注册失败，请重试',
-    toastFirebaseNotSet:'尚未连接Firebase设置（请填写firebaseConfig）',
+    toastFirebaseNotSet:'Firebase 尚未配置(请填写 firebaseConfig)',
     nicknameModalTitle:'修改昵称', saveBtn:'保存',
     toastNicknameEmpty:'请输入昵称',
-    toastNicknameSaved:'昵称已修改',
+    toastNicknameSaved:'昵称已更改',
     toastNicknameSaveFailed:'昵称保存失败，请重试',
-    avatarModalTitle:'更换头像', avatarModalSub:'要将所选照片设为头像吗？',
+    avatarModalTitle:'更换头像', avatarModalSub:'要用所选照片更换头像吗?',
     toastAvatarInvalidType:'只能选择图片文件',
     toastAvatarSaved:'头像已更换',
     toastAvatarSaveFailed:'头像上传失败，请重试',
-    toastAvatarTooLarge:'图片文件过大，请换一张更小的照片再试',
-    toastAvatarPermissionDenied:'没有保存头像的权限，请重新登录后再试',
-    toastAvatarLoginRequired:'登录信息已过期，请重新登录后再试',
-    toastPurchaseYear:'一年全年使用权购买完成', toastPurchaseMonth:(name)=>`${name} 笔记购买完成`,
-    toastNeedPurchase:(name)=>`请先购买 ${name} 日记本`,
-    sharePickTitle:'要分享什么？', sharePickSub:'将今天写下的记录生成图片进行分享。',
-    shareContentName:'内容问题记录', shareContentDesc:'今日正文相关的问题与答案',
-    shareThoughtName:'灵修问题记录', shareThoughtDesc:'今日的灵修、祷告与感恩',
-    shareBothName:'两者都分享', shareBothDesc:'将内容问题与灵修问题记录一起发送',
+    toastAvatarTooLarge:'图片体积过大，请换一张更小的照片重试',
+    toastAvatarPermissionDenied:'没有保存头像的权限，请重新登录后重试',
+    toastAvatarLoginRequired:'登录信息已过期，请重新登录后重试',
+    toastPurchaseYear:'全年通行证购买完成', toastPurchaseMonth:(name)=>`${name} 笔记购买完成`,
+    toastNeedPurchase:(name)=>`请先购买 ${name} 灵修笔记`,
+    sharePickTitle:'要分享什么?', sharePickSub:'把今天的记录做成图片来分享。',
+    shareContentName:'内容问题记录', shareContentDesc:'关于今天本文的问题与答案',
+    shareThoughtName:'思考问题记录', shareThoughtDesc:'今天的灵修、祷告与感恩',
+    shareBothName:'两者都分享', shareBothDesc:'一起发送内容问题与思考问题的记录',
     shareGenerating:'正在生成图片...', shareDone:'已分享灵修记录', shareFailed:'图片生成失败，请重试',
-    sharedImageCap:(kind,date)=>`${kind==='content'?'内容问题记录':'灵修问题记录'} · ${date}`,
+    sharedImageCap:(kind,date)=>`${kind==='content'?'内容问题记录':'思考问题记录'} · ${date}`,
     pageShareBtn:'分享',
-    pageShareTitle:'要分享到哪里？',
+    pageShareTitle:'要分享到哪里?',
     shareToChatName:'分享到应用内聊天室',
-    shareToChatDesc:'发送到"一起分享"聊天室',
-    shareToKakaoName:'分享到KakaoTalk',
-    shareToKakaoDesc:'通过KakaoTalk等已安装的应用分享',
+    shareToChatDesc:'发送到“一起分享”聊天室',
+    shareToKakaoName:'分享到 KakaoTalk',
+    shareToKakaoDesc:'通过 KakaoTalk 等已安装的应用分享',
     shareDownloadName:'下载为图片',
-    shareDownloadDesc:'保存为设备中的图片文件',
+    shareDownloadDesc:'将图片文件保存到设备',
     pickGroupTitle:'请选择要发送的聊天室',
     noGroupsYet:'还没有创建的聊天室',
-    toastShareUnsupported:'此设备/浏览器不支持直接分享，已为您下载图片。请在KakaoTalk中手动添加附件。',
+    toastShareUnsupported:'此设备/浏览器不支持直接分享，已改为下载图片。请在 KakaoTalk 中手动添加附件。',
     toastDownloadDone:'图片已下载',
-    groupInfoParticipants:(n)=>`参与者 ${n}人`,
-    chatEnterBtn:'聊天', leaveGroupBtn:'退出群组',
-    leaveConfirmTitle:'确定要退出该群组吗？',
-    leaveConfirmBody:'退出群组后，将无法再查看该聊天室的消息。',
-    leaveConfirmBtn:'退出群组',
-    toastLeftGroup:'已退出群组',
-    toastLeaveFailed:'退出群组失败，请重试',
-    toastMembersLoadFailed:'无法加载参与者信息',
+    groupInfoParticipants:(n)=>`${n} 位成员`,
+    leaveGroupBtn:'退出聊天室',
+    leaveConfirmTitle:'要退出这个聊天室吗?',
+    leaveConfirmBody:'退出后，你将无法再访问该聊天室的消息和成员列表。',
+    leaveConfirmBtn:'退出聊天室',
+    toastLeftGroup:'已退出聊天室',
+    toastLeaveFailed:'退出聊天室失败，请重试',
+    toastMembersLoadFailed:'无法加载成员信息',
     toastInviteJoined:'已加入群聊',
     toastInviteFailed:'邀请链接无效或已过期',
-    memberFallbackName:'成员', youTag:'（我）', loadingLabel:'加载中...',
+    memberFallbackName:'成员', youTag:'(我)', loadingLabel:'加载中...',
     groupManageTitle:'聊天室管理',
     roomNameLabel:'聊天室名称',
     renameRoomTitle:'修改聊天室名称',
     changeRoomPhotoTitle:'更换聊天室头像',
-    ownerTag:'房主',
-    explodeRoomBtn:'解散聊天室',
-    explodeConfirmTitle:'确定要解散该聊天室吗？',
-    explodeConfirmBody:'解散聊天室后，所有参与者都将无法再访问该聊天室。\n此操作无法撤销。',
-    explodeConfirmBtn:'解散聊天室',
+    ownerTag:'群主',
+    streakLabel:'连续记录',
+    streakDaysSuffix:(n)=>`连续记录 ${n} 天`,
     toastRoomNameEmpty:'请输入聊天室名称',
-    toastRoomNameTooLong:'聊天室名称请控制在30字以内',
-    toastRoomNameSaved:'聊天室名称已修改',
+    toastRoomNameTooLong:'聊天室名称请控制在 30 个字符以内',
+    toastRoomNameSaved:'聊天室名称已更改',
     toastRoomNameSaveFailed:'聊天室名称保存失败，请重试',
     toastRoomPhotoSaved:'聊天室头像已更换',
     toastRoomPhotoSaveFailed:'聊天室头像上传失败，请重试',
-    toastRoomClosed:'聊天室已解散',
-    toastRoomCloseFailed:'聊天室解散失败，请重试',
     toastRoomGone:'该聊天室已不存在',
   },
 };
+
+/* ---------------- usage guide i18n ----------------
+   저널링 노트 사용가이드 화면 전용 문자열. 기존 STRINGS 사전에 언어별로 합칩니다.
+   실제 기록 화면(renderThoughtTab / renderBibleTab)의 라벨은 기존 키를 그대로 재사용하고,
+   여기서는 각 단계 설명과 12가지 질문만 추가로 정의합니다. */
+const GUIDE_STRINGS = {
+  ko:{
+    guideHowToTitle:'저널링 노트 사용하는 방법',
+    guideHowToLead:'하루의 말씀을 읽고, 묵상하고, 하나님께 묻고,\n삶에 적용하고 기도로 기록해보세요.',
+    guideShotLabel:'실제 기록 화면',
+    guideTapHint:'단계를 누르면 해당 설명으로 이동해요.',
+    guideFlow:['고요하게 하기','말씀 묵상','하나님께 여쭙기','들은 음성 기록','삶에 적용','기도'],
+    guideS1Title:'1. 마음을 고요하게 하기',
+    guideS1En:'Quiet Time',
+    guideS1Desc:'하나님과 일대일로 만나는 시간입니다.\n평안한 마음으로 조용히 말씀을 듣고, 그 말씀에 응답하여 마음을 아룁니다.',
+    guideS1Ref:'출애굽기 8장',
+    guideS1Verse1:'여호와께서 모세에게 바로에게 가서 백성을 보내라고 전하라 말씀하신다.',
+    guideS1Verse2:'모세가 여호와와 같은 이 없음을 알게 되리라 말한다.',
+    guideS1Callout:'먼저 오늘의 말씀을 조용히 읽으며 마음을 준비하세요.',
+    guideS2Title:'2. 말씀 묵상',
+    guideS2En:'Scripture Listening',
+    guideS2Desc:'오늘 본문에서 들은 말씀을 세 곳에 나누어 기록합니다.',
+    guideS2VerseDesc:'마음에 와닿은 한 구절을 기록하세요.',
+    guideS2PassageDesc:'본문의 핵심 내용을 요약해 보세요.',
+    guideS2GodDesc:'오늘 말씀을 통해 알게 된 하나님은 어떤 분인가요?',
+    guideS3Title:'3. 하나님께 여쭙기',
+    guideS3En:'Asking',
+    guideS3Desc:'아래 질문 중 하루 한 가지를 선택해 묻고, 떠오른 답을 기록하세요.',
+    guideS3Callout:'▼ 를 눌러 질문을 고르고, 마음에 떠오른 답을 적으세요.',
+    guideS3ListTitle:'하나님께 드리는 주요 질문 12가지',
+    guideAsk:[
+      '주님, 오늘 제게 주시는 마음의 감동은 무엇입니까?',
+      '제가 놓치고 있는 죄/교만/두려움이 있습니까?',
+      '주님이 오늘 제게 알려주고 싶은 진리는 무엇입니까?',
+      '제가 오늘 사랑해야 할 사람은 누구입니까?',
+      '제가 멈춰야 할 것은 무엇입니까?',
+      '제가 오늘 행동해야 할 작은 한 걸음은 무엇입니까?',
+      '저의 가정, 사역, 사업(일, 공부) 가운데 정리해주시는 방향성이 있습니까?',
+      '제가 걱정하는 문제를 주님은 어떻게 보십니까?',
+      '제가 오늘 내려놓아야 할 짐은 무엇입니까?',
+      '제 삶에서 회복시키길 원하시는 영역은 어디입니까?',
+      '주님이 제게 말씀하시는 위로는 무엇입니까?',
+      '주님, 지금 제게 무엇을 말씀하십니까?',
+    ],
+    guideS4Title:'4. 들은 음성 기록하기',
+    guideS4En:'Listening & Writing',
+    guideS4Desc:'고요하게 들리는 감동·생각·그림·성경 말씀 등을 기록합니다.',
+    guideS4Note:'기록한 내용이 성경의 원리와 일치하는지 검증하면서 적어요.',
+    guideS5Title:'5. 삶으로의 적용',
+    guideS5Desc:'오늘 말씀 중에 즉시 적용할 한 가지 실천을 기록하세요.',
+    guideS6Title:'6. 기도',
+    guideS6Desc:'기도제목과 오늘의 감사를 나누어 기록합니다.',
+    guideS6PrayerDesc:'하나님께 감사함으로 드릴 기도를 기록하세요.',
+    guideS6ThanksDesc:'말씀과 성령의 인도 중에 주시는 감사 내용을 기록하세요.',
+    guideVersesTitle:'성경으로 성령 인도 받기',
+    guideVerse1:'무릇 하나님의 영으로 인도함을 받는 사람은 곧 하나님의 아들이라',
+    guideVerse1Ref:'(롬8:14)',
+    guideVerse2:'성령이 친히 우리의 영과 더불어 우리가 하나님의 자녀인 것을 증언하시나',
+    guideVerse2Ref:'(롬8:16)',
+    guideVerse3:'말씀이 육신이 되어 우리 가운데 거하시매 우리가 그의 영광을 보니 아버지의 독생자의 영광이요 은혜와 진리가 충만하더라',
+    guideVerse3Ref:'(요1:14)',
+    guideRulesTitle:'5가지 성경 읽기 지침',
+    guideRules:['규칙적으로 통독하자','기도하며 읽자','명상하며 읽자','믿음으로 읽자','실천할 목적으로 읽자'],
+    guideRulesNote:'*준비물: 성경(킹제임스흠정역)',
+    guideBasicsTitle:'기본 수칙 및 유익',
+    guideBasics:[
+      '정해진 시간, 정해진 장소에서 성경 읽기를 한다',
+      '하루 한 장을 읽는다',
+      '혼자, 혹은 함께 읽을 수 있다',
+      '질문에 답을 하며 성경에 대해 더 깊은 이해와 묵상을 가질 수 있다',
+      '말씀으로 기도하고, 반드시 삶에 적용한다',
+    ],
+    guideBasicsNote:"(유튜브 '마인드리셋'- 새로운 피조물의 관점으로 듣는 성경 재생목록 참조)",
+    guideMuellerTitle:'말씀을 읽으면(죠지뮬러)',
+    guideMueller:['말씀을 더욱 사랑하게 된다','영적으로 성장한다','영적 진리를 깨닫는다','당부: 말씀에 대해 생각하라'],
+    guideWesleyQuote:'하나님의 성경은 성경의 기자들을 감동시켰을 뿐만 아니라 간절한 마음의 기도로 성경을 읽는 사람들을 계속적으로 감동시키며, 초자연적 능력으로 말씀의 이해를 도와준다. 그러므로 성경은 교리의 학습에 유익하며, 무식한 자에게 훈계가 되고 오류와 죄에 빠진 자들에게 견책과 확신의 말씀이 된다. 또한 어떠한 잘못에도 교정의 지침이 되며, 하나님의 자녀들을 의로 교육하는데 더없는 기준이 된다.',
+    guideWesleyAttr:'(John Wesley)',
+  },
+  en:{
+    guideHowToTitle:'How to use the journaling note',
+    guideHowToLead:'Read the day’s Word, reflect on it, ask God,\napply it to your life, and record it as prayer.',
+    guideShotLabel:'Actual entry screen',
+    guideTapHint:'Tap a step to jump to its explanation.',
+    guideFlow:['Stilling your heart','Reflect','Ask God','Write what you heard','Apply','Pray'],
+    guideS1Title:'1. Stilling your heart',
+    guideS1En:'Quiet Time',
+    guideS1Desc:'A time to meet God one on one.\nQuietly listen to the Word with a calm heart, and respond to Him from your heart.',
+    guideS1Ref:'Exodus 8',
+    guideS1Verse1:'The LORD tells Moses to go to Pharaoh and say, “Let my people go.”',
+    guideS1Verse2:'Moses says Pharaoh will come to know there is no one like the LORD.',
+    guideS1Callout:'First, quietly read today’s passage and prepare your heart.',
+    guideS2Title:'2. Scripture reflection',
+    guideS2En:'Scripture Listening',
+    guideS2Desc:'Record what you heard in today’s passage in three places.',
+    guideS2VerseDesc:'Write down the one verse that touched your heart.',
+    guideS2PassageDesc:'Summarize the key content of the passage.',
+    guideS2GodDesc:'Who is the God you came to know through today’s Word?',
+    guideS3Title:'3. Asking God',
+    guideS3En:'Asking',
+    guideS3Desc:'Choose one question for the day, ask it, and write down what comes to mind.',
+    guideS3Callout:'Tap ▼ to choose a question, then write what comes to mind.',
+    guideS3ListTitle:'12 key questions to ask God',
+    guideAsk:[
+      'Lord, what is on Your heart for me today?',
+      'Is there sin, pride, or fear that I am overlooking?',
+      'What truth do You want to show me today?',
+      'Who is someone You want me to love today?',
+      'What is something I need to stop doing?',
+      'What is one small step You want me to take today?',
+      'Is there direction You are giving me for my family, ministry, or work/study?',
+      'How do You see the problem that worries me?',
+      'What burden do You want me to lay down today?',
+      'In what area of my life do You want to bring restoration?',
+      'What comfort do You want to speak to me?',
+      'Lord, what are You saying to me right now?',
+    ],
+    guideS4Title:'4. Writing what you heard',
+    guideS4En:'Listening & Writing',
+    guideS4Desc:'Record the impressions, thoughts, images, or Scripture that come to you quietly.',
+    guideS4Note:'As you write, check that it aligns with the principles of Scripture.',
+    guideS5Title:'5. Applying it to life',
+    guideS5Desc:'Write one thing from today’s Word that you can put into practice right away.',
+    guideS6Title:'6. Prayer',
+    guideS6Desc:'Record your prayer requests and today’s gratitude separately.',
+    guideS6PrayerDesc:'Write a prayer you want to offer to God with thanksgiving.',
+    guideS6ThanksDesc:'Write the thanks that come as you are led by the Word and the Spirit.',
+  },
+  ja:{
+    guideHowToTitle:'ジャーナリングノートの使い方',
+    guideHowToLead:'一日の御言葉を読み、黙想し、神に尋ね、\n生活に適用し、祈りとして記録してみましょう。',
+    guideShotLabel:'実際の記録画面',
+    guideTapHint:'ステップを押すと、その説明へ移動します。',
+    guideFlow:['心を静める','御言葉の黙想','神に尋ねる','聞いた声を記録','生活に適用','祈り'],
+    guideS1Title:'1. 心を静める',
+    guideS1En:'Quiet Time',
+    guideS1Desc:'神と一対一で出会う時間です。\n平安な心で静かに御言葉を聞き、その御言葉に応えて心を申し上げます。',
+    guideS1Ref:'出エジプト記 8章',
+    guideS1Verse1:'主はモーセに、パロのもとへ行き「わたしの民を去らせよ」と告げるよう命じられる。',
+    guideS1Verse2:'モーセは、主のような方はほかにいないとパロが知るようになる、と告げる。',
+    guideS1Callout:'まず今日の御言葉を静かに読み、心を整えましょう。',
+    guideS2Title:'2. 御言葉の黙想',
+    guideS2En:'Scripture Listening',
+    guideS2Desc:'今日の本文で聞いた御言葉を、3つの場所に分けて記録します。',
+    guideS2VerseDesc:'心に響いた一節を記録しましょう。',
+    guideS2PassageDesc:'本文の重要な内容を要約しましょう。',
+    guideS2GodDesc:'今日の御言葉を通して知った神は、どのような方ですか?',
+    guideS3Title:'3. 神に尋ねる',
+    guideS3En:'Asking',
+    guideS3Desc:'下の質問から一日一つを選んで尋ね、心に浮かんだ答えを記録しましょう。',
+    guideS3Callout:'▼ を押して質問を選び、心に浮かんだ答えを書きましょう。',
+    guideS3ListTitle:'神にお尋ねする主な質問12',
+    guideAsk:[
+      '主よ、今日私に与えてくださる心の感動は何ですか?',
+      '私が見落としている罪、高ぶり、恐れはありますか?',
+      '主が今日私に知らせたい真理は何ですか?',
+      '私が今日愛すべき人は誰ですか?',
+      '私がやめるべきことは何ですか?',
+      '私が今日踏み出すべき小さな一歩は何ですか?',
+      '私の家庭、奉仕、仕事(学び)の中で示してくださる方向はありますか?',
+      '私が心配している問題を主はどのようにご覧になっていますか?',
+      '私が今日手放すべき荷物は何ですか?',
+      '私の人生の中で、主が回復させたいと望んでおられる領域はどこですか?',
+      '主が私に語りたい慰めは何ですか?',
+      '主よ、今、私に何を語っておられますか?',
+    ],
+    guideS4Title:'4. 聞いた声を記録する',
+    guideS4En:'Listening & Writing',
+    guideS4Desc:'静かに聞こえる感動・思い・イメージ・聖書の御言葉などを記録します。',
+    guideS4Note:'記録した内容が聖書の原理と一致するか確かめながら書きます。',
+    guideS5Title:'5. 生活への適用',
+    guideS5Desc:'今日の御言葉の中から、すぐに実践できる一つを記録しましょう。',
+    guideS6Title:'6. 祈り',
+    guideS6Desc:'祈りの課題と今日の感謝を分けて記録します。',
+    guideS6PrayerDesc:'神に感謝をもってささげる祈りを記録しましょう。',
+    guideS6ThanksDesc:'御言葉と御霊の導きの中で与えられる感謝を記録しましょう。',
+  },
+  th:{
+    guideHowToTitle:'วิธีใช้สมุดบันทึกเฝ้าเดี่ยว',
+    guideHowToLead:'อ่านพระวจนะประจำวัน ใคร่ครวญ ทูลถามพระเจ้า\nนำไปใช้ในชีวิต และบันทึกเป็นคำอธิษฐาน',
+    guideShotLabel:'หน้าจอบันทึกจริง',
+    guideTapHint:'แตะที่ขั้นตอนเพื่อไปยังคำอธิบาย',
+    guideFlow:['ทำใจให้สงบ','ใคร่ครวญพระวจนะ','ทูลถามพระเจ้า','บันทึกเสียงที่ได้ยิน','นำไปใช้','อธิษฐาน'],
+    guideS1Title:'1. ทำใจให้สงบ',
+    guideS1En:'Quiet Time',
+    guideS1Desc:'เป็นเวลาที่ได้พบพระเจ้าแบบตัวต่อตัว\nฟังพระวจนะอย่างเงียบสงบด้วยใจสงบ แล้วตอบสนองต่อพระองค์จากใจ',
+    guideS1Ref:'อพยพ บทที่ 8',
+    guideS1Verse1:'พระยาห์เวห์ตรัสสั่งโมเสสให้ไปเข้าเฝ้าฟาโรห์และบอกว่า “จงปล่อยประชากรของเราไป”',
+    guideS1Verse2:'โมเสสกล่าวว่าฟาโรห์จะได้รู้ว่าไม่มีผู้ใดเหมือนพระยาห์เวห์',
+    guideS1Callout:'ก่อนอื่น อ่านพระวจนะของวันนี้อย่างเงียบ ๆ และเตรียมใจของคุณ',
+    guideS2Title:'2. ใคร่ครวญพระวจนะ',
+    guideS2En:'Scripture Listening',
+    guideS2Desc:'บันทึกสิ่งที่ได้ยินจากเนื้อหาวันนี้แยกเป็นสามส่วน',
+    guideS2VerseDesc:'เขียนข้อพระคัมภีร์หนึ่งข้อที่สัมผัสใจคุณ',
+    guideS2PassageDesc:'สรุปเนื้อหาสำคัญของบทนี้',
+    guideS2GodDesc:'พระเจ้าที่คุณได้รู้จักผ่านพระวจนะวันนี้เป็นอย่างไร?',
+    guideS3Title:'3. ทูลถามพระเจ้า',
+    guideS3En:'Asking',
+    guideS3Desc:'เลือกคำถามหนึ่งข้อต่อวัน ทูลถาม แล้วบันทึกสิ่งที่ผุดขึ้นในใจ',
+    guideS3Callout:'แตะ ▼ เพื่อเลือกคำถาม แล้วเขียนสิ่งที่ผุดขึ้นในใจ',
+    guideS3ListTitle:'12 คำถามสำคัญที่ทูลถามพระเจ้า',
+    guideAsk:[
+      'พระเจ้าข้า วันนี้พระองค์ทรงสัมผัสใจข้าพระองค์เรื่องอะไร?',
+      'มีบาป ความหยิ่ง หรือความกลัวใดที่ข้าพระองค์มองข้ามไปหรือไม่?',
+      'ความจริงใดที่พระองค์ทรงอยากสำแดงแก่ข้าพระองค์ในวันนี้?',
+      'มีใครบ้างที่พระองค์อยากให้ข้าพระองค์รักในวันนี้?',
+      'มีสิ่งใดที่ข้าพระองค์ควรหยุดทำ?',
+      'ก้าวเล็กๆ ก้าวหนึ่งที่พระองค์อยากให้ข้าพระองค์ทำวันนี้คืออะไร?',
+      'มีทิศทางที่พระองค์กำลังทรงนำในเรื่องครอบครัว การรับใช้ หรือการงาน/การเรียนของข้าพระองค์หรือไม่?',
+      'พระองค์ทรงมองปัญหาที่ข้าพระองค์กังวลอยู่อย่างไร?',
+      'ภาระใดที่พระองค์อยากให้ข้าพระองค์วางลงในวันนี้?',
+      'มีด้านใดในชีวิตของข้าพระองค์ที่พระองค์ทรงปรารถนาจะฟื้นฟู?',
+      'คำปลอบประโลมใดที่พระองค์อยากตรัสกับข้าพระองค์?',
+      'พระเจ้าข้า ขณะนี้พระองค์กำลังตรัสอะไรกับข้าพระองค์?',
+    ],
+    guideS4Title:'4. บันทึกเสียงที่ได้ยิน',
+    guideS4En:'Listening & Writing',
+    guideS4Desc:'บันทึกความประทับใจ ความคิด ภาพ หรือพระวจนะที่เข้ามาอย่างเงียบ ๆ',
+    guideS4Note:'ขณะเขียน ตรวจสอบว่าสอดคล้องกับหลักการของพระคัมภีร์หรือไม่',
+    guideS5Title:'5. การนำไปใช้ในชีวิต',
+    guideS5Desc:'เขียนสิ่งหนึ่งจากพระวจนะวันนี้ที่ลงมือปฏิบัติได้ทันที',
+    guideS6Title:'6. คำอธิษฐาน',
+    guideS6Desc:'บันทึกหัวข้ออธิษฐานและคำขอบพระคุณของวันนี้แยกกัน',
+    guideS6PrayerDesc:'เขียนคำอธิษฐานที่อยากทูลต่อพระเจ้าด้วยการขอบพระคุณ',
+    guideS6ThanksDesc:'เขียนคำขอบพระคุณที่ได้รับขณะได้รับการทรงนำจากพระวจนะและพระวิญญาณ',
+  },
+  zh:{
+    guideHowToTitle:'灵修笔记的使用方法',
+    guideHowToLead:'阅读每天的话语，默想，向神发问，\n落实到生活中，并以祷告记录下来。',
+    guideShotLabel:'实际记录界面',
+    guideTapHint:'点击步骤即可跳转到对应说明。',
+    guideFlow:['安静心灵','默想话语','向神发问','记录所听见的','落实生活','祷告'],
+    guideS1Title:'1. 让心安静下来',
+    guideS1En:'Quiet Time',
+    guideS1Desc:'这是与神一对一相会的时间。\n以平静的心安静地聆听话语，并从心里回应祂。',
+    guideS1Ref:'出埃及记第8章',
+    guideS1Verse1:'耶和华吩咐摩西去见法老，对他说：“容我的百姓去。”',
+    guideS1Verse2:'摩西说，法老必知道没有像耶和华的。',
+    guideS1Callout:'首先，安静地读今天的话语，预备你的心。',
+    guideS2Title:'2. 默想话语',
+    guideS2En:'Scripture Listening',
+    guideS2Desc:'把今天本文中所听见的话语，分成三处来记录。',
+    guideS2VerseDesc:'写下触动你心的那一节。',
+    guideS2PassageDesc:'概括本文的核心内容。',
+    guideS2GodDesc:'透过今天的话语，你所认识的神是怎样的一位?',
+    guideS3Title:'3. 向神发问',
+    guideS3En:'Asking',
+    guideS3Desc:'从下面的问题中每天选一个来问，并记录浮现在心中的答案。',
+    guideS3Callout:'点击 ▼ 选择问题，然后写下心中浮现的答案。',
+    guideS3ListTitle:'向神发问的 12 个主要问题',
+    guideAsk:[
+      '主啊，今天祢放在我心里的感动是什么?',
+      '我是否忽略了某些罪／骄傲／惧怕?',
+      '主今天想让我明白的真理是什么?',
+      '我今天该去爱的人是谁?',
+      '我该停下来的是什么?',
+      '我今天该迈出的一小步是什么?',
+      '在我的家庭、事奉、事业(工作、学习)当中，祢为我理清的方向是什么?',
+      '对于我所担忧的问题，主怎样看?',
+      '我今天该放下的重担是什么?',
+      '在我生命中，祢想恢复的领域是哪里?',
+      '主对我说的安慰是什么?',
+      '主啊，此刻祢对我说什么?',
+    ],
+    guideS4Title:'4. 记录所听见的声音',
+    guideS4En:'Listening & Writing',
+    guideS4Desc:'记录在安静中浮现的感动、想法、画面或圣经话语等。',
+    guideS4Note:'一边写，一边查验是否与圣经的原则一致。',
+    guideS5Title:'5. 落实到生活',
+    guideS5Desc:'写下今天话语中可以立刻实践的一件事。',
+    guideS6Title:'6. 祷告',
+    guideS6Desc:'把祷告事项和今天的感恩分开记录。',
+    guideS6PrayerDesc:'写下想带着感恩向神献上的祷告。',
+    guideS6ThanksDesc:'写下在话语与圣灵引导中所领受的感恩。',
+  },
+};
+Object.keys(GUIDE_STRINGS).forEach(l=>{ Object.assign(STRINGS[l] || (STRINGS[l]={}), GUIDE_STRINGS[l]); });
+
 function T(key, ...args){
   const dict = STRINGS[state.lang] || STRINGS.ko;
   const v = dict[key];
@@ -979,12 +1246,11 @@ const ICON = {
   chatBubble:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12a7.5 7.5 0 01-11 6.6L4 20l1.4-4.5A7.5 7.5 0 1120 12z"/></svg>`,
   copy:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M5 15.5H4a1 1 0 01-1-1V4a1 1 0 011-1h10.5a1 1 0 011 1v1"/></svg>`,
   menu:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`,
-  bomb:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="14" r="7"/><path d="M16 9l2.5-2.5M17 4l1.5 1.5M19.5 6.5L21 8"/></svg>`,
 };
 
 /* ---------------- state ---------------- */
 let state = {
-  screen:'loading',         // loading | main | login | signup | chapters | daily | groups | group-info | group-room | group-manage | settings
+  screen:'loading',         // loading | main | login | signup | chapters | daily | groups | group-room | group-manage | settings
   purchased:[1,2,3,4,5], // all 5 Pentateuch books are free/unlocked
   loggedIn:false,
   user:null,                // { name, email, photoUrl } of the signed-in user
@@ -996,22 +1262,22 @@ let state = {
   selectedPlan:'year',      // year | month  (chosen inside purchase modal)
   askOpen:false,
   activeGroupId:null,       // group room currently open
-  groupInfoMembers:null,    // [{uid,name,photoUrl}] for the open group-info/group-manage screen; null while loading
+  groupInfoMembers:null,    // [{uid,name,photoUrl,streak}] for the open group-manage screen; null while loading
   groupInfoError:false,     // true if the participant list failed to load from Firestore
-  leaveConfirmOpen:false,   // whether the "leave group" confirm dialog is open
-  leaveBusy:false,          // true while a leave-group request is in flight
+  leaveConfirmOpen:false,   // whether the "leave chat room" confirm dialog is open
+  leaveBusy:false,          // true while a leave-room request is in flight
   groupManageDoc:null,      // { id, name, photoUrl, ownerUid, closed, ... } the live Firestore doc for the open group-manage/group-room screen
   groupNameEditOpen:false,  // whether the room-name edit field is showing on the manage screen
   groupNameSaving:false,    // true while a room-name save is in flight
   roomPhotoModal:null,      // { blob, previewUrl, saving } while a newly picked room photo awaits confirmation
-  explodeConfirmOpen:false, // whether the "destroy chat room" confirm dialog is open
-  explodeBusy:false,        // true while a destroy-chat-room request is in flight
+  memberProfileUid:null,    // uid whose profile card is open (from the group-manage participant list)
   createGroupOpen:false,
   inviteGroupId:null,       // group id whose invite sheet is open
   shareGroupId:null,        // group id whose share-picker sheet is open
   shareBusy:false,          // true while generating the snapshot image
   imageViewer:null,         // { groupId, msgId, index } when the full-screen image viewer is open
   chapterInfoOpen:false,    // whether the chapter background info sheet is open
+  verseActionMenu:null,     // { n } verse number whose long-press copy sheet is open
   notifDayOpen:null,        // which weekday's time-set sheet is open ('mon'..'sun')
   pageShare:null,           // { kind:'content'|'thought', step:'menu'|'pickGroup' } when the page share menu is open
   fontSize:'default',       // small | default | large
@@ -1142,10 +1408,11 @@ function syncMessageToFirestore(g, msg){
     .catch(err=>console.error('Firestore chat save failed:', err));
 }
 
-/* Loads the group-info screen's participant list from Firestore (groups/{id}.members,
-   with each member's users/{uid} profile for nickname + photo). Also makes sure the
-   group document exists and includes the current user, so a group that was only ever
-   created locally still has real member data to show and to leave later. */
+/* Loads the group-manage screen's participant list from Firestore (groups/{id}.members,
+   with each member's users/{uid} profile for nickname + photo + journalEntryCount, shown
+   to other members as their "streak"). Also makes sure the group document exists and
+   includes the current user, so a group that was only ever created locally still has real
+   member data to show and to leave later. */
 function loadGroupMembers(groupId){
   state.groupInfoMembers = null;
   state.groupInfoError = false;
@@ -1174,10 +1441,11 @@ function loadGroupMembers(groupId){
               uid,
               name: (u && (u.nickname || u.name)) || T('memberFallbackName'),
               photoUrl: (u && u.photoUrl) || null,
+              streak: (u && typeof u.journalEntryCount === 'number') ? u.journalEntryCount : 0,
             };
           }catch(err){
             console.error('Failed to load member profile:', uid, err);
-            return { uid, name: T('memberFallbackName'), photoUrl: null };
+            return { uid, name: T('memberFallbackName'), photoUrl: null, streak: 0 };
           }
         }));
         if(state.activeGroupId===groupId) state.groupInfoMembers = members;
@@ -1189,15 +1457,50 @@ function loadGroupMembers(groupId){
       state.groupInfoMembers = [];
     }
   }).finally(()=>{
-    if(state.screen==='group-info' || state.screen==='group-manage') render();
+    if(state.activeGroupId===groupId && state.screen==='group-manage'){
+      subscribeGroupMembersLive(groupId);
+      render();
+    }
   });
+}
+
+/* Keeps each participant's nickname/photo/streak live-synced while the group-manage
+   screen is open, so if someone changes their nickname or profile photo, other members
+   in the same chat room see the update without a reload. */
+let memberProfileUnsubs = {};
+function subscribeGroupMembersLive(groupId){
+  unsubscribeGroupMembersLive();
+  const fdb = window.__firebaseDB;
+  const members = state.groupInfoMembers;
+  if(!fdb || !fdb.ready || typeof fdb.subscribeToUser !== 'function' || !members) return;
+  members.forEach(m=>{
+    memberProfileUnsubs[m.uid] = fdb.subscribeToUser(m.uid, (u)=>{
+      if(state.activeGroupId !== groupId) return;
+      const list = state.groupInfoMembers;
+      if(!list) return;
+      const idx = list.findIndex(x=>x.uid===m.uid);
+      if(idx===-1) return;
+      list[idx] = {
+        uid: m.uid,
+        name: (u && (u.nickname || u.name)) || T('memberFallbackName'),
+        photoUrl: (u && u.photoUrl) || null,
+        streak: (u && typeof u.journalEntryCount === 'number') ? u.journalEntryCount : 0,
+      };
+      render();
+    });
+  });
+}
+function unsubscribeGroupMembersLive(){
+  Object.values(memberProfileUnsubs).forEach(unsub=>{ try{ unsub(); }catch(e){} });
+  memberProfileUnsubs = {};
 }
 
 /* Keeps the room's Firestore doc (name/photoUrl/ownerUid/closed) live-synced while the
    user is inside the group-room or group-manage screen: local `groups` cache is patched
    immediately so the room header / manage screen / groups list all reflect the latest
-   name & photo without a reload, and if the owner "explodes" the room while someone else
-   is looking at it, that someone is bounced back out to the groups list right away. */
+   name & photo without a reload. The `closed` check is a defensive fallback only (no UI
+   can set it anymore since chat-room "destroy" was removed in favor of "leave") - it just
+   bounces someone back to the groups list if a room is ever closed by other means. */
 function ensureGroupDocSub(groupId){
   if(groupDocUnsubId === groupId && groupDocUnsub) return;
   subscribeToGroupDoc(groupId);
@@ -1706,6 +2009,7 @@ function subscribeToAuthUser(){
     state.loggedIn = true;
     window.storage.set('user-profile', JSON.stringify(state.user), false).catch(()=>{});
     saveAuth();
+    syncStreakToFirestore();
     if(groupsLoaded) render();
   });
 }
@@ -1795,7 +2099,22 @@ function syncJournalToFirestore(book, chapter, entry){
     book, chapter,
     contentAnswers: entry.content,
     thoughtAnswers: entry.thought,
-  }).catch(err=>console.error('Firestore journal save failed:', err));
+  }).then(()=> syncStreakToFirestore())
+    .catch(err=>console.error('Firestore journal save failed:', err));
+}
+/* Persists the same count computeStreak() already shows on the home screen badge into
+   users/{uid}.journalEntryCount, so other members of a shared chat room can see this
+   user's streak on their profile card without ever reading their private journal
+   entries (see firestore.rules: journals subcollection stays owner-only). */
+let lastPushedStreak = null;
+function syncStreakToFirestore(){
+  if(!(state.user && state.user.uid)) return;
+  const fdb = window.__firebaseDB;
+  if(!fdb || !fdb.ready || typeof fdb.updateUserStreak !== 'function') return;
+  const streak = computeStreak();
+  if(streak === lastPushedStreak) return;
+  lastPushedStreak = streak;
+  fdb.updateUserStreak(state.user.uid, streak).catch(err=>console.error('Failed to sync streak count:', err));
 }
 
 /* ---------------- helpers ---------------- */
@@ -1989,7 +2308,6 @@ function render(){
   else if(state.screen==='chapters') html = renderChapterGrid();
   else if(state.screen==='daily') html = renderDaily();
   else if(state.screen==='groups') html = renderGroupsList();
-  else if(state.screen==='group-info') html = renderGroupInfo();
   else if(state.screen==='group-room') html = renderGroupRoom();
   else if(state.screen==='group-manage') html = renderGroupManage();
   else if(state.screen==='settings') html = renderSettingsScreen();
@@ -2006,13 +2324,14 @@ function render(){
   if(state.shareGroupId) overlays += renderSharePicker();
   if(state.imageViewer) overlays += renderImageViewer();
   if(state.chapterInfoOpen) overlays += renderChapterInfoSheet();
+  if(state.verseActionMenu) overlays += renderVerseActionSheet();
   if(state.notifDayOpen) overlays += renderNotifDaySheet();
   if(state.pageShare) overlays += renderPageShareSheet();
   if(state.donateModal) overlays += renderDonateModal();
   if(state.languageModal) overlays += renderLanguageModal();
   if(state.leaveConfirmOpen) overlays += renderLeaveConfirmModal();
   if(state.roomPhotoModal) overlays += renderRoomPhotoModal();
-  if(state.explodeConfirmOpen) overlays += renderExplodeConfirmModal();
+  if(state.memberProfileUid) overlays += renderMemberProfileSheet();
 
   app.innerHTML = html + overlays + renderLoadingOverlay() + `<div class="toast" id="toast"></div>`;
 
@@ -2033,6 +2352,9 @@ function render(){
     ensureGroupDocSub(state.activeGroupId);
   } else if(state.screen!=='group-room' && state.screen!=='group-manage'){
     unsubscribeGroupDoc();
+  }
+  if(state.screen!=='group-manage'){
+    unsubscribeGroupMembersLive();
   }
   if(state.screen==='group-manage' && state.groupNameEditOpen){
     requestAnimationFrame(()=>{
@@ -2410,19 +2732,221 @@ function renderContactScreen(){
   `;
 }
 
-/* ---------------- usage guide screen ---------------- */
+/* ---------------- usage guide screen ----------------
+   "저널링 노트 사용하는 방법" 가이드.
+   실제 기록 화면(renderThoughtTab / renderBibleTab)에서 쓰는 것과 동일한 마크업/클래스
+   (.section-block, .s-label, .ask-box, .chapter-card, .thanks-row ...)로 각 입력 영역을
+   비대화형(readonly) 미리보기로 보여주고, 번호 배지·강조 링·말풍선으로 "여기에 기록하세요"를
+   설명한다. 새 입력 UI를 만들지 않으며 기록 데이터/Firebase에 접근하지 않는다. */
+function guideField(labelKey, { tag='textarea', phKey, num }={}){
+  const ph = phKey ? T(phKey) : '';
+  const field = tag==='input'
+    ? `<input type="text" placeholder="${ph}" tabindex="-1" readonly>`
+    : `<textarea placeholder="${ph}" tabindex="-1" readonly></textarea>`;
+  return `
+    <div class="section-block gs-hl"${num ? ` data-gnum="${num}"` : ''}>
+      <div class="s-label"><span class="dot"></span>${T(labelKey)}</div>
+      ${field}
+    </div>`;
+}
+function guideCallouts(rows){
+  return `<ol class="guide-callouts">${rows.map(([n,label,desc])=>`
+    <li><span class="gc-num">${n}</span><div class="gc-body"><b>${label}</b><p>${desc}</p></div></li>`).join('')}</ol>`;
+}
+function guideShot1(){
+  return `
+  <div class="guide-shot">
+    <div class="chapter-card gs-hl">
+      <div class="chapter-card-head">
+        <div>
+          <div class="cap">${T('todayReading')}</div>
+          <h3>${T('guideS1Ref')}</h3>
+        </div>
+      </div>
+      <div class="verse-list">
+        <div class="verse"><span class="vnum">1</span><span>${T('guideS1Verse1')}</span></div>
+        <div class="verse"><span class="vnum">10</span><span>${T('guideS1Verse2')}</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+function guideShot3(){
+  const q = T('guideAsk');
+  return `
+  <div class="guide-shot">
+    <div class="section-block gs-hl" data-gnum="1">
+      <div class="s-label"><span class="dot"></span>${T('askLabel')}</div>
+      <div class="ask-box">
+        <div class="ask-row">
+          <div class="ask-q">${q[0]}</div>
+          <button class="ask-arrow open" tabindex="-1">${ICON.chevDown}</button>
+        </div>
+        <div class="ask-list">
+          <div class="ask-item selected">${q[0]}</div>
+          <div class="ask-item">${q[1]}</div>
+          <div class="ask-item">${q[2]}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function guideQuestionList(){
+  const q = T('guideAsk');
+  return `
+  <details class="guide-q-all">
+    <summary><span>${T('guideS3ListTitle')}</span><span class="gq-count">12</span></summary>
+    <ol class="guide-q-cards">
+      ${q.map((text,i)=>`<li><span class="gq-n">${i+1}</span><span>${text}</span></li>`).join('')}
+    </ol>
+  </details>`;
+}
+function guideShot6(){
+  return `
+  <div class="guide-shot">
+    ${guideField('prayerLabel', { phKey:'prayerPh', num:1 })}
+    <div class="section-block gs-hl" data-gnum="2">
+      <div class="s-label"><span class="dot"></span>${T('thanksLabel')}</div>
+      <div class="thanks-row"><div class="num">1</div><input type="text" style="flex:1" placeholder="${T('thanksPh',1)}" tabindex="-1" readonly></div>
+      <div class="thanks-row"><div class="num">2</div><input type="text" style="flex:1" placeholder="${T('thanksPh',2)}" tabindex="-1" readonly></div>
+    </div>
+  </div>`;
+}
+function guideStep(n, { title, en, desc, shot, callouts, extra }){
+  return `
+    <section class="guide-step" id="guide-step-${n}">
+      <div class="guide-step-head">
+        <span class="guide-step-num">${n}</span>
+        <div class="guide-step-heading">
+          <h3 class="guide-step-title">${title}</h3>
+          ${en ? `<div class="guide-step-en">${en}</div>` : ''}
+        </div>
+      </div>
+      ${desc ? `<p class="guide-step-desc">${desc}</p>` : ''}
+      <div class="guide-shot-label">${T('guideShotLabel')}</div>
+      ${shot}
+      ${callouts || ''}
+      ${extra || ''}
+    </section>`;
+}
+function guideVerseIntro(){
+  const title = T('guideVersesTitle');
+  if(!title) return '';
+  const verses = [1,2,3].map(i=>`
+    <p class="guide-verse-text">${T('guideVerse'+i)}<span class="guide-verse-ref">${T('guideVerse'+i+'Ref')}</span></p>
+  `).join('');
+  return `
+    <div class="guide-verses-card">
+      <h3 class="guide-section-title">${title}</h3>
+      ${verses}
+    </div>
+  `;
+}
+
+function guideNumberedList(items, noteIndex, note){
+  return `<ol class="guide-num-list">${(items||[]).map((text,i)=>`
+    <li>
+      <span class="gnl-num">${i+1}</span>
+      <div class="gnl-body">
+        <p>${text}</p>
+        ${i===noteIndex && note ? `<p class="guide-note">${note}</p>` : ''}
+      </div>
+    </li>`).join('')}</ol>`;
+}
+
+function guideReadingLists(){
+  const rulesTitle = T('guideRulesTitle');
+  if(!rulesTitle) return '';
+  return `
+    <div class="guide-list-section">
+      <h3 class="guide-section-title">${rulesTitle}</h3>
+      ${guideNumberedList(T('guideRules'))}
+      <p class="guide-note">${T('guideRulesNote')}</p>
+    </div>
+    <div class="guide-list-section">
+      <h3 class="guide-section-title">${T('guideBasicsTitle')}</h3>
+      ${guideNumberedList(T('guideBasics'), 2, T('guideBasicsNote'))}
+    </div>
+    <div class="guide-list-section">
+      <h3 class="guide-section-title">${T('guideMuellerTitle')}</h3>
+      ${guideNumberedList(T('guideMueller'))}
+    </div>
+    <blockquote class="guide-quote">
+      <p>${T('guideWesleyQuote')}</p>
+      <cite>${T('guideWesleyAttr')}</cite>
+    </blockquote>
+  `;
+}
+
 function renderGuideScreen(){
+  const flow = T('guideFlow');
+  const chips = flow.map((label,i)=>`
+    <button class="guide-flow-chip" data-action="guide-jump" data-step="${i+1}">
+      <span class="gfc-num">${i+1}</span><span class="gfc-label">${label}</span>
+    </button>`).join(`<span class="guide-flow-arrow">${ICON.chevDown}</span>`);
+
   return `
     <div class="settings-header">
       <button class="icon-btn" data-action="open-settings">${ICON.back}</button>
       <h2>${T('guideTitle')}</h2>
     </div>
-    <div class="settings-body">
-      <div class="guide-empty">
-        <div class="guide-empty-icon">${ICON.book}</div>
-        <div class="guide-empty-title">${T('guideEmptyTitle')}</div>
-        <p class="guide-empty-body">${T('guideEmptyBody')}</p>
+    <div class="settings-body guide-body">
+      ${guideVerseIntro()}
+      ${guideReadingLists()}
+
+      <div class="guide-intro">
+        <h2 class="guide-hero-title">${T('guideHowToTitle')}</h2>
+        <p class="guide-lead">${T('guideHowToLead')}</p>
       </div>
+
+      <div class="guide-flow">${chips}</div>
+      <p class="guide-flow-hint">${T('guideTapHint')}</p>
+
+      ${guideStep(1, {
+        title:T('guideS1Title'), en:T('guideS1En'), desc:T('guideS1Desc'),
+        shot:guideShot1(),
+        callouts:`<p class="guide-tip">${T('guideS1Callout')}</p>`,
+      })}
+
+      ${guideStep(2, {
+        title:T('guideS2Title'), en:T('guideS2En'), desc:T('guideS2Desc'),
+        shot:`<div class="guide-shot">
+          ${guideField('verseLabel', { tag:'input', phKey:'versePh', num:1 })}
+          ${guideField('passageLabel', { phKey:'passagePh', num:2 })}
+          ${guideField('godIsLabel', { phKey:'godIsPh', num:3 })}
+        </div>`,
+        callouts:guideCallouts([
+          [1, T('verseLabel'), T('guideS2VerseDesc')],
+          [2, T('passageLabel'), T('guideS2PassageDesc')],
+          [3, T('godIsLabel'), T('guideS2GodDesc')],
+        ]),
+      })}
+
+      ${guideStep(3, {
+        title:T('guideS3Title'), en:T('guideS3En'), desc:T('guideS3Desc'),
+        shot:guideShot3(),
+        callouts:`<p class="guide-tip">${T('guideS3Callout')}</p>`,
+        extra:guideQuestionList(),
+      })}
+
+      ${guideStep(4, {
+        title:T('guideS4Title'), en:T('guideS4En'), desc:T('guideS4Desc'),
+        shot:`<div class="guide-shot">${guideField('heardLabel', { phKey:'heardPh', num:1 })}</div>`,
+        callouts:`<p class="guide-tip">${T('guideS4Note')}</p>`,
+      })}
+
+      ${guideStep(5, {
+        title:T('guideS5Title'), desc:T('guideS5Desc'),
+        shot:`<div class="guide-shot">${guideField('appLabel', { phKey:'appPh', num:1 })}</div>`,
+      })}
+
+      ${guideStep(6, {
+        title:T('guideS6Title'), desc:T('guideS6Desc'),
+        shot:guideShot6(),
+        callouts:guideCallouts([
+          [1, T('prayerLabel'), T('guideS6PrayerDesc')],
+          [2, T('thanksLabel'), T('guideS6ThanksDesc')],
+        ]),
+      })}
     </div>
   `;
 }
@@ -2513,52 +3037,7 @@ function renderGroupsList(){
   `;
 }
 
-/* ---------------- group info (participants) ---------------- */
-function renderGroupInfo(){
-  const g = getGroup(state.activeGroupId);
-  if(!g){
-    return `<div class="groups-header"><button class="icon-btn" data-action="go-groups">${ICON.back}</button></div>`;
-  }
-  const members = state.groupInfoMembers;
-  const count = members ? members.length : (g.memberCount || 1);
-
-  let membersHtml;
-  if(members === null){
-    membersHtml = `<div class="member-list-status">${T('loadingLabel')}</div>`;
-  } else if(members.length === 0){
-    membersHtml = state.groupInfoError
-      ? `<div class="member-list-status error">${T('toastMembersLoadFailed')}</div>`
-      : '';
-  } else {
-    membersHtml = members.map(m=>`
-      <div class="member-row">
-        <div class="member-avatar">${m.photoUrl ? `<img src="${escapeHtml(m.photoUrl)}" alt="">` : ICON.person}</div>
-        <div class="member-name">${escapeHtml(m.name)}${state.user && state.user.uid===m.uid ? ` <span class="member-you">${T('youTag')}</span>` : ''}</div>
-      </div>
-    `).join('');
-  }
-
-  return `
-    <div class="groups-header">
-      <button class="icon-btn" data-action="go-groups">${ICON.back}</button>
-      <div class="titles">
-        <div class="cap">Together</div>
-        <h2>${escapeHtml(g.name)}</h2>
-      </div>
-    </div>
-    <div class="group-info-body has-fab">
-      <div class="group-info-summary">
-        ${groupAvatarHtml(g, 'group-avatar-lg')}
-        <div class="gi-name">${escapeHtml(g.name)}</div>
-        <div class="gi-count">${T('groupInfoParticipants', count)}</div>
-      </div>
-      <div class="member-list">${membersHtml}</div>
-    </div>
-    <button class="fab-chat" data-action="open-group-chat" title="${T('chatEnterBtn')}" aria-label="${T('chatEnterBtn')}">${ICON.chat}</button>
-  `;
-}
-
-/* ---------------- chat room management (rename / photo / destroy) ---------------- */
+/* ---------------- chat room management (rename / photo / leave) ---------------- */
 function renderGroupManage(){
   const g = getGroup(state.activeGroupId);
   if(!g){
@@ -2577,14 +3056,16 @@ function renderGroupManage(){
       ? `<div class="member-list-status error">${T('toastMembersLoadFailed')}</div>`
       : '';
   } else {
+    // each participant is a button: tapping their photo/nickname opens their profile
+    // card (photo + nickname + streak only - see renderMemberProfileSheet).
     membersHtml = members.map(m=>`
-      <div class="member-row">
+      <button type="button" class="member-row member-row-btn" data-action="open-member-profile" data-uid="${escapeHtml(m.uid)}">
         <div class="member-avatar">${m.photoUrl ? `<img src="${escapeHtml(m.photoUrl)}" alt="">` : ICON.person}</div>
         <div class="member-name">${escapeHtml(m.name)}
           ${ownerUid && m.uid===ownerUid ? ` <span class="member-you">${T('ownerTag')}</span>` : ''}
           ${state.user && state.user.uid===m.uid ? ` <span class="member-you">${T('youTag')}</span>` : ''}
         </div>
-      </div>
+      </button>
     `).join('');
   }
 
@@ -2625,9 +3106,7 @@ function renderGroupManage(){
       </div>
       <div class="member-list">${membersHtml}</div>
       <div class="group-info-actions">
-        ${owner
-          ? `<button class="btn btn-danger" data-action="open-explode-confirm">${ICON.bomb} ${T('explodeRoomBtn')}</button>`
-          : `<button class="btn btn-danger" data-action="open-leave-confirm">${T('leaveGroupBtn')}</button>`}
+        <button class="btn btn-danger" data-action="open-leave-confirm">${T('leaveGroupBtn')}</button>
       </div>
     </div>
   `;
@@ -2651,16 +3130,25 @@ function renderRoomPhotoModal(){
     </div>
   </div>`;
 }
-function renderExplodeConfirmModal(){
+/* Small bottom-sheet profile card for a fellow chat room member: photo + nickname +
+   streak only (no email/uid/phone/other personal or account info). Data comes straight
+   from state.groupInfoMembers, which is only ever populated for members of a group the
+   current user is themselves a member of (see loadGroupMembers / firestore.rules). */
+function renderMemberProfileSheet(){
+  const uid = state.memberProfileUid;
+  if(!uid) return '';
+  const members = state.groupInfoMembers || [];
+  const m = members.find(x=>x.uid===uid);
+  const name = m ? m.name : T('memberFallbackName');
+  const photoUrl = m ? m.photoUrl : null;
+  const streak = (m && typeof m.streak === 'number') ? m.streak : 0;
   return `
-  <div class="overlay center" data-action="${state.explodeBusy?'noop':'close-explode-confirm'}">
-    <div class="modal-card" data-action="noop">
-      <div class="modal-title">${T('explodeConfirmTitle')}</div>
-      <p class="modal-sub" style="white-space:pre-line;">${T('explodeConfirmBody')}</p>
-      <div class="modal-actions">
-        <button class="btn btn-cancel" data-action="close-explode-confirm" ${state.explodeBusy?'disabled':''}>${T('cancel')}</button>
-        <button class="btn btn-danger" data-action="confirm-explode-room" ${state.explodeBusy?'disabled':''}>${T('explodeConfirmBtn')}</button>
-      </div>
+  <div class="overlay center" data-action="close-member-profile">
+    <div class="modal-card member-profile-card" data-action="noop">
+      <div class="member-profile-avatar">${photoUrl ? `<img src="${escapeHtml(photoUrl)}" alt="">` : ICON.person}</div>
+      <div class="member-profile-name">${escapeHtml(name)}</div>
+      <div class="member-profile-streak">${ICON.flame}<span>${T('streakDaysSuffix', streak)}</span></div>
+      <button class="btn btn-cancel" data-action="close-member-profile" style="margin-top:20px;">${T('cancel')}</button>
     </div>
   </div>`;
 }
@@ -2997,15 +3485,21 @@ function renderDaily(){
   `;
 }
 
-function renderBibleTab(){
-  const verseTexts = state.lang==='en' ? kjvVerses(state.activeMonth, state.activeChapter)
-    : state.lang==='th' ? thVerses(state.activeMonth, state.activeChapter)
-    : state.lang==='ja' ? jaVerses(state.activeMonth, state.activeChapter)
-    : state.lang==='zh' ? zhVerses(state.activeMonth, state.activeChapter)
+function chapterVerseTexts(m, c){
+  return state.lang==='en' ? kjvVerses(m, c)
+    : state.lang==='th' ? thVerses(m, c)
+    : state.lang==='ja' ? jaVerses(m, c)
+    : state.lang==='zh' ? zhVerses(m, c)
     : CHAPTER.verses;
+}
+function verseRef(m, c, n){
+  return `${bookName(m)} ${c}:${n}`;
+}
+function renderBibleTab(){
+  const verseTexts = chapterVerseTexts(state.activeMonth, state.activeChapter);
   const verses = verseTexts.map((text,idx)=>{
     const n = idx+1;
-    return `<div class="verse" id="verse-${n}"><span class="vnum">${n}</span><span>${text}</span></div>`;
+    return `<div class="verse" id="verse-${n}" data-verse-num="${n}"><span class="vnum">${n}</span><span>${text}</span></div>`;
   }).join('');
   return `
     <div class="chapter-card">
@@ -3018,6 +3512,23 @@ function renderBibleTab(){
       <div class="verse-list">${verses}</div>
     </div>
   `;
+}
+
+/* ---------------- verse long-press copy sheet ---------------- */
+function renderVerseActionSheet(){
+  const { n } = state.verseActionMenu;
+  const ref = verseRef(state.activeMonth, state.activeChapter, n);
+  return `
+  <div class="overlay" data-action="close-verse-menu">
+    <div class="sheet verse-action-sheet" data-action="noop">
+      <div class="sheet-handle"></div>
+      <div class="verse-action-ref">${escapeHtml(ref)}</div>
+      <button class="verse-action-btn" data-action="copy-verse">
+        <span class="va-icon">${ICON.copy}</span>
+        <span>${T('copyVerseBtn')}</span>
+      </button>
+    </div>
+  </div>`;
 }
 
 /* ---------------- chapter background info sheet ---------------- */
@@ -3309,7 +3820,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='do-logout'){
     const finishLogout = ()=>{
-      state.loggedIn=false; state.user=null; saveAuth(); state.screen='login'; render(); showToast(T('toastLogout'));
+      state.loggedIn=false; state.user=null; lastPushedStreak=null; saveAuth(); state.screen='login'; render(); showToast(T('toastLogout'));
     };
     if(window.__firebaseAuth && window.__firebaseAuth.ready){
       window.__firebaseAuth.signOutOfGoogle().then(finishLogout).catch(err=>{
@@ -3411,6 +3922,10 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     openEmailContact('biblejournalingjoa@gmail.com', T('contactMailSubject'), T('contactMailBody'));
   }
   else if(action==='go-guide'){ state.screen='guide'; render(); }
+  else if(action==='guide-jump'){
+    const target = document.getElementById('guide-step-' + el.dataset.step);
+    if(target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
   else if(action==='open-donate'){ state.donateModal=true; state.donateCopied=false; render(); }
   else if(action==='close-donate'){ state.donateModal=false; state.donateCopied=false; render(); }
   else if(action==='copy-donate-account'){
@@ -3525,13 +4040,6 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='open-group'){
     state.activeGroupId = el.dataset.id;
-    state.screen='group-info';
-    state.groupInfoMembers = null;
-    state.groupInfoError = false;
-    render();
-    loadGroupMembers(state.activeGroupId);
-  }
-  else if(action==='open-group-chat'){
     state.screen='group-room';
     render();
   }
@@ -3625,45 +4133,14 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       showToast(T('toastRoomNameSaveFailed'));
     });
   }
-  else if(action==='open-explode-confirm'){
-    if(!isRoomOwner()) return;
-    state.explodeConfirmOpen = true;
+  else if(action==='open-member-profile'){
+    if(!el.dataset.uid) return;
+    state.memberProfileUid = el.dataset.uid;
     render();
   }
-  else if(action==='close-explode-confirm'){
-    if(state.explodeBusy) return;
-    state.explodeConfirmOpen = false;
+  else if(action==='close-member-profile'){
+    state.memberProfileUid = null;
     render();
-  }
-  else if(action==='confirm-explode-room'){
-    if(state.explodeBusy) return;
-    const groupId = state.activeGroupId;
-    const fdb = window.__firebaseDB;
-    if(!groupId || !fdb || !fdb.ready || typeof fdb.closeGroup !== 'function'){
-      state.explodeConfirmOpen = false;
-      render();
-      showToast(T('toastRoomCloseFailed'));
-      return;
-    }
-    state.explodeBusy = true;
-    render();
-    withLoading(fdb.closeGroup(groupId)).then(()=>{
-      groups = groups.filter(gr=>gr.id!==groupId);
-      saveGroups();
-      state.explodeBusy = false;
-      state.explodeConfirmOpen = false;
-      state.activeGroupId = null;
-      state.groupManageDoc = null;
-      state.groupInfoMembers = null;
-      state.screen = 'groups';
-      render();
-      showToast(T('toastRoomClosed'));
-    }).catch(err=>{
-      console.error('Failed to destroy chat room:', err);
-      state.explodeBusy = false;
-      render();
-      showToast(T('toastRoomCloseFailed'));
-    });
   }
   else if(action==='open-leave-confirm'){
     state.leaveConfirmOpen = true;
@@ -3696,6 +4173,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       state.groupInfoError = false;
       state.groupManageDoc = null;
       state.groupNameEditOpen = false;
+      state.memberProfileUid = null;
       state.screen = 'groups';
       render();
       showToast(T('toastLeftGroup'));
@@ -3786,6 +4264,25 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   else if(action==='close-chapter-info'){
     state.chapterInfoOpen = false;
     render();
+  }
+  else if(action==='close-verse-menu'){
+    state.verseActionMenu = null;
+    render();
+  }
+  else if(action==='copy-verse'){
+    const vm = state.verseActionMenu;
+    if(!vm) return;
+    const m = state.activeMonth, c = state.activeChapter;
+    const verseTexts = chapterVerseTexts(m, c);
+    const text = verseTexts[vm.n-1] || '';
+    const ref = verseRef(m, c, vm.n);
+    const copyText = text ? `${ref}\n${text}` : ref;
+    try{
+      navigator.clipboard && navigator.clipboard.writeText(copyText);
+    }catch(err){}
+    state.verseActionMenu = null;
+    render();
+    showToast(T('toastVerseCopied'));
   }
   else if(action==='open-page-share'){
     state.pageShare = { kind: el.dataset.kind, step:'menu' };
@@ -3958,6 +4455,42 @@ document.getElementById('shell').addEventListener('input', (e)=>{
   }
   markStreakProgress(entry);
   saveAnswersDebounced();
+});
+
+/* ---------------- verse long-press to copy ---------------- */
+const VERSE_LONGPRESS_MS = 450;
+const VERSE_LONGPRESS_MOVE_TOLERANCE = 10;
+let versePressTimer = null;
+let versePressStart = null;
+function cancelVersePress(){
+  clearTimeout(versePressTimer);
+  versePressTimer = null;
+  versePressStart = null;
+}
+document.getElementById('shell').addEventListener('pointerdown', (e)=>{
+  const el = e.target.closest('.verse');
+  if(!el || state.screen!=='daily' || state.activeTab!=='bible' || state.verseActionMenu) return;
+  if(e.pointerType==='mouse' && e.button!==0) return;
+  const n = Number(el.dataset.verseNum);
+  if(!n) return;
+  versePressStart = { x:e.clientX, y:e.clientY };
+  clearTimeout(versePressTimer);
+  versePressTimer = setTimeout(()=>{
+    versePressTimer = null;
+    if(navigator.vibrate){ try{ navigator.vibrate(10); }catch(err){} }
+    state.verseActionMenu = { n };
+    render();
+  }, VERSE_LONGPRESS_MS);
+});
+document.getElementById('shell').addEventListener('pointermove', (e)=>{
+  if(!versePressTimer || !versePressStart) return;
+  const dx = e.clientX - versePressStart.x, dy = e.clientY - versePressStart.y;
+  if(Math.hypot(dx, dy) > VERSE_LONGPRESS_MOVE_TOLERANCE) cancelVersePress();
+});
+document.getElementById('shell').addEventListener('pointerup', cancelVersePress);
+document.getElementById('shell').addEventListener('pointercancel', cancelVersePress);
+document.getElementById('shell').addEventListener('contextmenu', (e)=>{
+  if(e.target.closest('.verse')) e.preventDefault();
 });
 
 initAuthGate();

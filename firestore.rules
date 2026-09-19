@@ -29,11 +29,14 @@ service cloud.firestore {
     // ---- users/{uid} ----
     // 본인 프로필만 읽고/쓸 수 있습니다. uid, createdAt은 위조 방지를 위해 값 검증합니다.
     match /users/{uid} {
-      // 테스트/개발 단계: 그룹 채팅방 정보 화면에서 참여자 닉네임/프로필 사진을 보여주려면
-      // 다른 로그인 유저의 프로필도 읽을 수 있어야 하므로 완화했습니다. (그룹 read가 이미
-      // isSignedIn() 기준이라 어차피 모든 그룹의 members uid는 로그인 유저 누구나 볼 수 있는
-      // 상태입니다.) 운영 배포 전에는 요청자가 해당 uid와 같은 그룹의 멤버인 경우로 좁히는
-      // 것을 권장합니다.
+      // 채팅방 관리 화면에서 참여자 닉네임/프로필 사진/연속 기록(journalEntryCount)을
+      // 보여주려면 다른 로그인 유저의 프로필도 읽을 수 있어야 하므로 isSignedIn()으로
+      // 열어 두었습니다. 실제 "같은 채팅방 멤버만" 조건은 위 groups/{groupId} 규칙이
+      // 멤버가 아니면 애초에 그 방의 members(uid 목록) 자체를 못 읽게 막는 것으로
+      // 강제됩니다 - uid는 추측 불가능한 랜덤 값이라 그룹을 통하지 않고는 다른 사람의
+      // uid를 알아낼 방법이 없습니다. 개인 묵상 기록(journals 서브컬렉션)은 아래처럼
+      // 여전히 본인만 읽을 수 있고, 다른 유저에게는 journalEntryCount 숫자만
+      // 노출됩니다.
       allow read: if isSignedIn();
       allow create: if isOwner(uid) && request.resource.data.uid == uid;
       allow update: if isOwner(uid) &&
@@ -48,11 +51,21 @@ service cloud.firestore {
     }
 
     // ---- groups/{groupId} ----
-    // 테스트/개발 단계: 로그인한 유저라면 그룹 생성/조회/참여가 가능하도록 완화했습니다.
-    // (운영 배포 전에는 read/update를 isGroupMember(groupId) 기반으로 다시 좁히세요.)
+    // 테스트/개발 단계: 로그인한 유저라면 그룹 생성이 가능하도록 완화했습니다.
+    // (운영 배포 전에는 create도 좀 더 좁히는 것을 검토하세요. read는 아래처럼 이미
+    // 실제 멤버(+방장)로 제한되어 있습니다.)
     match /groups/{groupId} {
-      // 로그인한 유저는 그룹을 조회할 수 있음
-      allow read: if isSignedIn();
+      // 채팅방 관리 화면에서 참여자 프로필(닉네임/사진/연속 기록)을 볼 수 있는 사람은
+      // 실제로 그 채팅방에 속한 멤버로 한정되어야 하므로, 로그인 여부만 보던 것에서
+      // "방장이거나 members 배열에 포함된 경우"로 좁혔습니다.
+      // resource == null 허용은 ensureGroup()이 새 방을 만들기 전에 먼저 존재 여부를
+      // 확인하는 get()을 위한 것으로(문서가 없으면 어차피 노출될 데이터가 없음), 실제
+      // 데이터 보호와는 무관합니다.
+      allow read: if isSignedIn() && (
+        resource == null ||
+        resource.data.ownerUid == request.auth.uid ||
+        request.auth.uid in resource.data.members
+      );
 
       // 로그인한 유저는 그룹을 생성할 수 있음
       allow create: if isSignedIn();

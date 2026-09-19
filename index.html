@@ -480,12 +480,30 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line);
   font-size:calc(13.5px * var(--fs-scale));line-height:1.6;transition:background .5s ease;
   border-radius:8px;scroll-margin-top:100px;
+  touch-action:pan-y;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;
 }
 .verse .vnum{
   font-family:'Noto Serif KR',serif;font-weight:700;color:var(--ink-faint);
   font-size:calc(12px * var(--fs-scale));width:20px;flex-shrink:0;padding-top:1px;
 }
 .verse.highlight{background:#FBEFCB;}
+
+/* ---------- verse long-press copy sheet ---------- */
+.verse-action-sheet{padding-top:14px;}
+.verse-action-ref{
+  font-family:'Noto Serif KR',serif;font-weight:700;color:var(--ink-faint);
+  font-size:calc(12px * var(--fs-scale));letter-spacing:.02em;margin-bottom:10px;
+}
+.verse-action-btn{
+  display:flex;align-items:center;gap:10px;width:100%;padding:14px 16px;
+  background:var(--paper);border-radius:14px;box-shadow:var(--shadow-sm);
+  font-size:calc(13.5px * var(--fs-scale));font-weight:700;color:var(--ink);text-align:left;
+}
+.verse-action-btn .va-icon{
+  width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--rose-deep);
+}
+.verse-action-btn .va-icon svg{width:18px;height:18px;}
+.verse-action-btn:active{transform:scale(.98);}
 
 /* content questions tab */
 .q-card{
@@ -614,6 +632,24 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .member-you{color:var(--ink-faint);font-weight:500;font-size:calc(11.5px * var(--fs-scale));}
 .member-list-status{padding:18px 4px;text-align:center;color:var(--ink-soft);font-size:calc(12.5px * var(--fs-scale));}
 .member-list-status.error{color:var(--danger);}
+.member-row.member-row-btn{width:100%;background:none;border:none;font:inherit;color:inherit;cursor:pointer;text-align:left;}
+.member-row.member-row-btn:active{opacity:.7;}
+
+/* ---------- member profile card (tap a participant) ---------- */
+.member-profile-card{text-align:center;}
+.member-profile-avatar{
+  width:96px;height:96px;border-radius:50%;margin:0 auto 16px;overflow:hidden;
+  background:var(--bg);color:var(--ink-faint);
+  display:flex;align-items:center;justify-content:center;
+}
+.member-profile-avatar img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+.member-profile-avatar svg{width:40px;height:40px;}
+.member-profile-name{font-family:'Noto Serif KR',serif;font-size:calc(19px * var(--fs-scale));font-weight:700;margin-bottom:10px;}
+.member-profile-streak{
+  display:inline-flex;align-items:center;gap:6px;background:var(--bg);box-shadow:var(--shadow-sm);
+  border-radius:20px;padding:8px 14px;color:#E8791E;font-size:calc(13px * var(--fs-scale));font-weight:700;
+}
+.member-profile-streak svg{width:16px;height:16px;flex-shrink:0;}
 .group-info-actions{display:flex;flex-direction:column;gap:10px;margin-top:auto;}
 .group-info-actions .btn{margin-top:0;}
 .group-info-actions .btn-danger{display:flex;align-items:center;justify-content:center;gap:7px;}
@@ -1013,6 +1049,175 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .donate-value{font-size:calc(13.5px * var(--fs-scale));color:var(--ink);font-weight:700;font-family:'Noto Serif KR',serif;}
 .donate-copy-btn{background:var(--gold);color:#fff;transition:background .2s ease;}
 .donate-copy-btn.copied{background:#7E9A6D;}
+
+/* ---------- usage guide (저널링 노트 사용하는 방법) ---------- */
+.guide-body{padding-bottom:44px;}
+.guide-intro{text-align:center;padding:6px 4px 4px;}
+.guide-hero-title{
+  font-family:'Noto Serif KR',serif;font-size:calc(21px * var(--fs-scale));font-weight:700;
+  margin:0 0 10px;line-height:1.4;
+}
+.guide-lead{
+  font-size:calc(12.5px * var(--fs-scale));line-height:1.7;color:var(--ink-soft);
+  white-space:pre-line;margin:0;
+}
+.guide-flow{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 4px;
+  background:var(--paper);border-radius:16px;box-shadow:var(--shadow-sm);
+  padding:14px 12px;margin:18px 0 8px;
+}
+.guide-flow-chip{
+  display:inline-flex;align-items:center;gap:6px;background:var(--bg);
+  border-radius:20px;padding:7px 11px 7px 7px;
+  font-size:calc(11.5px * var(--fs-scale));font-weight:600;color:var(--ink-soft);
+}
+.guide-flow-chip:active{transform:scale(.96);}
+.guide-flow-chip .gfc-num{
+  width:18px;height:18px;border-radius:50%;background:var(--gold);color:#fff;flex-shrink:0;
+  font-size:calc(10px * var(--fs-scale));font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.guide-flow-arrow{display:inline-flex;color:var(--ink-faint);transform:rotate(-90deg);}
+.guide-flow-arrow svg{width:12px;height:12px;}
+.guide-flow-hint{
+  text-align:center;font-size:calc(10.5px * var(--fs-scale));color:var(--ink-faint);
+  margin:0 0 6px;
+}
+
+.guide-step{
+  background:var(--paper);border-radius:18px;box-shadow:var(--shadow-sm);
+  padding:18px 16px 16px;margin-top:16px;scroll-margin-top:14px;
+}
+.guide-step-head{display:flex;align-items:center;gap:11px;margin-bottom:8px;}
+.guide-step-num{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  background:var(--rose-deep);color:#fff;
+  font-family:'Noto Serif KR',serif;font-weight:700;font-size:calc(14px * var(--fs-scale));
+  display:flex;align-items:center;justify-content:center;
+}
+.guide-step-title{
+  font-family:'Noto Serif KR',serif;font-size:calc(15.5px * var(--fs-scale));font-weight:700;
+  margin:0;line-height:1.35;
+}
+.guide-step-en{
+  font-family:'Playfair Display',serif;font-style:italic;font-size:calc(11px * var(--fs-scale));
+  color:var(--gold);margin-top:2px;
+}
+.guide-step-desc{
+  font-size:calc(12.5px * var(--fs-scale));line-height:1.65;color:var(--ink-soft);
+  white-space:pre-line;margin:0 0 14px;
+}
+.guide-shot-label{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:calc(10px * var(--fs-scale));font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px;
+}
+.guide-shot-label::before{content:"";width:14px;height:1px;background:var(--ink-faint);}
+.guide-shot{
+  background:var(--bg);border-radius:14px;padding:16px 14px 6px;
+  border:1px dashed var(--line);pointer-events:none;margin-bottom:14px;
+}
+.guide-shot .chapter-card,
+.guide-shot .section-block:last-child{margin-bottom:12px;}
+.guide-shot .section-block textarea{min-height:46px;}
+.guide-shot .ask-list .ask-item:nth-child(n+4){display:none;}
+
+/* highlight ring + number badge on the field being explained */
+.gs-hl{position:relative;outline:2px solid var(--gold);outline-offset:3px;border-radius:12px;}
+.gs-hl:not([data-gnum])::after{display:none;}
+.gs-hl[data-gnum]::after{
+  content:attr(data-gnum);position:absolute;top:-11px;right:-9px;z-index:2;
+  min-width:22px;height:22px;padding:0 4px;border-radius:11px;
+  background:var(--gold);color:#fff;font-size:calc(11px * var(--fs-scale));font-weight:700;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);
+}
+
+.guide-callouts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+.guide-callouts li{display:flex;gap:10px;align-items:flex-start;}
+.guide-callouts .gc-num{
+  width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:var(--gold);color:#fff;font-size:calc(10.5px * var(--fs-scale));font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.guide-callouts .gc-body b{
+  display:block;font-family:'Noto Serif KR',serif;font-size:calc(12.5px * var(--fs-scale));
+  font-weight:700;margin-bottom:2px;
+}
+.guide-callouts .gc-body p{
+  margin:0;font-size:calc(12px * var(--fs-scale));line-height:1.6;color:var(--ink-soft);
+}
+.guide-tip{
+  display:flex;gap:8px;background:var(--bg);border-radius:12px;padding:11px 13px;margin:0;
+  font-size:calc(12px * var(--fs-scale));line-height:1.6;color:var(--ink-soft);
+}
+.guide-tip::before{content:"✎";color:var(--gold);font-weight:700;flex-shrink:0;}
+
+.guide-q-all{
+  margin-top:12px;background:var(--bg);border-radius:14px;
+  border:1px solid var(--line);overflow:hidden;
+}
+.guide-q-all summary{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:13px 14px;cursor:pointer;list-style:none;
+  font-family:'Noto Serif KR',serif;font-size:calc(12.5px * var(--fs-scale));font-weight:700;
+}
+.guide-q-all summary::-webkit-details-marker{display:none;}
+.guide-q-all summary::after{
+  content:"";width:9px;height:9px;border-right:2px solid var(--ink-faint);
+  border-bottom:2px solid var(--ink-faint);transform:rotate(45deg);transition:transform .2s ease;flex-shrink:0;
+}
+.guide-q-all[open] summary::after{transform:rotate(-135deg);}
+.guide-q-all .gq-count{
+  margin-left:auto;margin-right:8px;background:var(--gold);color:#fff;border-radius:20px;
+  padding:1px 8px;font-size:calc(10px * var(--fs-scale));font-weight:700;
+}
+.guide-q-cards{list-style:none;margin:0;padding:6px 10px 12px;display:flex;flex-direction:column;gap:7px;}
+.guide-q-cards li{
+  display:flex;gap:9px;align-items:flex-start;background:var(--paper);
+  border-radius:11px;box-shadow:var(--shadow-sm);padding:11px 12px;
+  font-size:calc(12px * var(--fs-scale));line-height:1.55;
+}
+.guide-q-cards .gq-n{
+  width:19px;height:19px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:var(--rose-deep);color:#fff;font-size:calc(10px * var(--fs-scale));font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ---------- usage guide: "성경으로 성령 인도 받기" intro ---------- */
+.guide-verses-card{
+  background:var(--paper);border-radius:18px;box-shadow:var(--shadow-sm);
+  padding:22px 18px 20px;margin-bottom:20px;
+}
+.guide-verses-card .guide-section-title{text-align:center;}
+.guide-verse-text{
+  font-size:calc(13px * var(--fs-scale));line-height:1.8;color:var(--ink);
+  margin:0 0 16px;padding-left:12px;border-left:2px solid var(--gold);
+}
+.guide-verse-text:last-child{margin-bottom:0;}
+.guide-verse-ref{display:block;margin-top:5px;font-size:calc(11.5px * var(--fs-scale));color:var(--gold);font-weight:700;}
+.guide-list-section{margin-top:20px;}
+.guide-section-title{
+  font-family:'Noto Serif KR',serif;font-size:calc(16px * var(--fs-scale));font-weight:700;
+  margin:0 0 10px;color:var(--ink);line-height:1.4;
+}
+.guide-num-list{list-style:none;margin:0;padding:0;background:var(--paper);border-radius:14px;box-shadow:var(--shadow-sm);overflow:hidden;}
+.guide-num-list li{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-top:1px solid var(--line);}
+.guide-num-list li:first-child{border-top:none;}
+.gnl-num{
+  width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  background:var(--gold);color:#fff;font-size:calc(10.5px * var(--fs-scale));font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.gnl-body{flex:1;min-width:0;}
+.gnl-body p{margin:0;font-size:calc(12.5px * var(--fs-scale));line-height:1.65;color:var(--ink);}
+.guide-note{margin:9px 0 0;font-size:calc(11.5px * var(--fs-scale));color:var(--ink-soft);line-height:1.6;}
+.gnl-body .guide-note{margin-top:6px;}
+.guide-quote{
+  margin:20px 0 0;padding:16px 16px 14px;background:var(--bg);
+  border-left:3px solid var(--gold);border-radius:0 14px 14px 0;
+}
+.guide-quote p{margin:0 0 8px;font-size:calc(12px * var(--fs-scale));line-height:1.75;color:var(--ink-soft);}
+.guide-quote cite{font-style:normal;font-size:calc(11px * var(--fs-scale));color:var(--gold);font-weight:700;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
