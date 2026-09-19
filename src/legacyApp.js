@@ -321,6 +321,8 @@ const STRINGS = {
     toastLeftGroup:'그룹에서 나갔어요',
     toastLeaveFailed:'그룹 나가기에 실패했어요. 다시 시도해 주세요',
     toastMembersLoadFailed:'참여자 정보를 불러오지 못했어요',
+    toastInviteJoined:'그룹방에 참여했어요',
+    toastInviteFailed:'유효하지 않거나 만료된 초대 링크예요',
     memberFallbackName:'팀원', youTag:'(나)', loadingLabel:'불러오는 중...',
     groupManageTitle:'채팅방 관리',
     roomNameLabel:'채팅방 이름',
@@ -468,6 +470,8 @@ const STRINGS = {
     toastLeftGroup:'You left the group',
     toastLeaveFailed:'Failed to leave the group. Please try again',
     toastMembersLoadFailed:'Could not load participants',
+    toastInviteJoined:'Joined the group chat',
+    toastInviteFailed:'This invite link is invalid or expired',
     memberFallbackName:'Member', youTag:'(You)', loadingLabel:'Loading...',
     groupManageTitle:'Chat room settings',
     roomNameLabel:'Chat room name',
@@ -615,6 +619,8 @@ const STRINGS = {
     toastLeftGroup:'グループから退出しました',
     toastLeaveFailed:'退出に失敗しました。もう一度お試しください',
     toastMembersLoadFailed:'参加者情報を読み込めませんでした',
+    toastInviteJoined:'グループチャットに参加しました',
+    toastInviteFailed:'招待リンクが無効か期限切れです',
     memberFallbackName:'メンバー', youTag:'(自分)', loadingLabel:'読み込み中...',
     groupManageTitle:'チャットルーム管理',
     roomNameLabel:'チャットルーム名',
@@ -762,6 +768,8 @@ const STRINGS = {
     toastLeftGroup:'ออกจากกลุ่มแล้ว',
     toastLeaveFailed:'ออกจากกลุ่มไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastMembersLoadFailed:'ไม่สามารถโหลดข้อมูลผู้เข้าร่วมได้',
+    toastInviteJoined:'เข้าร่วมกลุ่มแชทแล้ว',
+    toastInviteFailed:'ลิงก์เชิญไม่ถูกต้องหรือหมดอายุแล้ว',
     memberFallbackName:'สมาชิก', youTag:'(ฉัน)', loadingLabel:'กำลังโหลด...',
     groupManageTitle:'จัดการห้องแชท',
     roomNameLabel:'ชื่อห้องแชท',
@@ -909,6 +917,8 @@ const STRINGS = {
     toastLeftGroup:'已退出群组',
     toastLeaveFailed:'退出群组失败，请重试',
     toastMembersLoadFailed:'无法加载参与者信息',
+    toastInviteJoined:'已加入群聊',
+    toastInviteFailed:'邀请链接无效或已过期',
     memberFallbackName:'成员', youTag:'（我）', loadingLabel:'加载中...',
     groupManageTitle:'聊天室管理',
     roomNameLabel:'聊天室名称',
@@ -1043,6 +1053,28 @@ const GROUP_COLORS = ['#3F5670','#8A6A2F','#4F6B8F','#7E9A6D','#B25C6B'];
 
 function makeCode(){
   return Math.random().toString(36).slice(2,8).toUpperCase();
+}
+
+/* 초대 링크(/invite/CODE 경로, ?invite=CODE 쿼리, #invite=CODE 해시)에서 초대 코드를 뽑아냅니다.
+   배포 환경(Vercel/Netlify/Firebase Hosting 등)에 따라 경로 방식 라우팅이 404로 막힐 수도 있어
+   세 가지 형태를 모두 지원합니다. */
+function getInviteCodeFromLocation(){
+  try{
+    const { pathname, search, hash } = window.location;
+    const pathMatch = pathname.match(/\/invite\/([A-Za-z0-9]+)/);
+    if(pathMatch) return pathMatch[1].toUpperCase();
+    const params = new URLSearchParams(search);
+    if(params.get('invite')) return params.get('invite').toUpperCase();
+    const hashMatch = hash.match(/invite=([A-Za-z0-9]+)/);
+    if(hashMatch) return hashMatch[1].toUpperCase();
+  }catch(e){}
+  return null;
+}
+// 앱이 뜨자마자(로그인 화면이 뜨기 전) 한 번만 URL을 읽어 두고, 주소창은 바로 정리합니다.
+// 실제 참여 처리는 로그인 상태가 확정된 뒤(resolvePostLoginScreen)에 합니다.
+let pendingInviteCode = getInviteCodeFromLocation();
+if(pendingInviteCode){
+  try{ window.history.replaceState(null, '', window.location.origin + '/'); }catch(e){}
 }
 function seedGroups(){
   return [{
@@ -1642,7 +1674,8 @@ function initAuthGate(){
     applyAuthProfile(profile);
     if(firstCheck){
       firstCheck = false;
-      state.screen = profile ? 'main' : 'login';
+      if(profile) resolvePostLoginScreen();
+      else state.screen = 'login';
     } else if(!profile && state.screen!=='login' && state.screen!=='signup'){
       state.screen = 'login';
     }
@@ -1678,6 +1711,70 @@ function subscribeToAuthUser(){
 }
 function saveGroups(){
   window.storage.set('groups-data', JSON.stringify(groups), false).catch(()=>{});
+}
+
+/* 초대 링크로 들어온 코드를 실제 그룹 참여로 이어줍니다: Firestore에서 code로 그룹 문서를
+   찾아 내 uid를 members에 추가하고, 로컬 groups 캐시에도 반영한 뒤 해당 채팅방으로 이동합니다. */
+function joinGroupByInviteCode(code){
+  const fdb = window.__firebaseDB;
+  if(!fdb || !fdb.ready || typeof fdb.findGroupByCode !== 'function' || !(state.user && state.user.uid)){
+    showToast(T('toastInviteFailed'));
+    return;
+  }
+  const uid = state.user.uid;
+  withLoading(
+    fdb.findGroupByCode(code).then(async (doc)=>{
+      if(!doc) throw new Error('invite-code-not-found');
+      if(!(doc.members||[]).includes(uid) && typeof fdb.addGroupMember==='function'){
+        await fdb.addGroupMember(doc.id, uid);
+      }
+      let g = getGroup(doc.id);
+      if(!g){
+        g = {
+          id: doc.id,
+          name: doc.name || '',
+          color: doc.color || GROUP_COLORS[0],
+          code: doc.code || code,
+          photoUrl: doc.photoUrl || null,
+          memberCount: (doc.members||[]).length || 1,
+          messages: [],
+        };
+        groups.push(g);
+      }
+      if(typeof fdb.getMessages==='function'){
+        try{
+          const history = await fdb.getMessages(doc.id, 50);
+          g.messages = history.map(m=>({
+            id: m.id,
+            from: m.name || T('memberFallbackName'),
+            isMe: m.uid === uid,
+            type: m.type || 'text',
+            text: m.text,
+          }));
+        }catch(err){ console.error('Failed to load invited group history:', err); }
+      }
+      saveGroups();
+      return g;
+    })
+  ).then((g)=>{
+    state.activeGroupId = g.id;
+    state.screen = 'group-room';
+    render();
+    showToast(T('toastInviteJoined'));
+  }).catch(err=>{
+    console.error('Invite join failed:', err);
+    render();
+    showToast(T('toastInviteFailed'));
+  });
+}
+
+/* 로그인 직후 화면 전환: 초대 링크를 타고 들어온 상태라면 그룹 참여 처리로 이어가고,
+   그렇지 않으면 평소처럼 메인 화면으로 보냅니다. */
+function resolvePostLoginScreen(){
+  const code = pendingInviteCode;
+  pendingInviteCode = null;
+  state.screen = 'main';
+  if(code) joinGroupByInviteCode(code);
 }
 function saveAnswersDebounced(){
   clearTimeout(saveTimer);
@@ -2688,7 +2785,7 @@ function renderCreateGroupSheet(){
 function renderInviteSheet(){
   const g = getGroup(state.inviteGroupId);
   if(!g) return '';
-  const link = `https://biblejournal.app/invite/${g.code}`;
+  const link = `${window.location.origin}/invite/${g.code}`;
   return `
   <div class="overlay" data-action="close-invite">
     <div class="sheet" data-action="noop">
@@ -3098,7 +3195,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
       state.loggedIn = true;
       saveAuth();
-      state.screen = 'main';
+      resolvePostLoginScreen();
       render();
       showToast(T('toastLogin'));
     }).catch(err=>{
@@ -3114,7 +3211,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
         state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
         state.loggedIn = true;
         saveAuth();
-        state.screen = 'main';
+        resolvePostLoginScreen();
         render();
         showToast(T('toastLogin'));
       }).catch(err=>{
@@ -3133,7 +3230,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
         state.user = { uid:profile.uid, name:profile.name, email:profile.email, photoUrl:profile.photoUrl };
         state.loggedIn = true;
         saveAuth();
-        state.screen = 'main';
+        resolvePostLoginScreen();
         render();
         showToast(T('toastLogin'));
       }).catch(err=>{
@@ -3200,7 +3297,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       state.user = { uid:fullProfile.uid, name:fullProfile.name, email:fullProfile.email, photoUrl:fullProfile.photoUrl, username:fullProfile.username, nickname:fullProfile.nickname };
       state.loggedIn = true;
       saveAuth();
-      state.screen = 'main';
+      resolvePostLoginScreen();
       render();
       showToast(T('toastSignupDone'));
     }).catch(err=>{

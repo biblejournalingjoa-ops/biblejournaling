@@ -69,6 +69,15 @@ export async function getGroup(groupId) {
   return snap.exists() ? { id: snap.id, ...snap.data() } : null;
 }
 
+/** 초대 코드로 그룹을 찾습니다. 초대 링크로 들어온 사용자를 해당 그룹에 참여시킬 때 씁니다. */
+export async function findGroupByCode(code) {
+  if (!code) return null;
+  const snap = await getDocs(query(groupsCol, where("code", "==", code)));
+  if (snap.empty) return null;
+  const d = snap.docs[0];
+  return { id: d.id, ...d.data() };
+}
+
 /** 내가 멤버로 속한 그룹 목록을 최신순으로 반환합니다. */
 export async function listMyGroups(uid) {
   const q = query(
