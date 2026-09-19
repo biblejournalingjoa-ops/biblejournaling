@@ -7,6 +7,17 @@ import {
 import { db } from "../firebase.js";
 
 const groupsCol = collection(db, "groups");
+const inviteCodesCol = collection(db, "inviteCodes");
+
+/**
+ * code -> groupId 매핑을 inviteCodes 컬렉션에 남겨 둡니다. groups/{groupId}는 멤버만
+ * read할 수 있도록 제한돼 있어, 아직 멤버가 아닌 사람이 초대 코드만으로 그룹을 찾으려면
+ * (findGroupByCode) 이 별도의 얕은 매핑이 필요합니다.
+ */
+async function upsertInviteCode(code, groupId) {
+  if (!code || !groupId) return;
+  await setDoc(doc(inviteCodesCol, code), { groupId }, { merge: true });
+}
 
 /**
  * @param {object} params - { name, ownerUid, color, code }
@@ -22,6 +33,7 @@ export async function createGroup({ name, ownerUid, color = null, code = null })
     members: [ownerUid],
     createdAt: serverTimestamp(),
   });
+  await upsertInviteCode(code, ref.id);
   return ref.id;
 }
 
@@ -51,6 +63,7 @@ export async function ensureGroup(groupId, { name, ownerUid, color = null, code 
   } else if (!(snap.data().members || []).includes(ownerUid)) {
     await updateDoc(ref, { members: arrayUnion(ownerUid) });
   }
+  await upsertInviteCode(code, groupId);
   return groupId;
 }
 
@@ -69,13 +82,19 @@ export async function getGroup(groupId) {
   return snap.exists() ? { id: snap.id, ...snap.data() } : null;
 }
 
-/** 초대 코드로 그룹을 찾습니다. 초대 링크로 들어온 사용자를 해당 그룹에 참여시킬 때 씁니다. */
+/**
+ * 초대 코드로 그룹 id를 찾습니다. groups/{groupId}는 멤버만 read할 수 있어 code로
+ * groups 컬렉션을 직접 쿼리하면(아직 멤버가 아니므로) permission-denied가 나기 때문에,
+ * 먼저 공개적으로 read 가능한 inviteCodes/{code} 매핑에서 groupId만 가져옵니다.
+ * 그룹 이름/사진 등 나머지 정보는 addGroupMember로 실제 멤버가 된 뒤 getGroup으로 읽으세요.
+ * @returns {Promise<{id:string}|null>}
+ */
 export async function findGroupByCode(code) {
   if (!code) return null;
-  const snap = await getDocs(query(groupsCol, where("code", "==", code)));
-  if (snap.empty) return null;
-  const d = snap.docs[0];
-  return { id: d.id, ...d.data() };
+  const snap = await getDoc(doc(inviteCodesCol, code));
+  if (!snap.exists()) return null;
+  const groupId = snap.data().groupId;
+  return groupId ? { id: groupId } : null;
 }
 
 /** 내가 멤버로 속한 그룹 목록을 최신순으로 반환합니다. */

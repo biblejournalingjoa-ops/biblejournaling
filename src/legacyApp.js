@@ -2017,21 +2017,24 @@ function saveGroups(){
   window.storage.set('groups-data', JSON.stringify(groups), false).catch(()=>{});
 }
 
-/* 초대 링크로 들어온 코드를 실제 그룹 참여로 이어줍니다: Firestore에서 code로 그룹 문서를
-   찾아 내 uid를 members에 추가하고, 로컬 groups 캐시에도 반영한 뒤 해당 채팅방으로 이동합니다. */
+/* 초대 링크로 들어온 코드를 실제 그룹 참여로 이어줍니다. groups/{groupId}는 멤버만 read할
+   수 있게 막혀 있어(firestore.rules), 아직 멤버가 아닌 상태로는 code로 그룹 문서를 바로
+   조회할 수 없습니다. 그래서 (1) inviteCodes/{code}에서 groupId만 얕게 조회 →
+   (2) members에 내 uid를 먼저 추가(update는 read 권한과 무관하게 허용됨) →
+   (3) 멤버가 된 뒤에야 그룹 문서를 온전히 읽어오는 순서로 진행합니다. */
 function joinGroupByInviteCode(code){
   const fdb = window.__firebaseDB;
-  if(!fdb || !fdb.ready || typeof fdb.findGroupByCode !== 'function' || !(state.user && state.user.uid)){
+  if(!fdb || !fdb.ready || typeof fdb.findGroupByCode !== 'function' || typeof fdb.addGroupMember !== 'function' || !(state.user && state.user.uid)){
     showToast(T('toastInviteFailed'));
     return;
   }
   const uid = state.user.uid;
   withLoading(
-    fdb.findGroupByCode(code).then(async (doc)=>{
-      if(!doc) throw new Error('invite-code-not-found');
-      if(!(doc.members||[]).includes(uid) && typeof fdb.addGroupMember==='function'){
-        await fdb.addGroupMember(doc.id, uid);
-      }
+    fdb.findGroupByCode(code).then(async (invite)=>{
+      if(!invite || !invite.id) throw new Error('invite-code-not-found');
+      await fdb.addGroupMember(invite.id, uid);
+      const doc = await fdb.getGroup(invite.id);
+      if(!doc) throw new Error('invite-group-not-found');
       let g = getGroup(doc.id);
       if(!g){
         g = {
@@ -2044,6 +2047,11 @@ function joinGroupByInviteCode(code){
           messages: [],
         };
         groups.push(g);
+      } else {
+        g.name = doc.name || g.name;
+        g.color = doc.color || g.color;
+        g.photoUrl = doc.photoUrl || g.photoUrl;
+        g.memberCount = (doc.members||[]).length || g.memberCount;
       }
       if(typeof fdb.getMessages==='function'){
         try{
