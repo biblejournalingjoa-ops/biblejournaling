@@ -1628,14 +1628,27 @@ function applyRemoteMessages(groupId, remoteMsgs){
   const myUid = state.user && state.user.uid;
   const seenRemoteIds = new Set((g.messages||[]).filter(m=>m._remoteId).map(m=>m._remoteId));
   const localByClientId = new Map((g.messages||[]).map(m=>[m.id, m]));
+  // clientId 필드가 생기기 전(이번 수정 이전)에 내가 보낸, 아직 원격 id가 안 붙은 텍스트
+  // 메시지들은 clientId로 못 찾으므로, 내용이 같은 것끼리 순서대로 1:1 매칭해 처음 켤 때
+  // 내 과거 메시지가 중복으로 나타나지 않게 합니다.
+  const unmatchedMine = (g.messages||[]).filter(m=>m.isMe && m.type==='text' && !m._remoteId);
   let changed = false;
   remoteMsgs.forEach(rm=>{
     if(seenRemoteIds.has(rm.id)) return;
-    const localMatch = rm.clientId && localByClientId.get(rm.clientId);
-    if(localMatch && !localMatch._remoteId){
-      localMatch._remoteId = rm.id;
+    const clientMatch = rm.clientId && localByClientId.get(rm.clientId);
+    if(clientMatch && !clientMatch._remoteId){
+      clientMatch._remoteId = rm.id;
       changed = true;
       return;
+    }
+    if(rm.uid===myUid){
+      const idx = unmatchedMine.findIndex(m=>m.text===rm.text);
+      if(idx!==-1){
+        unmatchedMine[idx]._remoteId = rm.id;
+        unmatchedMine.splice(idx, 1);
+        changed = true;
+        return;
+      }
     }
     g.messages.push({
       id: 'r-'+rm.id,
