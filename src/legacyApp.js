@@ -270,7 +270,11 @@ const STRINGS = {
     askLabel:'하나님께 물어보기', askPlaceholderQ:'질문을 선택해 주세요',
     heardLabel:'들은 음성 기록하기', heardPh:'묵상 중 들려온 마음의 음성을 적어보세요',
     appLabel:'삶으로의 적용', appPh:'오늘 삶에서 실천할 한 가지',
+    appMeLabel:'나의 삶', appMePh:'오늘 말씀을 나의 삶에 어떻게 적용할까요?',
+    appServeLabel:'다른 사람을 섬기는 일', appServePh:'오늘 내가 다른 사람을 섬기기 위해 할 수 있는 일은 무엇일까요?',
     prayerLabel:'기도제목', prayerPh:'오늘의 기도제목을 적어보세요',
+    prayerReqLabel:'기도제목', prayerReqPh:'오늘 하나님께 드리고 싶은 기도제목을 적어보세요.',
+    prayerForLabel:'오늘 기도의 대상은?', prayerForPh:'오늘 누구를 위해 기도하고 싶나요? (예: 가족, 친구, 학교, 교회, 특정한 사람, 나라, 어려움을 겪고 있는 사람 등)',
     thanksLabel:'오늘의 감사', thanksPh:(i)=>`감사한 일 ${i}`, addThanks:'감사한 일 추가',
     toastLogin:'로그인되었습니다', toastLogout:'로그아웃되었습니다',
     toastGoogleFailed:'구글 로그인에 실패했어요. 다시 시도해 주세요',
@@ -417,7 +421,11 @@ const STRINGS = {
     askLabel:'Asking God', askPlaceholderQ:'Choose a question',
     heardLabel:'What I heard', heardPh:'Write down what came to mind during reflection',
     appLabel:'Living it out', appPh:'One small step for today',
+    appMeLabel:'My life', appMePh:'How will you apply today’s Word to your own life?',
+    appServeLabel:'Serving others', appServePh:'What can you do today to serve someone else?',
     prayerLabel:'Prayer requests', prayerPh:"Write today's prayer requests",
+    prayerReqLabel:'Prayer requests', prayerReqPh:'Write the prayer requests you want to bring to God today.',
+    prayerForLabel:'Who will you pray for today?', prayerForPh:'Who or what do you especially want to pray for today? (e.g. family, friends, school, church, a specific person, your country, someone going through a hard time)',
     thanksLabel:"Today's gratitude", thanksPh:(i)=>`Gratitude ${i}`, addThanks:'Add gratitude',
     toastLogin:'Logged in', toastLogout:'Logged out',
     toastGoogleFailed:'Google sign-in failed. Please try again',
@@ -564,7 +572,11 @@ const STRINGS = {
     askLabel:'神に尋ねる', askPlaceholderQ:'質問を選んでください',
     heardLabel:'聞こえた声を記録する', heardPh:'黙想中に心に響いた声を書いてみましょう',
     appLabel:'生活への適用', appPh:'今日の生活で実践すること一つ',
+    appMeLabel:'私の生活', appMePh:'今日の御言葉を私の生活にどう適用しますか？',
+    appServeLabel:'他の人に仕えること', appServePh:'今日、他の人に仕えるために私にできることは何でしょうか？',
     prayerLabel:'祈りの課題', prayerPh:'今日の祈りの課題を書いてみましょう',
+    prayerReqLabel:'祈りの課題', prayerReqPh:'今日神様に捧げたい祈りの課題を書いてみましょう。',
+    prayerForLabel:'今日は誰のために祈りますか？', prayerForPh:'今日、特に祈りたい人や対象は誰ですか？（例：家族、友人、学校、教会、特定の人、国、困難の中にある人など）',
     thanksLabel:'今日の感謝', thanksPh:(i)=>`感謝なこと ${i}`, addThanks:'感謝を追加',
     toastLogin:'ログインしました', toastLogout:'ログアウトしました',
     toastGoogleFailed:'Googleログインに失敗しました。もう一度お試しください',
@@ -711,7 +723,11 @@ const STRINGS = {
     askLabel:'ทูลถามพระเจ้า', askPlaceholderQ:'กรุณาเลือกคำถาม',
     heardLabel:'บันทึกเสียงที่ได้ยิน', heardPh:'ลองเขียนสิ่งที่อยู่ในใจระหว่างเฝ้าเดี่ยว',
     appLabel:'การนำไปใช้ในชีวิต', appPh:'สิ่งหนึ่งที่จะลงมือทำในวันนี้',
+    appMeLabel:'ชีวิตของฉัน', appMePh:'วันนี้คุณจะนำพระวจนะไปใช้ในชีวิตของคุณอย่างไร?',
+    appServeLabel:'การรับใช้ผู้อื่น', appServePh:'วันนี้ฉันสามารถทำอะไรเพื่อรับใช้ผู้อื่นได้บ้าง?',
     prayerLabel:'คำอธิษฐาน', prayerPh:'ลองเขียนคำอธิษฐานของวันนี้',
+    prayerReqLabel:'คำอธิษฐาน', prayerReqPh:'ลองเขียนคำอธิษฐานที่อยากทูลต่อพระเจ้าในวันนี้',
+    prayerForLabel:'วันนี้คุณอยากอธิษฐานเผื่อใคร?', prayerForPh:'วันนี้มีใครหรือเรื่องใดที่คุณอยากอธิษฐานเผื่อเป็นพิเศษ? (เช่น ครอบครัว เพื่อน โรงเรียน คริสตจักร บุคคลใดบุคคลหนึ่ง ประเทศชาติ ผู้ที่กำลังประสบความยากลำบาก)',
     thanksLabel:'ขอบคุณพระเจ้าวันนี้', thanksPh:(i)=>`เรื่องที่ขอบคุณ ${i}`, addThanks:'เพิ่มเรื่องขอบคุณ',
     toastLogin:'เข้าสู่ระบบแล้ว', toastLogout:'ออกจากระบบแล้ว',
     toastGoogleFailed:'เข้าสู่ระบบด้วย Google ไม่สำเร็จ กรุณาลองอีกครั้ง',
@@ -858,7 +874,11 @@ const STRINGS = {
     askLabel:'向神提问', askPlaceholderQ:'请选择一个问题',
     heardLabel:'记录所听见的声音', heardPh:'写下灵修中在心里听见的声音',
     appLabel:'落实到生活', appPh:'今天要在生活中实践的一件事',
+    appMeLabel:'我的生活', appMePh:'今天要如何把这句话应用到我的生活中？',
+    appServeLabel:'服侍他人', appServePh:'今天我可以做些什么来服侍他人？',
     prayerLabel:'祷告事项', prayerPh:'写下今天的祷告事项',
+    prayerReqLabel:'祷告事项', prayerReqPh:'写下今天想向神献上的祷告事项。',
+    prayerForLabel:'今天想为谁祷告？', prayerForPh:'今天有没有特别想为之祷告的人或事？（例如：家人、朋友、学校、教会、某个人、国家、正在经历困难的人等）',
     thanksLabel:'今天的感恩', thanksPh:(i)=>`感恩的事 ${i}`, addThanks:'添加感恩事项',
     toastLogin:'已登录', toastLogout:'已退出登录',
     toastGoogleFailed:'Google 登录失败，请重试',
@@ -1551,10 +1571,22 @@ function isRoomOwner(){
 }
 
 function blankEntry(){
-  return { content:{}, thought:{ verse:'', passage:'', godIs:'', askIndex:null, heard:'', application:'', prayer:'', thanks:['','',''] } };
+  return { content:{}, thought:{ verse:'', passage:'', godIs:'', askIndex:null, heard:'', appMe:'', appServe:'', prayerReq:'', prayerFor:'', thanks:['','',''] } };
+}
+/* Back-compat: entries saved before "삶으로의 적용"/"기도제목" were split into two fields
+ * each still carry the old flat `application`/`prayer` strings. Fold them into the new
+ * appMe/prayerReq fields once, in place, so past entries stay visible. */
+function migrateThoughtEntry(entry){
+  if(!entry || !entry.thought) return;
+  const t = entry.thought;
+  if(t.appMe===undefined) t.appMe = t.application || '';
+  if(t.appServe===undefined) t.appServe = '';
+  if(t.prayerReq===undefined) t.prayerReq = t.prayer || '';
+  if(t.prayerFor===undefined) t.prayerFor = '';
 }
 function getEntry(dateStr){
   if(!journalData[dateStr]) journalData[dateStr] = blankEntry();
+  else migrateThoughtEntry(journalData[dateStr]);
   return journalData[dateStr];
 }
 function hasEntryContent(dStr){
@@ -1564,7 +1596,7 @@ function entryHasContent(e){
   if(!e) return false;
   const c = Object.values(e.content||{}).some(v=>v && v.trim());
   const t = e.thought||{};
-  const th = ['verse','passage','godIs','heard','application','prayer'].some(k=>t[k] && t[k].trim())
+  const th = ['verse','passage','godIs','heard','appMe','appServe','prayerReq','prayerFor','application','prayer'].some(k=>t[k] && t[k].trim())
     || (t.askIndex!==null && t.askIndex!==undefined)
     || (t.thanks||[]).some(v=>v && v.trim());
   return c || th;
@@ -1585,7 +1617,7 @@ function entryHasAnyText(e){
   if(!e) return false;
   const c = Object.values(e.content||{}).some(v=>v && v.trim().length>0);
   const t = e.thought||{};
-  const th = ['verse','passage','godIs','heard','application','prayer'].some(k=>t[k] && t[k].trim().length>0)
+  const th = ['verse','passage','godIs','heard','appMe','appServe','prayerReq','prayerFor','application','prayer'].some(k=>t[k] && t[k].trim().length>0)
     || (t.thanks||[]).some(v=>v && v.trim().length>0);
   return c || th;
 }
@@ -1728,8 +1760,10 @@ function buildThoughtSnapshotHTML(key){
       <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('godIsLabel')}</div>${val(t.godIs)}</div>
       <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('askLabel')}</div><div class="snap-value">${escapeHtml(askQ)}</div></div>
       <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('heardLabel')}</div>${val(t.heard)}</div>
-      <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('appLabel')}</div>${val(t.application)}</div>
-      <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('prayerLabel')}</div>${val(t.prayer)}</div>
+      <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('appMeLabel')}</div>${val(t.appMe)}</div>
+      <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('appServeLabel')}</div>${val(t.appServe)}</div>
+      <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('prayerReqLabel')}</div>${val(t.prayerReq)}</div>
+      <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('prayerForLabel')}</div>${val(t.prayerFor)}</div>
       <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('thanksLabel')}</div>${thanksRows}</div>
       <div class="snap-footer">Bible Journal · 말씀 묵상 저널</div>
     </div>`;
@@ -1866,6 +1900,7 @@ async function loadAll(){
     const a = await window.storage.get('journal-entries');
     if(a) journalData = JSON.parse(a.value);
   }catch(e){}
+  Object.values(journalData).forEach(migrateThoughtEntry);
   try{
     const s = await window.storage.get('streak-data');
     if(s){
@@ -3674,12 +3709,18 @@ function renderThoughtTab(ds){
 
     <div class="section-block">
       <div class="s-label"><span class="dot"></span>${T('appLabel')}</div>
-      <textarea data-kind="thought" data-field="application" placeholder="${T('appPh')}">${t.application}</textarea>
+      <div class="sub-label">${T('appMeLabel')}</div>
+      <textarea data-kind="thought" data-field="appMe" placeholder="${T('appMePh')}">${t.appMe}</textarea>
+      <div class="sub-label second">${T('appServeLabel')}</div>
+      <textarea data-kind="thought" data-field="appServe" placeholder="${T('appServePh')}">${t.appServe}</textarea>
     </div>
 
     <div class="section-block">
       <div class="s-label"><span class="dot"></span>${T('prayerLabel')}</div>
-      <textarea data-kind="thought" data-field="prayer" placeholder="${T('prayerPh')}">${t.prayer}</textarea>
+      <div class="sub-label">${T('prayerReqLabel')}</div>
+      <textarea data-kind="thought" data-field="prayerReq" placeholder="${T('prayerReqPh')}">${t.prayerReq}</textarea>
+      <div class="sub-label second">${T('prayerForLabel')}</div>
+      <textarea data-kind="thought" data-field="prayerFor" placeholder="${T('prayerForPh')}">${t.prayerFor}</textarea>
     </div>
 
     <div class="section-block">
