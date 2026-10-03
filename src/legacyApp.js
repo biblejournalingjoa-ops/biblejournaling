@@ -5,6 +5,8 @@ import zhCuvData from './data/zh_cuv.json';
 import koGenesisData from './data/ko_genesis.json';
 import koExodusData from './data/ko_exodus.json';
 import koLeviticusData from './data/ko_leviticus.json';
+import koNumbersData from './data/ko_numbers.json';
+import koDeuteronomyData from './data/ko_deuteronomy.json';
 import { getBibleInfo } from './data/bibleInfo.js';
 import { getContentQuestions } from './data/contentQuestions.js';
 
@@ -77,8 +79,9 @@ function zhVerses(m, c){
   return (chapters && chapters[c-1]) || [];
 }
 
-// 한글 성경 본문: 현재는 창세기(1~50장), 출애굽기(1~40장), 레위기(1~27장)를 보유.
-// 민수기 이후는 추가되기 전까지 CHAPTER(데모 본문)로 대체된다.
+// 한글 성경 본문: 현재는 창세기(1~50장), 출애굽기(1~40장), 레위기(1~27장),
+// 민수기(1~36장), 신명기(1~34장)를 보유. 그 외 책은 데이터 준비 전까지
+// CHAPTER(데모 본문)로 대체된다.
 const KO_GENESIS_CHAPTERS = koGenesisData[0].chapters;
 function koGenesisVerses(c){
   return KO_GENESIS_CHAPTERS[c-1] || [];
@@ -90,6 +93,14 @@ function koExodusVerses(c){
 const KO_LEVITICUS_CHAPTERS = koLeviticusData[0].chapters;
 function koLeviticusVerses(c){
   return KO_LEVITICUS_CHAPTERS[c-1] || [];
+}
+const KO_NUMBERS_CHAPTERS = koNumbersData[0].chapters;
+function koNumbersVerses(c){
+  return KO_NUMBERS_CHAPTERS[c-1] || [];
+}
+const KO_DEUTERONOMY_CHAPTERS = koDeuteronomyData[0].chapters;
+function koDeuteronomyVerses(c){
+  return KO_DEUTERONOMY_CHAPTERS[c-1] || [];
 }
 
 const PALETTE = [
@@ -3652,7 +3663,9 @@ function chapterVerseTexts(m, c){
   if(m===1) return koGenesisVerses(c); // 창세기: 실제 본문 데이터 사용
   if(m===2) return koExodusVerses(c); // 출애굽기: 실제 본문 데이터 사용
   if(m===3) return koLeviticusVerses(c); // 레위기: 실제 본문 데이터 사용
-  return CHAPTER.verses; // 민수기 이후: 데이터 준비 전까지 기존 데모 본문 유지
+  if(m===4) return koNumbersVerses(c); // 민수기: 실제 본문 데이터 사용
+  if(m===5) return koDeuteronomyVerses(c); // 신명기: 실제 본문 데이터 사용
+  return CHAPTER.verses; // 그 외: 데이터 준비 전까지 기존 데모 본문 유지
 }
 function verseRef(m, c, n){
   return `${bookName(m)} ${c}:${n}`;
