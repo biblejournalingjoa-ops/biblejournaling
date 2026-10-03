@@ -9,6 +9,7 @@ import koNumbersData from './data/ko_numbers.json';
 import koDeuteronomyData from './data/ko_deuteronomy.json';
 import { getBibleInfo } from './data/bibleInfo.js';
 import { getContentQuestions } from './data/contentQuestions.js';
+import { ensurePushRegistration } from './push.js';
 
 /* ---------------- data ---------------- */
 const BOOKS = [
@@ -1949,6 +1950,21 @@ function computeSmartStartChapter(){
   if(!entryHasAnyText(entry)) return last; // last chapter isn't finished yet -> resume it
   return nextChapterOf(last.m, last.c); // last chapter is done -> move on
 }
+// Shared by the "go-today" nav action and by push-notification clicks
+// (see the service-worker message listener below), both of which land the
+// user on today's devotion/journaling screen the same way.
+function goToTodayJournal(){
+  const target = computeSmartStartChapter();
+  const m = target.m;
+  if(state.purchased.includes(m)){
+    enterChapter(m, target.c);
+  } else {
+    state.purchaseModal = m;
+    state.selectedPlan = 'year';
+    render();
+    showToast(T('toastNeedPurchase', bookName(m)));
+  }
+}
 
 /* ---------------- share snapshot (screenshot-style image) ---------------- */
 function escapeHtml(s){
@@ -2210,12 +2226,69 @@ async function loadAll(){
   }catch(e){}
   groupsLoaded = true;
   hideLoading();
+  openTodayJournalIfRequested();
+}
+// A push notification click (see public/sw.js) opens a fresh tab at
+// /?openToday=1 when no existing tab was found to focus+postMessage instead.
+// On first load, that query flag lands the user on today's journal the same
+// way "go-today" does, then the URL is cleaned up so a later refresh doesn't
+// re-trigger it.
+function openTodayJournalIfRequested(){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('openToday') === '1'){
+      goToTodayJournal();
+      params.delete('openToday');
+      const rest = params.toString();
+      const url = window.location.pathname + (rest ? `?${rest}` : '') + window.location.hash;
+      window.history.replaceState(null, '', url);
+    }
+  }catch(e){}
+}
+// A notification click while a tab is already open focuses it and posts this
+// message instead of reloading, so the running app just navigates in place.
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('message', (event)=>{
+    if(event.data && event.data.type === 'open-today-journal'){
+      goToTodayJournal();
+    }
+  });
 }
 function savePrefs(){
   window.storage.set('app-prefs', JSON.stringify({fontSize:state.fontSize, lang:state.lang, theme:state.theme}), false).catch(()=>{});
 }
 function saveNotifSettings(){
   window.storage.set('notif-settings', JSON.stringify(notifSettings), false).catch(()=>{});
+}
+// Converts the local flat { mon:'07:00'|null, ... } shape into the
+// { mon:{active,time}, ... } shape the Firestore users/{uid}.notificationSettings
+// schema uses, so the local UI state stays simple while the synced doc matches spec.
+function notifSettingsForFirestore(){
+  const out = {};
+  NOTIF_DAYS.forEach(d=>{
+    const time = notifSettings[d];
+    out[d] = { active: !!time, time: time || '07:00' };
+  });
+  return out;
+}
+function syncNotificationSettingsToFirestore(){
+  const uid = state.user && state.user.uid;
+  if(!uid || !(window.__firebaseDB && window.__firebaseDB.ready)) return;
+  window.__firebaseDB.updateNotificationSettings(uid, notifSettingsForFirestore())
+    .catch(err=>console.error('[notif] Firestore notificationSettings save failed:', err));
+}
+// Requests notification permission + an FCM token for this browser and, if a
+// user is logged in, saves the token to their Firestore profile. Safe to call
+// repeatedly (Notification.requestPermission() no-ops once answered, and a
+// missing VAPID key or unsupported browser just resolves token:null).
+function registerPushForCurrentUser(){
+  ensurePushRegistration().then(({ token })=>{
+    const uid = state.user && state.user.uid;
+    if(token && uid && window.__firebaseDB && window.__firebaseDB.ready){
+      window.__firebaseDB.updateFcmToken(uid, token)
+        .catch(err=>console.error('[notif] Firestore fcmToken save failed:', err));
+    }
+  }).catch(err=>console.error('[push] registration failed:', err));
 }
 function savePurchased(){
   window.storage.set('purchased-months', JSON.stringify(state.purchased), false).catch(()=>{});
@@ -4275,6 +4348,10 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     saveNotifSettings();
     state.notifDayOpen = null;
     render();
+    // Turning a day on is the moment we ask for notification permission, per
+    // spec — not proactively on app load, so the prompt has clear context.
+    registerPushForCurrentUser();
+    syncNotificationSettingsToFirestore();
   }
   else if(action==='turn-off-notif-day'){
     const d = el.dataset.day;
@@ -4282,24 +4359,14 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     saveNotifSettings();
     state.notifDayOpen = null;
     render();
+    syncNotificationSettingsToFirestore();
   }
   else if(action==='set-fontsize'){ state.fontSize = el.dataset.size; savePrefs(); render(); }
   else if(action==='open-language'){ state.languageModal=true; render(); }
   else if(action==='close-language'){ state.languageModal=false; render(); }
   else if(action==='set-lang'){ state.lang = el.dataset.lang; savePrefs(); state.languageModal=false; render(); }
   else if(action==='set-theme'){ state.theme = el.dataset.theme; savePrefs(); render(); }
-  else if(action==='go-today'){
-    const target = computeSmartStartChapter();
-    const m = target.m;
-    if(state.purchased.includes(m)){
-      enterChapter(m, target.c);
-    } else {
-      state.purchaseModal = m;
-      state.selectedPlan = 'year';
-      render();
-      showToast(T('toastNeedPurchase', bookName(m)));
-    }
-  }
+  else if(action==='go-today'){ goToTodayJournal(); }
   else if(action==='open-purchase'){ state.purchaseModal = Number(el.dataset.month); state.selectedPlan='year'; render(); }
   else if(action==='close-purchase'){ state.purchaseModal=null; render(); }
   else if(action==='select-plan'){ state.selectedPlan = el.dataset.plan; render(); }

@@ -65,3 +65,32 @@ export function subscribeToUser(uid, onChange) {
     onChange(snap.exists() ? snap.data() : null);
   });
 }
+
+/**
+ * 요일별 묵상 알림 설정을 users/{uid}.notificationSettings에 저장합니다.
+ * 형태: { mon: { active, time }, tue: { active, time }, ... } (요일별 7개 키 모두 포함).
+ * 클라이언트에서 전체 요일 묶음을 매번 다시 계산해서 넘기므로 그대로 덮어써도 되지만,
+ * 다른 프로필 필드(이름/사진 등)는 건드리지 않도록 merge로 저장합니다.
+ */
+export async function updateNotificationSettings(uid, notificationSettings) {
+  if (!uid) throw new Error("updateNotificationSettings: uid is required");
+  await setDoc(
+    doc(db, "users", uid),
+    { notificationSettings, updatedAt: serverTimestamp() },
+    { merge: true }
+  );
+}
+
+/**
+ * 이 브라우저의 FCM 등록 토큰을 users/{uid}.fcmToken에 저장합니다. 토큰은 기기/브라우저
+ * 조합마다 달라지고 주기적으로 재발급될 수 있으므로, 알림 권한을 요청할 때마다
+ * (ensurePushRegistration 성공 시) 최신 값으로 덮어씁니다.
+ */
+export async function updateFcmToken(uid, fcmToken) {
+  if (!uid) throw new Error("updateFcmToken: uid is required");
+  await setDoc(
+    doc(db, "users", uid),
+    { fcmToken, updatedAt: serverTimestamp() },
+    { merge: true }
+  );
+}
