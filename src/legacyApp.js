@@ -332,7 +332,8 @@ const STRINGS = {
     toastAvatarLoginRequired:'로그인 정보가 만료됐어요. 다시 로그인한 뒤 시도해 주세요',
     toastPurchaseYear:'1년 전체 이용권 구매가 완료되었습니다', toastPurchaseMonth:(name)=>`${name} 노트 구매가 완료되었습니다`,
     toastNeedPurchase:(name)=>`${name} 저널을 먼저 구매해 주세요`,
-    sharePickTitle:'무엇을 공유할까요?', sharePickSub:'오늘 작성한 기록을 이미지로 만들어 공유해요.',
+    sharePickTitle:'무엇을 공유할까요?', sharePickSub:'공유할 책과 장을 선택하고, 작성한 기록을 이미지로 만들어 공유해요.',
+    toastNoRecordForShare:'선택한 장에 작성된 기록이 없습니다',
     shareContentName:'내용 질문 기록', shareContentDesc:'오늘 본문에 대한 질문과 답',
     shareThoughtName:'생각 질문 기록', shareThoughtDesc:'오늘의 묵상과 기도, 감사',
     shareBothName:'둘 다 공유', shareBothDesc:'내용 질문과 생각 질문 기록을 함께 보내요',
@@ -507,7 +508,8 @@ const STRINGS = {
     toastAvatarLoginRequired:'Your session expired. Please sign in again and retry',
     toastPurchaseYear:'Full year pass unlocked', toastPurchaseMonth:(name)=>`${name} journal unlocked`,
     toastNeedPurchase:(name)=>`Unlock the ${name} journal first`,
-    sharePickTitle:'What would you like to share?', sharePickSub:"Turn today's entry into an image and share it.",
+    sharePickTitle:'What would you like to share?', sharePickSub:'Choose a book and chapter, then turn that entry into an image and share it.',
+    toastNoRecordForShare:'There is no saved record for the selected chapter',
     shareContentName:'Content Questions', shareContentDesc:"Today's passage questions and answers",
     shareThoughtName:'Reflection', shareThoughtDesc:"Today's reflection, prayer, and gratitude",
     shareBothName:'Share both', shareBothDesc:'Send both content and reflection records together',
@@ -682,7 +684,8 @@ const STRINGS = {
     toastAvatarLoginRequired:'ログイン情報の有効期限が切れました。再度ログインしてからお試しください',
     toastPurchaseYear:'年間全巻利用券の購入が完了しました', toastPurchaseMonth:(name)=>`${name}ノートの購入が完了しました`,
     toastNeedPurchase:(name)=>`先に${name}ジャーナルを購入してください`,
-    sharePickTitle:'何を共有しますか?', sharePickSub:'今日書いた記録を画像にして共有します。',
+    sharePickTitle:'何を共有しますか?', sharePickSub:'共有する書物と章を選んで、記録を画像にして共有します。',
+    toastNoRecordForShare:'選択した章には作成された記録がありません',
     shareContentName:'内容質問記録', shareContentDesc:'今日の本文についての質問と答え',
     shareThoughtName:'黙想質問記録', shareThoughtDesc:'今日の黙想と祈り、感謝',
     shareBothName:'両方共有', shareBothDesc:'内容質問と黙想質問の記録を一緒に送ります',
@@ -857,7 +860,8 @@ const STRINGS = {
     toastAvatarLoginRequired:'เซสชันของคุณหมดอายุ กรุณาเข้าสู่ระบบใหม่แล้วลองอีกครั้ง',
     toastPurchaseYear:'ซื้อแพ็กเกจรายปีทั้งหมดสำเร็จแล้ว', toastPurchaseMonth:(name)=>`ซื้อสมุดบันทึก ${name} สำเร็จแล้ว`,
     toastNeedPurchase:(name)=>`กรุณาซื้อสมุดบันทึก ${name} ก่อน`,
-    sharePickTitle:'ต้องการแบ่งปันอะไร?', sharePickSub:'สร้างภาพจากบันทึกของวันนี้เพื่อแบ่งปัน',
+    sharePickTitle:'ต้องการแบ่งปันอะไร?', sharePickSub:'เลือกหนังสือและบทที่ต้องการแบ่งปัน แล้วสร้างภาพจากบันทึกเพื่อแชร์',
+    toastNoRecordForShare:'ไม่มีบันทึกที่เขียนไว้ในบทที่เลือก',
     shareContentName:'บันทึกคำถามเนื้อหา', shareContentDesc:'คำถามและคำตอบเกี่ยวกับบทนี้ของวันนี้',
     shareThoughtName:'บันทึกคำถามเฝ้าเดี่ยว', shareThoughtDesc:'การเฝ้าเดี่ยว คำอธิษฐาน และคำขอบคุณของวันนี้',
     shareBothName:'แบ่งปันทั้งสองอย่าง', shareBothDesc:'ส่งบันทึกคำถามเนื้อหาและคำถามเฝ้าเดี่ยวไปพร้อมกัน',
@@ -1032,7 +1036,8 @@ const STRINGS = {
     toastAvatarLoginRequired:'登录信息已过期，请重新登录后重试',
     toastPurchaseYear:'全年通行证购买完成', toastPurchaseMonth:(name)=>`${name} 笔记购买完成`,
     toastNeedPurchase:(name)=>`请先购买 ${name} 灵修笔记`,
-    sharePickTitle:'要分享什么?', sharePickSub:'把今天的记录做成图片来分享。',
+    sharePickTitle:'要分享什么?', sharePickSub:'选择要分享的书卷和章节，把记录做成图片来分享。',
+    toastNoRecordForShare:'所选章节还没有写下的记录',
     shareContentName:'内容问题记录', shareContentDesc:'关于今天本文的问题与答案',
     shareThoughtName:'思考问题记录', shareThoughtDesc:'今天的灵修、祷告与感恩',
     shareBothName:'两者都分享', shareBothDesc:'一起发送内容问题与思考问题的记录',
@@ -1445,6 +1450,8 @@ let state = {
   createGroupOpen:false,
   inviteGroupId:null,       // group id whose invite sheet is open
   shareGroupId:null,        // group id whose share-picker sheet is open
+  sharePickMonth:null,      // book (BOOKS[].m) chosen in the share picker's book/chapter selector
+  sharePickChapter:null,    // chapter chosen in the share picker's book/chapter selector
   shareBusy:false,          // true while generating the snapshot image
   imageViewer:null,         // { groupId, msgId, index } when the full-screen image viewer is open
   chapterInfoOpen:false,    // whether the chapter background info sheet is open
@@ -1833,13 +1840,21 @@ function hasEntryContent(dStr){
   return entryHasContent(journalData[dStr]);
 }
 function entryHasContent(e){
+  return entryHasContentAnswers(e) || entryHasThoughtAnswers(e);
+}
+// Split out of entryHasContent() so the share picker can check "is there anything
+// to share" per kind (content-question vs thought-question) instead of only "is
+// there anything at all", so e.g. picking "내용 질문 기록" on a chapter that only
+// has thought answers correctly reports no record rather than sharing a blank card.
+function entryHasContentAnswers(e){
+  return !!(e && Object.values(e.content||{}).some(v=>v && v.trim()));
+}
+function entryHasThoughtAnswers(e){
   if(!e) return false;
-  const c = Object.values(e.content||{}).some(v=>v && v.trim());
   const t = e.thought||{};
-  const th = ['verse','passage','godIs','heard','appMe','appServe','prayerReq','prayerFor','application','prayer'].some(k=>t[k] && t[k].trim())
+  return ['verse','passage','godIs','heard','appMe','appServe','prayerReq','prayerFor','application','prayer'].some(k=>t[k] && t[k].trim())
     || (t.askIndex!==null && t.askIndex!==undefined)
     || (t.thanks||[]).some(v=>v && v.trim());
-  return c || th;
 }
 function isBookComplete(m){
   const prefix = `${YEAR}-${pad(m)}-`;
@@ -1941,6 +1956,23 @@ function findFurthestChapterWithContent(){
   });
   return best;
 }
+/* Default book/chapter the share picker opens to: whichever chapter the user
+ * was last actively viewing (if it actually has a written record), otherwise
+ * the furthest chapter anywhere that has one, otherwise wherever they're
+ * currently browsing, otherwise Genesis 1 — this always returns a real
+ * {m,c} pair and is the fix for the "창세기 null장" bug, which happened
+ * because the share flow used to read state.activeMonth/activeChapter
+ * directly and those default to null until a chapter is opened. */
+function findMostRecentEntryForShare(){
+  if(state.lastActiveMonth && state.lastActiveChapter &&
+     entryHasAnyText(journalData[ckey(state.lastActiveMonth, state.lastActiveChapter)])){
+    return { m: state.lastActiveMonth, c: state.lastActiveChapter };
+  }
+  const furthest = findFurthestChapterWithContent();
+  if(furthest) return furthest;
+  if(state.activeMonth && state.activeChapter) return { m: state.activeMonth, c: state.activeChapter };
+  return { m: 1, c: 1 };
+}
 function computeSmartStartChapter(){
   const last = (state.lastActiveMonth && state.lastActiveChapter)
     ? { m: state.lastActiveMonth, c: state.lastActiveChapter }
@@ -1992,10 +2024,16 @@ function todayDateLabel(){
   if(lang==='zh') return `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 (${wd})`;
   return `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 (${wd})`;
 }
+// Both snapshot builders take a ckey(m,c) string and derive the book/chapter
+// label and question set from THAT key — never from state.activeMonth/
+// activeChapter — so sharing a chapter other than whichever one happens to be
+// open in the daily screen (e.g. from the share picker's own book/chapter
+// selector) always shows the right title instead of a stale or null one.
 function buildContentSnapshotHTML(key){
+  const [m, c] = key.split('-').map(Number);
   const entry = getEntry(key);
   const noAnswer = T('snapNoAnswerContent');
-  const data = getContentQuestions(bookDataId(state.activeMonth), state.activeChapter, state.lang);
+  const data = getContentQuestions(bookDataId(m), c, state.lang);
   const questions = data ? data.questions : [];
   const cards = questions.map(q=>{
     const qid = 'q'+q.questionNumber;
@@ -2009,7 +2047,7 @@ function buildContentSnapshotHTML(key){
   return `
     <div class="snap-card" id="snap-render-target">
       <div class="snap-header">
-        <div class="snap-eyebrow">${escapeHtml(chapterLabel(bookName(state.activeMonth), state.activeChapter))} · ${T('navContent')}</div>
+        <div class="snap-eyebrow">${escapeHtml(chapterLabel(bookName(m), c))} · ${T('navContent')}</div>
         <div class="snap-date">${todayDateLabel()}</div>
       </div>
       ${cards}
@@ -2017,6 +2055,7 @@ function buildContentSnapshotHTML(key){
     </div>`;
 }
 function buildThoughtSnapshotHTML(key){
+  const [m, c] = key.split('-').map(Number);
   const entry = getEntry(key);
   const t = entry.thought;
   const noAnswer = T('snapNoAnswerThought');
@@ -2029,7 +2068,7 @@ function buildThoughtSnapshotHTML(key){
   return `
     <div class="snap-card" id="snap-render-target">
       <div class="snap-header">
-        <div class="snap-eyebrow">${escapeHtml(chapterLabel(bookName(state.activeMonth), state.activeChapter))} · ${T('navThought')}</div>
+        <div class="snap-eyebrow">${escapeHtml(chapterLabel(bookName(m), c))} · ${T('navThought')}</div>
         <div class="snap-date">${todayDateLabel()}</div>
       </div>
       <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('verseLabel')}</div>${val(t.verse)}</div>
@@ -3679,12 +3718,29 @@ function renderInviteSheet(){
 /* ---------------- share picker sheet ---------------- */
 function renderSharePicker(){
   const gid = state.shareGroupId;
+  const m = state.sharePickMonth;
+  const c = state.sharePickChapter;
+  const count = CHAPTER_COUNTS[m] || 1;
+  const bookChips = BOOKS.map(b=>`
+    <button class="share-book-chip ${b.m===m?'active':''}" data-action="select-share-book" data-month="${b.m}">${escapeHtml(bookDisplayName(b))}</button>
+  `).join('');
+  let chapterCells = '';
+  for(let cc=1; cc<=count; cc++){
+    const has = hasEntryContent(ckey(m, cc));
+    chapterCells += `
+      <button class="chap-cell small ${cc===c?'selected':''} ${has?'complete':''}" data-action="select-share-chapter" data-chapter="${cc}">
+        <span class="chap-num">${cc}</span>
+      </button>`;
+  }
   return `
   <div class="overlay" data-action="close-share-picker">
     <div class="sheet" data-action="noop">
       <div class="sheet-handle"></div>
       <div class="modal-title">${T('sharePickTitle')}</div>
       <p class="modal-sub">${T('sharePickSub')}</p>
+      <div class="share-book-row">${bookChips}</div>
+      <div class="share-chapter-label">${chapterLabel(bookName(m), c)}</div>
+      <div class="share-chapter-grid chap-grid">${chapterCells}</div>
       <button class="share-pick-option" data-action="do-share" data-kind="content" data-id="${gid}" ${state.shareBusy?'disabled':''}>
         <div class="sp-icon">${ICON.chat}</div>
         <div>
@@ -4630,10 +4686,24 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='open-share-picker'){
     state.shareGroupId = el.dataset.id;
+    const target = findMostRecentEntryForShare();
+    state.sharePickMonth = target.m;
+    state.sharePickChapter = target.c;
     render();
   }
   else if(action==='close-share-picker'){
     state.shareGroupId = null;
+    render();
+  }
+  else if(action==='select-share-book'){
+    const m = Number(el.dataset.month);
+    state.sharePickMonth = m;
+    const count = CHAPTER_COUNTS[m] || 1;
+    if(state.sharePickChapter > count) state.sharePickChapter = count;
+    render();
+  }
+  else if(action==='select-share-chapter'){
+    state.sharePickChapter = Number(el.dataset.chapter);
     render();
   }
   else if(action==='open-image-viewer'){
@@ -4769,12 +4839,22 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     const kind = el.dataset.kind;
     const g = getGroup(gid);
     if(!g || state.shareBusy) return;
+    const shareM = state.sharePickMonth;
+    const shareC = state.sharePickChapter;
+    const key = ckey(shareM, shareC);
+    const entry = journalData[key];
+    const hasRecord = kind==='content' ? entryHasContentAnswers(entry)
+      : kind==='thought' ? entryHasThoughtAnswers(entry)
+      : entryHasContentAnswers(entry) || entryHasThoughtAnswers(entry);
+    if(!hasRecord){
+      showToast(T('toastNoRecordForShare'));
+      return;
+    }
     state.shareGroupId = null;
     state.shareBusy = true;
     render();
     showToast(T('shareGenerating'));
-    const key = ckey(state.activeMonth, state.activeChapter);
-    const label = chapterLabel(bookName(state.activeMonth), state.activeChapter);
+    const label = chapterLabel(bookName(shareM), shareC);
 
     if(kind==='both'){
       Promise.all([
