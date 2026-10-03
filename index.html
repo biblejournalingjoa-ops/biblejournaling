@@ -957,26 +957,30 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 }
 .share-back-row svg{width:14px;height:14px;transform:rotate(180deg);}
 
-/* ---------- off-screen snapshot render target ---------- */
+/* ---------- off-screen snapshot render target ----------
+   Captured by html2canvas to produce the shared-record image; kept at a
+   tighter padding/spacing rhythm than a normal on-screen card so the
+   generated PNG trends toward a more card-like ratio instead of an
+   ever-growing vertical strip as questions stack up. */
 .snap-card{
   position:fixed;top:0;left:-99999px;width:360px;background:#FBF6EF;
-  padding:26px 22px;font-family:'Noto Sans KR',sans-serif;color:#2A2724;
+  padding:22px 20px;font-family:'Noto Sans KR',sans-serif;color:#2A2724;
 }
-.snap-header{margin-bottom:16px;}
+.snap-header{margin-bottom:14px;}
 .snap-eyebrow{font-size:calc(11px * var(--fs-scale));color:#C08A2E;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
-.snap-date{font-family:'Noto Serif KR',serif;font-size:calc(19px * var(--fs-scale));font-weight:700;margin-top:4px;}
-.snap-qcard{background:#FFFFFF;border-radius:16px;padding:16px;margin-bottom:12px;}
+.snap-date{font-family:'Noto Serif KR',serif;font-size:calc(18px * var(--fs-scale));font-weight:700;margin-top:4px;}
+.snap-qcard{background:#FFFFFF;border-radius:14px;padding:13px 14px;margin-bottom:9px;}
 .snap-ref{
   display:inline-block;background:#FBF6EF;color:#4F6B8F;font-weight:700;font-size:calc(11.5px * var(--fs-scale));
   padding:5px 10px;border-radius:20px;margin-bottom:9px;border:1px solid #E9E0D3;
 }
-.snap-qtext{font-size:calc(13.5px * var(--fs-scale));line-height:1.55;margin-bottom:10px;font-weight:500;}
-.snap-answer{font-size:calc(13px * var(--fs-scale));line-height:1.6;padding:10px 12px;background:#FBF6EF;border-radius:10px;}
+.snap-qtext{font-size:calc(13px * var(--fs-scale));line-height:1.5;margin-bottom:8px;font-weight:500;}
+.snap-answer{font-size:calc(12.5px * var(--fs-scale));line-height:1.55;padding:9px 11px;background:#FBF6EF;border-radius:10px;}
 .snap-answer.empty{color:#B3AAA0;font-style:italic;}
-.snap-section{margin-bottom:16px;}
+.snap-section{margin-bottom:13px;}
 .snap-slabel{
   display:flex;align-items:center;gap:7px;font-size:calc(13px * var(--fs-scale));font-weight:700;
-  margin-bottom:8px;font-family:'Noto Serif KR',serif;
+  margin-bottom:7px;font-family:'Noto Serif KR',serif;
 }
 .snap-slabel .dot{width:6px;height:6px;border-radius:50%;background:#3F5670;flex-shrink:0;}
 .snap-value{
@@ -992,13 +996,23 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   text-align:center;font-family:'Playfair Display',serif;font-style:italic;font-size:calc(11px * var(--fs-scale));
   color:#B3AAA0;margin-top:6px;letter-spacing:.04em;
 }
-.shared-snap-img{width:100%;border-radius:14px;display:block;border:1px solid var(--line);box-shadow:var(--shadow-sm);}
-.snap-img-wrap{max-width:220px;}
+/* Shared-record chat thumbnails: both the single-image and side-by-side
+   layouts are capped at the same "medium" box regardless of how tall the
+   underlying captured card is, so a single share never stretches to fill
+   the whole message column and a paired share never shrinks to the point
+   its text is unreadable. The full card is still reachable via the
+   tap-to-expand image viewer, so cropping a preview here is safe. */
+.shared-snap-img{
+  width:240px;max-width:240px;min-width:240px;height:240px;
+  object-fit:cover;object-position:top;
+  border-radius:14px;display:block;border:1px solid var(--line);box-shadow:var(--shadow-sm);
+}
+.snap-img-wrap{width:240px;}
 .snap-img-cap{font-size:calc(10.5px * var(--fs-scale));color:var(--ink-faint);margin-top:5px;padding:0 2px;}
 
-.snap-img-pair-wrap{max-width:260px;}
+.snap-img-pair-wrap{width:240px;}
 .snap-img-pair{display:flex;gap:4px;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);border:1px solid var(--line);}
-.shared-snap-img-half{width:50%;height:150px;object-fit:cover;object-position:top;display:block;}
+.shared-snap-img-half{width:50%;min-width:50%;height:200px;object-fit:cover;object-position:top;display:block;}
 
 /* ---------- full-screen image viewer ---------- */
 .image-viewer{
