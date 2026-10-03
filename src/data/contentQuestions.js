@@ -12,6 +12,14 @@
  * (leviticus, numbers, deuteronomy, …) as their own top-level keys once
  * their source material is provided — existing entries must not be touched
  * when doing so.
+ *
+ * Multi-language lookup: CONTENT_QUESTIONS_BY_BOOK is keyed first by
+ * language code (ko/en/ja/th/zh), then by book id -> chapter, same shape
+ * as before per language. Only 'ko' is populated today; other languages
+ * fall back to 'ko' in getContentQuestions() until their own question sets
+ * are provided (translated book-by-book, the same way the KJV scripture
+ * text was supplied) — the Korean data below must not be touched when a
+ * language is added, only a new top-level language key inserted.
  */
 
 export const CONTENT_QUESTIONS_META = {
@@ -22,7 +30,7 @@ export const CONTENT_QUESTIONS_META = {
   deuteronomy: { bookName: '신명기', bookNameEn: 'Deuteronomy', translation: '킹제임스흠정역' },
 };
 
-export const CONTENT_QUESTIONS_BY_BOOK = {
+const CONTENT_QUESTIONS_BY_BOOK_KO = {
   genesis: {
     1: [
       { questionNumber: 1, question: '창1:1에 따르면 세상 역사의 시작에 어떤 일이 일어났을까?' },
@@ -1478,13 +1486,23 @@ export const CONTENT_QUESTIONS_BY_BOOK = {
   },
 };
 
+// Per-language lookup; only 'ko' is populated, see file header. Add 'en'/'ja'/'th'/'zh'
+// keys here (same bookId -> chapter -> questions shape as CONTENT_QUESTIONS_BY_BOOK_KO)
+// once translated question sets are provided for that language.
+export const CONTENT_QUESTIONS_BY_BOOK = {
+  ko: CONTENT_QUESTIONS_BY_BOOK_KO,
+};
+
 /**
  * @param {string} bookId - e.g. 'genesis'
  * @param {number} chapter
+ * @param {string} [lang] - language code (ko/en/ja/th/zh); falls back to 'ko'
+ *   when omitted or when that language has no question data yet.
  * @returns {{ meta: object, chapter: number, questions: {questionNumber:number, question:string}[] } | null}
  */
-export function getContentQuestions(bookId, chapter) {
-  const book = bookId && CONTENT_QUESTIONS_BY_BOOK[bookId];
+export function getContentQuestions(bookId, chapter, lang) {
+  const byBook = CONTENT_QUESTIONS_BY_BOOK[lang] || CONTENT_QUESTIONS_BY_BOOK.ko;
+  const book = bookId && byBook[bookId];
   const questions = book && book[chapter];
   if (!questions) return null;
   return { meta: CONTENT_QUESTIONS_META[bookId] || null, chapter, questions };

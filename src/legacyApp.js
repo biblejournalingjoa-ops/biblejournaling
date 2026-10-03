@@ -375,6 +375,29 @@ const STRINGS = {
     toastRoomPhotoSaved:'채팅방 프로필 사진이 변경되었습니다',
     toastRoomPhotoSaveFailed:'채팅방 프로필 사진 업로드에 실패했어요. 다시 시도해 주세요',
     toastRoomGone:'더 이상 존재하지 않는 채팅방이에요',
+    newGroupBtn:'그룹방 만들기',
+    noGroupsBody:'아직 함께하는 그룹방이 없어요.<br>그룹방을 만들고 링크로 초대해보세요.',
+    noConversationYet:'아직 대화가 없어요',
+    conversationCount:(n)=>`${n}개 대화`,
+    chatInputPlaceholder:'메시지를 입력하세요',
+    sharedMeditationCap:'공유된 묵상',
+    createGroupSub:'가족, 소그룹, 친구들과 함께 묵상을 나눌 그룹방을 만들어보세요.',
+    groupNamePlaceholder:'예: 수요 소그룹',
+    createBtn:'만들기',
+    inviteToTitle:(name)=>`${name}에 초대하기`,
+    inviteSub:'아래 링크를 공유하면 상대방이 그룹방에 바로 들어올 수 있어요.',
+    copyBtn:'복사',
+    kakaoShareName:'카카오톡으로 보내기',
+    kakaoShareDesc:'대화방에 초대 링크를 전달해요',
+    smsShareName:'문자로 보내기',
+    smsShareDesc:'SMS로 초대 링크를 전달해요',
+    sysGroupCreated:'그룹방이 만들어졌어요. 링크로 초대해 함께 말씀을 나눠보세요.',
+    defaultGroupName:'새 그룹방',
+    toastGroupCreated:'그룹방이 만들어졌어요',
+    kakaoChannelLabel:'카카오톡',
+    smsChannelLabel:'문자',
+    toastInviteChannelCopied:(channel)=>`${channel} 공유 화면으로 연결하고 링크를 복사했어요`,
+    toastInviteCopied:'초대 링크가 복사되었어요',
   },
   en:{
     yearTag:'Bible Journaling', yearSub:'One journal a month, twelve months walking with the Word',
@@ -527,6 +550,29 @@ const STRINGS = {
     toastRoomPhotoSaved:'Chat room photo updated',
     toastRoomPhotoSaveFailed:'Could not upload the chat room photo. Please try again',
     toastRoomGone:'This chat room no longer exists',
+    newGroupBtn:'Create a Group',
+    noGroupsBody:"You don't have any shared groups yet.<br>Create one and invite others with a link.",
+    noConversationYet:'No conversation yet',
+    conversationCount:(n)=>`${n} messages`,
+    chatInputPlaceholder:'Type a message',
+    sharedMeditationCap:'Shared devotion',
+    createGroupSub:'Create a group to share your devotions with family, small groups, or friends.',
+    groupNamePlaceholder:'e.g. Wednesday small group',
+    createBtn:'Create',
+    inviteToTitle:(name)=>`Invite to ${name}`,
+    inviteSub:'Share the link below so others can join the group right away.',
+    copyBtn:'Copy',
+    kakaoShareName:'Send via KakaoTalk',
+    kakaoShareDesc:'Send the invite link in a chat',
+    smsShareName:'Send via text message',
+    smsShareDesc:'Send the invite link via SMS',
+    sysGroupCreated:'The group has been created. Invite others with the link and share the Word together.',
+    defaultGroupName:'New Group',
+    toastGroupCreated:'Group created',
+    kakaoChannelLabel:'KakaoTalk',
+    smsChannelLabel:'Text message',
+    toastInviteChannelCopied:(channel)=>`Opening ${channel} share screen — link copied`,
+    toastInviteCopied:'Invite link copied',
   },
   ja:{
     yearTag:'Bible Journaling', yearSub:'月に1冊、御言葉と共に歩む12か月',
@@ -679,6 +725,29 @@ const STRINGS = {
     toastRoomPhotoSaved:'チャットルームのプロフィール写真が変更されました',
     toastRoomPhotoSaveFailed:'チャットルームのプロフィール写真のアップロードに失敗しました。もう一度お試しください',
     toastRoomGone:'これ以上存在しないチャットルームです',
+    newGroupBtn:'グループ作成',
+    noGroupsBody:'まだ一緒に分かち合うグループがありません。<br>グループを作ってリンクで招待してみましょう。',
+    noConversationYet:'まだ会話がありません',
+    conversationCount:(n)=>`${n}件の会話`,
+    chatInputPlaceholder:'メッセージを入力してください',
+    sharedMeditationCap:'共有された黙想',
+    createGroupSub:'家族や小グループ、友人と黙想を分かち合うグループを作りましょう。',
+    groupNamePlaceholder:'例：水曜スモールグループ',
+    createBtn:'作成',
+    inviteToTitle:(name)=>`${name}に招待する`,
+    inviteSub:'以下のリンクを共有すると、相手がすぐにグループに参加できます。',
+    copyBtn:'コピー',
+    kakaoShareName:'カカオトークで送る',
+    kakaoShareDesc:'トークルームに招待リンクを送ります',
+    smsShareName:'SMSで送る',
+    smsShareDesc:'SMSで招待リンクを送ります',
+    sysGroupCreated:'グループが作成されました。リンクで招待して一緒にみことばを分かち合いましょう。',
+    defaultGroupName:'新しいグループ',
+    toastGroupCreated:'グループが作成されました',
+    kakaoChannelLabel:'カカオトーク',
+    smsChannelLabel:'SMS',
+    toastInviteChannelCopied:(channel)=>`${channel}の共有画面につなぎ、リンクをコピーしました`,
+    toastInviteCopied:'招待リンクをコピーしました',
   },
   th:{
     yearTag:'Bible Journaling', yearSub:'หนึ่งเดือนหนึ่งเล่ม เดินไปกับพระวจนะตลอดสิบสองเดือน',
@@ -831,6 +900,29 @@ const STRINGS = {
     toastRoomPhotoSaved:'เปลี่ยนรูปโปรไฟล์ห้องแชทแล้ว',
     toastRoomPhotoSaveFailed:'อัปโหลดรูปโปรไฟล์ห้องแชทไม่สำเร็จ กรุณาลองอีกครั้ง',
     toastRoomGone:'ห้องแชทนี้ไม่มีอยู่แล้ว',
+    newGroupBtn:'สร้างกลุ่ม',
+    noGroupsBody:'คุณยังไม่มีกลุ่มที่แบ่งปันด้วยกัน<br>สร้างกลุ่มแล้วเชิญเพื่อนด้วยลิงก์ได้เลย',
+    noConversationYet:'ยังไม่มีการสนทนา',
+    conversationCount:(n)=>`${n} ข้อความ`,
+    chatInputPlaceholder:'พิมพ์ข้อความ',
+    sharedMeditationCap:'บทเฝ้าเดี่ยวที่แบ่งปัน',
+    createGroupSub:'สร้างกลุ่มเพื่อแบ่งปันการเฝ้าเดี่ยวกับครอบครัว กลุ่มเล็ก หรือเพื่อนๆ',
+    groupNamePlaceholder:'เช่น กลุ่มเล็กวันพุธ',
+    createBtn:'สร้าง',
+    inviteToTitle:(name)=>`เชิญเข้าร่วม ${name}`,
+    inviteSub:'แชร์ลิงก์ด้านล่างเพื่อให้เพื่อนเข้าร่วมกลุ่มได้ทันที',
+    copyBtn:'คัดลอก',
+    kakaoShareName:'ส่งผ่าน KakaoTalk',
+    kakaoShareDesc:'ส่งลิงก์เชิญในห้องแชท',
+    smsShareName:'ส่งผ่านข้อความ SMS',
+    smsShareDesc:'ส่งลิงก์เชิญผ่าน SMS',
+    sysGroupCreated:'สร้างกลุ่มเรียบร้อยแล้ว เชิญเพื่อนด้วยลิงก์แล้วมาแบ่งปันพระวจนะด้วยกันนะ',
+    defaultGroupName:'กลุ่มใหม่',
+    toastGroupCreated:'สร้างกลุ่มเรียบร้อยแล้ว',
+    kakaoChannelLabel:'KakaoTalk',
+    smsChannelLabel:'SMS',
+    toastInviteChannelCopied:(channel)=>`เปิดหน้าจอแชร์ ${channel} และคัดลอกลิงก์แล้ว`,
+    toastInviteCopied:'คัดลอกลิงก์เชิญแล้ว',
   },
   zh:{
     yearTag:'Bible Journaling', yearSub:'一月一本，与话语同行的十二个月',
@@ -983,6 +1075,29 @@ const STRINGS = {
     toastRoomPhotoSaved:'聊天室头像已更换',
     toastRoomPhotoSaveFailed:'聊天室头像上传失败，请重试',
     toastRoomGone:'该聊天室已不存在',
+    newGroupBtn:'创建小组',
+    noGroupsBody:'还没有一起分享的小组。<br>创建小组并通过链接邀请吧。',
+    noConversationYet:'还没有对话',
+    conversationCount:(n)=>`${n}条对话`,
+    chatInputPlaceholder:'请输入消息',
+    sharedMeditationCap:'分享的灵修',
+    createGroupSub:'创建一个小组，和家人、小组或朋友一起分享灵修吧。',
+    groupNamePlaceholder:'例如：周三小组',
+    createBtn:'创建',
+    inviteToTitle:(name)=>`邀请加入${name}`,
+    inviteSub:'分享以下链接，对方即可立即加入小组。',
+    copyBtn:'复制',
+    kakaoShareName:'通过KakaoTalk发送',
+    kakaoShareDesc:'在聊天中发送邀请链接',
+    smsShareName:'通过短信发送',
+    smsShareDesc:'通过短信发送邀请链接',
+    sysGroupCreated:'小组已创建。通过链接邀请朋友，一起分享神的话语吧。',
+    defaultGroupName:'新小组',
+    toastGroupCreated:'小组已创建',
+    kakaoChannelLabel:'KakaoTalk',
+    smsChannelLabel:'短信',
+    toastInviteChannelCopied:(channel)=>`正在跳转到${channel}分享界面，链接已复制`,
+    toastInviteCopied:'邀请链接已复制',
   },
 };
 
@@ -1407,7 +1522,7 @@ function seedGroups(){
     code:makeCode(),
     memberCount:3,
     messages:[
-      {id:'m1', from:'시스템', isMe:false, type:'system', text:'그룹방이 만들어졌어요. 링크로 초대해 함께 말씀을 나눠보세요.'},
+      {id:'m1', from:'시스템', isMe:false, type:'system', textKey:'sysGroupCreated'},
       {id:'m2', from:'엄마', isMe:false, type:'text', text:'오늘 본문 너무 은혜로웠어요 🙏'},
     ]
   }];
@@ -1842,15 +1957,29 @@ function escapeHtml(s){
 function nl2br(s){
   return String(s||'').replace(/\n/g, '<br>');
 }
-function todayDateLabelKorean(){
+const WEEKDAY_LABELS = {
+  ko: ['일','월','화','수','목','금','토'],
+  en: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+  ja: ['日','月','火','水','木','金','土'],
+  th: ['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'],
+  zh: ['日','一','二','三','四','五','六'],
+};
+const EN_MONTH_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const TH_MONTH_LABELS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function todayDateLabel(){
   const now = new Date();
-  const days=['일','월','화','수','목','금','토'];
-  return `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
+  const lang = state.lang;
+  const wd = (WEEKDAY_LABELS[lang] || WEEKDAY_LABELS.ko)[now.getDay()];
+  if(lang==='en') return `${EN_MONTH_LABELS[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()} (${wd})`;
+  if(lang==='ja') return `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 (${wd})`;
+  if(lang==='th') return `${now.getDate()} ${TH_MONTH_LABELS[now.getMonth()]} ${now.getFullYear()} (${wd})`;
+  if(lang==='zh') return `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 (${wd})`;
+  return `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 (${wd})`;
 }
 function buildContentSnapshotHTML(key){
   const entry = getEntry(key);
   const noAnswer = T('snapNoAnswerContent');
-  const data = getContentQuestions(bookDataId(state.activeMonth), state.activeChapter);
+  const data = getContentQuestions(bookDataId(state.activeMonth), state.activeChapter, state.lang);
   const questions = data ? data.questions : [];
   const cards = questions.map(q=>{
     const qid = 'q'+q.questionNumber;
@@ -1865,7 +1994,7 @@ function buildContentSnapshotHTML(key){
     <div class="snap-card" id="snap-render-target">
       <div class="snap-header">
         <div class="snap-eyebrow">${escapeHtml(chapterLabel(bookName(state.activeMonth), state.activeChapter))} · ${T('navContent')}</div>
-        <div class="snap-date">${todayDateLabelKorean()}</div>
+        <div class="snap-date">${todayDateLabel()}</div>
       </div>
       ${cards}
       <div class="snap-footer">Bible Journal · 말씀 묵상 저널</div>
@@ -1885,7 +2014,7 @@ function buildThoughtSnapshotHTML(key){
     <div class="snap-card" id="snap-render-target">
       <div class="snap-header">
         <div class="snap-eyebrow">${escapeHtml(chapterLabel(bookName(state.activeMonth), state.activeChapter))} · ${T('navThought')}</div>
-        <div class="snap-date">${todayDateLabelKorean()}</div>
+        <div class="snap-date">${todayDateLabel()}</div>
       </div>
       <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('verseLabel')}</div>${val(t.verse)}</div>
       <div class="snap-section"><div class="snap-slabel"><span class="dot"></span>${T('passageLabel')}</div>${val(t.passage)}</div>
@@ -3175,7 +3304,7 @@ function renderNotifDaySheet(){
 function renderGroupsList(){
   const cards = groups.map(g=>{
     const last = g.messages[g.messages.length-1];
-    const lastText = last ? (last.type==='image' ? `📷 ${last.jTitle}` : last.type==='journal' ? `📖 ${last.jTitle}` : last.text) : '아직 대화가 없어요';
+    const lastText = last ? (last.type==='image' ? `📷 ${last.jTitle}` : last.type==='journal' ? `📖 ${last.jTitle}` : last.text) : T('noConversationYet');
     return `
     <button class="group-card" data-action="open-group" data-id="${g.id}">
       ${groupAvatarHtml(g, 'group-avatar')}
@@ -3183,7 +3312,7 @@ function renderGroupsList(){
         <div class="g-name">${escapeHtml(g.name)}</div>
         <div class="g-sub">${lastText}</div>
       </div>
-      <div class="group-meta">${g.messages.length}개 대화</div>
+      <div class="group-meta">${T('conversationCount', g.messages.length)}</div>
     </button>`;
   }).join('');
 
@@ -3192,15 +3321,15 @@ function renderGroupsList(){
       <button class="icon-btn" data-action="go-main">${ICON.back}</button>
       <div class="titles">
         <div class="cap">Together</div>
-        <h2>함께 나누기</h2>
+        <h2>${T('groupsNavTitle')}</h2>
       </div>
     </div>
     <div class="groups-body">
-      <button class="new-group-btn" data-action="open-create-group">${ICON.plus} 그룹방 만들기</button>
+      <button class="new-group-btn" data-action="open-create-group">${ICON.plus} ${T('newGroupBtn')}</button>
       ${groups.length ? cards : `
         <div class="empty-groups">
           <div class="emoji">👥</div>
-          <p>아직 함께하는 그룹방이 없어요.<br>그룹방을 만들고 링크로 초대해보세요.</p>
+          <p>${T('noGroupsBody')}</p>
         </div>
       `}
     </div>
@@ -3346,7 +3475,7 @@ function renderGroupRoom(){
   const bubbles = g.messages.map(m=>{
     const badge = (m.isMe && m.unread>0) ? `<span class="msg-unread">${m.unread}</span>` : '';
     if(m.type==='system'){
-      return `<div class="msg-row system"><div class="msg-bubble">${m.text}</div></div>`;
+      return `<div class="msg-row system"><div class="msg-bubble">${m.textKey ? T(m.textKey) : m.text}</div></div>`;
     }
     if(m.type==='journal'){
       return `
@@ -3355,7 +3484,7 @@ function renderGroupRoom(){
         <div class="msg-line">
           ${badge}
           <div class="journal-card">
-            <div class="jc-cap">공유된 묵상 · ${m.dateLabel}</div>
+            <div class="jc-cap">${T('sharedMeditationCap')} · ${m.dateLabel}</div>
             <div class="jc-title">${m.jTitle}</div>
             <div class="jc-text">${m.jText}</div>
           </div>
@@ -3408,7 +3537,7 @@ function renderGroupRoom(){
       ${groupAvatarHtml(g, 'r-avatar')}
       <div class="titles">
         <h2>${escapeHtml(g.name)}</h2>
-        <div class="cap">${g.messages.length}개 대화</div>
+        <div class="cap">${T('conversationCount', g.messages.length)}</div>
       </div>
       <button class="invite-btn" data-action="open-invite" data-id="${g.id}">${ICON.link}</button>
       <button class="icon-btn" data-action="open-group-manage" data-id="${g.id}" title="${T('groupManageTitle')}">${ICON.menu}</button>
@@ -3416,7 +3545,7 @@ function renderGroupRoom(){
     <div class="chat-scroll" id="chat-scroll">${bubbles}</div>
     <div class="compose-bar">
       <button class="share-journal-btn" data-action="open-share-picker" data-id="${g.id}" title="${T('todayNavTitle')}">${ICON.book}</button>
-      <input type="text" id="chat-input" placeholder="메시지를 입력하세요" data-action-enter="send-message" data-id="${g.id}">
+      <input type="text" id="chat-input" placeholder="${T('chatInputPlaceholder')}" data-action-enter="send-message" data-id="${g.id}">
       <button class="send-btn" data-action="send-message" data-id="${g.id}">${ICON.send}</button>
     </div>
   `;
@@ -3428,13 +3557,13 @@ function renderCreateGroupSheet(){
   <div class="overlay" data-action="close-create-group">
     <div class="sheet" data-action="noop">
       <div class="sheet-handle"></div>
-      <div class="modal-title">그룹방 만들기</div>
-      <p class="modal-sub">가족, 소그룹, 친구들과 함께 묵상을 나눌 그룹방을 만들어보세요.</p>
+      <div class="modal-title">${T('newGroupBtn')}</div>
+      <p class="modal-sub">${T('createGroupSub')}</p>
       <div class="create-group-field">
-        <label>그룹방 이름</label>
-        <input type="text" id="new-group-name" placeholder="예: 수요 소그룹">
+        <label>${T('roomNameLabel')}</label>
+        <input type="text" id="new-group-name" placeholder="${T('groupNamePlaceholder')}">
       </div>
-      <button class="btn btn-primary" data-action="confirm-create-group">만들기</button>
+      <button class="btn btn-primary" data-action="confirm-create-group">${T('createBtn')}</button>
     </div>
   </div>`;
 }
@@ -3448,25 +3577,25 @@ function renderInviteSheet(){
   <div class="overlay" data-action="close-invite">
     <div class="sheet" data-action="noop">
       <div class="sheet-handle"></div>
-      <div class="modal-title">${g.name}에 초대하기</div>
-      <p class="modal-sub">아래 링크를 공유하면 상대방이 그룹방에 바로 들어올 수 있어요.</p>
+      <div class="modal-title">${T('inviteToTitle', escapeHtml(g.name))}</div>
+      <p class="modal-sub">${T('inviteSub')}</p>
       <div class="invite-link-box">
         <span>${link}</span>
-        <button data-action="copy-invite" data-link="${link}">${ICON.copy} 복사</button>
+        <button data-action="copy-invite" data-link="${link}">${ICON.copy} ${T('copyBtn')}</button>
       </div>
       <div class="share-channels">
-        <button class="share-channel" data-action="share-invite" data-channel="카카오톡" data-link="${link}">
+        <button class="share-channel" data-action="share-invite" data-channel="${T('kakaoChannelLabel')}" data-link="${link}">
           <div class="ch-icon" style="background:#F2C230">${ICON.chatBubble}</div>
           <div>
-            <div class="ch-name">카카오톡으로 보내기</div>
-            <div class="ch-desc">대화방에 초대 링크를 전달해요</div>
+            <div class="ch-name">${T('kakaoShareName')}</div>
+            <div class="ch-desc">${T('kakaoShareDesc')}</div>
           </div>
         </button>
-        <button class="share-channel" data-action="share-invite" data-channel="문자" data-link="${link}">
+        <button class="share-channel" data-action="share-invite" data-channel="${T('smsChannelLabel')}" data-link="${link}">
           <div class="ch-icon" style="background:var(--sage)">${ICON.message}</div>
           <div>
-            <div class="ch-name">문자로 보내기</div>
-            <div class="ch-desc">SMS로 초대 링크를 전달해요</div>
+            <div class="ch-name">${T('smsShareName')}</div>
+            <div class="ch-desc">${T('smsShareDesc')}</div>
           </div>
         </button>
       </div>
@@ -3787,7 +3916,7 @@ function renderChapterInfoSheet(){
 
 function renderContentTab(ds){
   const entry = getEntry(ds);
-  const data = getContentQuestions(bookDataId(state.activeMonth), state.activeChapter);
+  const data = getContentQuestions(bookDataId(state.activeMonth), state.activeChapter, state.lang);
   if(!data){
     return `
     <div class="guide-empty" style="padding:60px 20px 20px;">
@@ -4397,7 +4526,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   }
   else if(action==='confirm-create-group'){
     const inp = document.getElementById('new-group-name');
-    const name = (inp && inp.value.trim()) || '새 그룹방';
+    const name = (inp && inp.value.trim()) || T('defaultGroupName');
     const g = {
       id:'g-'+Date.now(),
       name,
@@ -4406,7 +4535,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       ownerUid: state.user && state.user.uid,
       photoUrl:null,
       memberCount:2,
-      messages:[{id:'m-'+Date.now(), from:'시스템', isMe:false, type:'system', text:'그룹방이 만들어졌어요. 링크로 초대해 함께 말씀을 나눠보세요.'}]
+      messages:[{id:'m-'+Date.now(), from:'시스템', isMe:false, type:'system', textKey:'sysGroupCreated'}]
     };
     groups.push(g);
     saveGroups();
@@ -4414,7 +4543,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     state.activeGroupId = g.id;
     state.screen = 'group-room';
     render();
-    showToast('그룹방이 만들어졌어요');
+    showToast(T('toastGroupCreated'));
   }
   else if(action==='open-invite'){
     state.inviteGroupId = el.dataset.id;
@@ -4430,7 +4559,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       navigator.clipboard && navigator.clipboard.writeText(link);
     }catch(err){}
     const channel = el.dataset.channel;
-    showToast(channel ? `${channel} 공유 화면으로 연결하고 링크를 복사했어요` : '초대 링크가 복사되었어요');
+    showToast(channel ? T('toastInviteChannelCopied', channel) : T('toastInviteCopied'));
   }
   else if(action==='open-share-picker'){
     state.shareGroupId = el.dataset.id;
