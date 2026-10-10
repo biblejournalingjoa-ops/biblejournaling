@@ -18,24 +18,32 @@ import enLeviticus from './en/leviticus.js';
 import jaLeviticus from './ja/leviticus.js';
 import thLeviticus from './th/leviticus.js';
 import zhLeviticus from './zh/leviticus.js';
+import enNumbers from './en/numbers.js';
+import jaNumbers from './ja/numbers.js';
+import thNumbers from './th/numbers.js';
+import zhNumbers from './zh/numbers.js';
 
 export const CONTENT_QUESTION_TRANSLATIONS = {
   en: {
+    numbers: enNumbers,
     leviticus: enLeviticus,
     exodus: enExodus,
     genesis: enGenesis,
   },
   ja: {
+    numbers: jaNumbers,
     leviticus: jaLeviticus,
     exodus: jaExodus,
     genesis: jaGenesis,
   },
   th: {
+    numbers: thNumbers,
     leviticus: thLeviticus,
     exodus: thExodus,
     genesis: thGenesis,
   },
   zh: {
+    numbers: zhNumbers,
     leviticus: zhLeviticus,
     exodus: zhExodus,
     genesis: zhGenesis,
