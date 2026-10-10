@@ -322,6 +322,10 @@ let state = {
   signupTermsConsentOpen:false,
   signupConsent:false,      // privacy consent checkbox on the signup screen
   signupConsentOpen:false,  // whether the consent detail text is expanded
+  // 가입 입력 필드 값. 체크박스를 누르면 render()가 전체 화면을 다시 그리는데,
+  // 입력값이 여기 state에 없으면 DOM의 input이 통째로 새로 만들어지면서
+  // 그동안 입력한 내용이 사라집니다. 그래서 keystroke마다 여기로 동기화해 둡니다.
+  signupForm:{ name:'', email:'', birth:'', username:'', password:'', nickname:'' },
   prevScreen:'main',        // where to return to when leaving settings
   loadingCount:0,           // >0 while any global async op (auth/Firestore/etc) is in flight
   nicknameModal:false,      // whether the nickname-edit modal (on the profile screen) is open
@@ -1753,7 +1757,7 @@ function renderLogin(){
 /* ---------------- signup screen ---------------- */
 function renderSignupScreen(){
   return `
-    <button class="back-fab" data-action="go-login">${ICON.back}</button>
+    <button type="button" class="back-fab" data-action="go-login">${ICON.back}</button>
     <div class="screen-center">
       <div class="login-mark">
         <div class="eyebrow">${T('loginTitle')}</div>
@@ -1763,43 +1767,43 @@ function renderSignupScreen(){
 
       <div class="field">
         <label>${T('nameLabel')}</label>
-        <input type="text" id="signup-name" placeholder="${T('namePh')}">
+        <input type="text" id="signup-name" data-signup-field="name" placeholder="${T('namePh')}" value="${escapeHtml(state.signupForm.name)}">
       </div>
       <div class="field">
         <label>${T('emailLabel')}</label>
-        <input type="email" id="signup-email" placeholder="${T('emailPh')}">
+        <input type="email" id="signup-email" data-signup-field="email" placeholder="${T('emailPh')}" value="${escapeHtml(state.signupForm.email)}">
       </div>
       <div class="field">
         <label>${T('birthLabel')}</label>
-        <input type="date" id="signup-birth" placeholder="${T('birthPh')}">
+        <input type="date" id="signup-birth" data-signup-field="birth" placeholder="${T('birthPh')}" value="${escapeHtml(state.signupForm.birth)}">
       </div>
       <div class="field">
         <label>${T('usernameLabel')}</label>
-        <input type="text" id="signup-username" placeholder="${T('usernamePh')}">
+        <input type="text" id="signup-username" data-signup-field="username" placeholder="${T('usernamePh')}" value="${escapeHtml(state.signupForm.username)}">
       </div>
       <div class="field">
         <label>${T('pwLabel')}</label>
-        <input type="password" id="signup-password" placeholder="${T('pwPh')}">
+        <input type="password" id="signup-password" data-signup-field="password" placeholder="${T('pwPh')}" value="${escapeHtml(state.signupForm.password)}">
       </div>
       <div class="field">
         <label>${T('nicknameLabel')}</label>
-        <input type="text" id="signup-nickname" placeholder="${T('nicknamePh')}">
+        <input type="text" id="signup-nickname" data-signup-field="nickname" placeholder="${T('nicknamePh')}" value="${escapeHtml(state.signupForm.nickname)}">
       </div>
 
       <div class="consent-box">
         <div class="consent-row">
-          <button class="consent-check ${state.signupTermsConsent?'checked':''}" data-action="toggle-signup-terms-consent">${ICON.check}</button>
+          <button type="button" class="consent-check ${state.signupTermsConsent?'checked':''}" data-action="toggle-signup-terms-consent">${ICON.check}</button>
           <div class="consent-label" data-action="toggle-signup-terms-consent">${T('signupTermsLabel')}</div>
-          <button class="consent-view-btn" data-action="toggle-signup-terms-consent-detail">${state.signupTermsConsentOpen?T('hideDetail'):T('viewDetail')}</button>
+          <button type="button" class="consent-view-btn" data-action="toggle-signup-terms-consent-detail">${state.signupTermsConsentOpen?T('hideDetail'):T('viewDetail')}</button>
         </div>
         ${state.signupTermsConsentOpen ? `<div class="consent-detail">${T('signupTermsBody')}</div>` : ''}
       </div>
 
       <div class="consent-box" style="margin-top:8px;">
         <div class="consent-row">
-          <button class="consent-check ${state.signupConsent?'checked':''}" data-action="toggle-signup-consent">${ICON.check}</button>
+          <button type="button" class="consent-check ${state.signupConsent?'checked':''}" data-action="toggle-signup-consent">${ICON.check}</button>
           <div class="consent-label" data-action="toggle-signup-consent">${T('signupConsentLabel')}</div>
-          <button class="consent-view-btn" data-action="toggle-signup-consent-detail">${state.signupConsentOpen?T('hideDetail'):T('viewDetail')}</button>
+          <button type="button" class="consent-view-btn" data-action="toggle-signup-consent-detail">${state.signupConsentOpen?T('hideDetail'):T('viewDetail')}</button>
         </div>
         ${state.signupConsentOpen ? `<div class="consent-detail">${T('signupConsentBody')}</div>` : ''}
         <div class="consent-policy-link">
@@ -1807,7 +1811,7 @@ function renderSignupScreen(){
         </div>
       </div>
 
-      <button class="btn btn-primary" style="margin-top:16px;" data-action="confirm-signup">${T('submitSignup')}</button>
+      <button type="button" class="btn btn-primary" style="margin-top:16px;" data-action="confirm-signup">${T('submitSignup')}</button>
     </div>
   `;
 }
@@ -3067,6 +3071,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     state.signupTermsConsentOpen = false;
     state.signupConsent = false;
     state.signupConsentOpen = false;
+    state.signupForm = { name:'', email:'', birth:'', username:'', password:'', nickname:'' };
     state.screen = 'signup';
     render();
   }
@@ -3087,13 +3092,15 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     render();
   }
   else if(action==='confirm-signup'){
-    const val = (id)=> { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
-    const name = val('signup-name');
-    const email = val('signup-email');
-    const birth = val('signup-birth');
-    const username = val('signup-username');
-    const pw = val('signup-password');
-    const nickname = val('signup-nickname');
+    // DOM에서 직접 읽지 않고 state.signupForm을 사용합니다 — 체크박스 토글로
+    // 화면이 다시 그려진 뒤에도 이 값이 input의 value로 복원되어 있으므로
+    // 항상 최신 입력값과 일치합니다.
+    const name = state.signupForm.name.trim();
+    const email = state.signupForm.email.trim();
+    const birth = state.signupForm.birth.trim();
+    const username = state.signupForm.username.trim();
+    const pw = state.signupForm.password.trim();
+    const nickname = state.signupForm.nickname.trim();
 
     if(!name || !email || !birth || !username || !pw || !nickname){
       showToast(T('toastFillAll'));
@@ -3117,6 +3124,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       window.storage.set('user-profile', JSON.stringify(fullProfile), false).catch(()=>{});
       state.user = { uid:fullProfile.uid, name:fullProfile.name, email:fullProfile.email, photoUrl:fullProfile.photoUrl, username:fullProfile.username, nickname:fullProfile.nickname };
       state.loggedIn = true;
+      state.signupForm = { name:'', email:'', birth:'', username:'', password:'', nickname:'' };
       saveAuth();
       resolvePostLoginScreen();
       render();
@@ -3786,6 +3794,15 @@ document.getElementById('shell').addEventListener('keydown', (e)=>{
 /* input handling — no full re-render, so focus/cursor is preserved */
 document.getElementById('shell').addEventListener('input', (e)=>{
   const t = e.target;
+  if(t.dataset.signupField){
+    // 가입 화면 입력값을 state.signupForm에 즉시 반영합니다. render()는 호출하지
+    // 않습니다 — 여기서 다시 그리면 매 keystroke마다 input DOM이 재생성되어
+    // 포커스/커서 위치를 잃기 때문입니다. 다른 요인(체크박스 토글 등)으로
+    // render()가 호출될 때는 이 state 값이 value 속성으로 복원되어 입력값이
+    // 유지됩니다.
+    state.signupForm[t.dataset.signupField] = t.value;
+    return;
+  }
   const kind = t.dataset.kind;
   if(!kind || !state.activeMonth || !state.activeChapter) return;
   const entry = getEntry(ckey(state.activeMonth, state.activeChapter));
