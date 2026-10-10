@@ -10,18 +10,26 @@ import enGenesis from './en/genesis.js';
 import jaGenesis from './ja/genesis.js';
 import thGenesis from './th/genesis.js';
 import zhGenesis from './zh/genesis.js';
+import enExodus from './en/exodus.js';
+import jaExodus from './ja/exodus.js';
+import thExodus from './th/exodus.js';
+import zhExodus from './zh/exodus.js';
 
 export const CONTENT_QUESTION_TRANSLATIONS = {
   en: {
+    exodus: enExodus,
     genesis: enGenesis,
   },
   ja: {
+    exodus: jaExodus,
     genesis: jaGenesis,
   },
   th: {
+    exodus: thExodus,
     genesis: thGenesis,
   },
   zh: {
+    exodus: zhExodus,
     genesis: zhGenesis,
   },
 };
