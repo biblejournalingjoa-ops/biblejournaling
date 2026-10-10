@@ -1802,6 +1802,9 @@ function renderSignupScreen(){
           <button class="consent-view-btn" data-action="toggle-signup-consent-detail">${state.signupConsentOpen?T('hideDetail'):T('viewDetail')}</button>
         </div>
         ${state.signupConsentOpen ? `<div class="consent-detail">${T('signupConsentBody')}</div>` : ''}
+        <div class="consent-policy-link">
+          <a href="/privacy.html?lang=${state.lang === 'ko' ? 'ko' : 'en'}" target="_blank" rel="noopener noreferrer">${T('privacyPolicyFull')}</a>
+        </div>
       </div>
 
       <button class="btn btn-primary" style="margin-top:16px;" data-action="confirm-signup">${T('submitSignup')}</button>
@@ -1929,6 +1932,7 @@ function renderSettingsScreen(){
           <div class="setting-item" data-action="go-guide">${T('guideMenu')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="go-contact">${T('contact')} <span class="arrow">${ICON.chevRight}</span></div>
           <div class="setting-item" data-action="open-donate">${T('donate')} 💖 <span class="arrow">${ICON.chevRight}</span></div>
+          <div class="setting-item" data-action="open-privacy-policy">${T('privacyPolicy')} <span class="arrow">${ICON.chevRight}</span></div>
         </div>
       </div>
     </div>
@@ -3233,6 +3237,13 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     if(target) target.scrollIntoView({ behavior:'smooth', block:'start' });
   }
   else if(action==='open-donate'){ state.donateModal=true; state.donateCopied=false; render(); }
+  else if(action==='open-privacy-policy'){
+    // public/privacy.html 로 배포되는 정적 개인정보처리방침 페이지. 앱 화면이 아니라
+    // 새 탭으로 열어 작성 중인 묵상 기록 상태를 잃지 않게 합니다. ?lang= 으로
+    // 현재 선택한 언어(한국어 외에는 영문)에 맞는 본문이 먼저 보이게 합니다.
+    const lang = state.lang === 'ko' ? 'ko' : 'en';
+    window.open(`/privacy.html?lang=${lang}`, '_blank', 'noopener');
+  }
   else if(action==='close-donate'){ state.donateModal=false; state.donateCopied=false; render(); }
   else if(action==='copy-donate-account'){
     const num = T('donateAccountNumber');

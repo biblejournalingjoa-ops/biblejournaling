@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>개인정보처리방침 · 말씀 묵상 저널</title>
+<meta name="description" content="말씀 묵상 저널(Bible Journaling) 개인정보처리방침 / Privacy Policy">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF6EF;
+    --paper:#FFFFFF;
+    --ink:#2A2724;
+    --ink-soft:#7A736B;
+    --ink-faint:#B3AAA0;
+    --line:#E9E0D3;
+    --gold:#C08A2E;
+    --accent:#3F5670;
+    --tint:#FAF3E6;
+    --shadow:0 14px 34px rgba(42,39,34,.10);
+    --radius:18px;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1C1A18;
+      --paper:#252220;
+      --ink:#F6F3EE;
+      --ink-soft:#D2CCC3;
+      --ink-faint:#A29B8F;
+      --line:#3A352F;
+      --gold:#E7C98B;
+      --accent:#B9C9DD;
+      --tint:#2E2A25;
+      --shadow:0 14px 34px rgba(0,0,0,.35);
+      color-scheme:dark;
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+    font-size:15px;
+    line-height:1.75;
+    word-break:keep-all;
+    overflow-wrap:break-word;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:28px 20px calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+  header.page{
+    text-align:center;
+    padding:12px 0 24px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:28px;
+  }
+  .brand{
+    font-size:11px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:'Noto Serif KR',Georgia,serif;
+    font-size:26px;
+    line-height:1.4;
+    margin:0 0 10px;
+    font-weight:700;
+  }
+  .meta{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .lang-toggle{
+    display:inline-flex;
+    gap:4px;
+    margin-top:18px;
+    padding:4px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:999px;
+    box-shadow:var(--shadow);
+  }
+  .lang-toggle button{
+    appearance:none;
+    border:0;
+    background:transparent;
+    color:var(--ink-soft);
+    font:inherit;
+    font-size:13px;
+    font-weight:500;
+    padding:7px 18px;
+    border-radius:999px;
+    cursor:pointer;
+  }
+  .lang-toggle button[aria-pressed="true"]{
+    background:var(--ink);
+    color:var(--paper);
+    font-weight:700;
+  }
+  .intro{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 20px;
+    box-shadow:var(--shadow);
+    margin:0 0 30px;
+    color:var(--ink-soft);
+  }
+  .intro p{margin:0}
+  .intro p + p{margin-top:10px}
+  h2{
+    font-family:'Noto Serif KR',Georgia,serif;
+    font-size:18px;
+    line-height:1.5;
+    margin:38px 0 12px;
+    padding-top:22px;
+    border-top:1px solid var(--line);
+    font-weight:700;
+  }
+  main > h2:first-of-type{border-top:0;padding-top:0}
+  h3{
+    font-size:15px;
+    margin:22px 0 8px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  p{margin:0 0 12px}
+  ul,ol{margin:0 0 14px;padding-left:20px}
+  li{margin-bottom:6px}
+  li::marker{color:var(--ink-faint)}
+  strong{font-weight:700}
+  a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+  .table-scroll{
+    overflow-x:auto;
+    margin:0 0 16px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:var(--paper);
+  }
+  table{
+    width:100%;
+    min-width:460px;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  th,td{
+    text-align:left;
+    vertical-align:top;
+    padding:11px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  th{
+    background:var(--tint);
+    font-weight:700;
+    white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:0}
+  .note{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    background:var(--tint);
+    border:1px solid var(--line);
+    border-left:3px solid var(--gold);
+    border-radius:10px;
+    padding:12px 14px;
+    margin:0 0 16px;
+  }
+  .contact-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 20px;
+    box-shadow:var(--shadow);
+    margin:0 0 16px;
+  }
+  .contact-card dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px}
+  .contact-card dt{color:var(--ink-soft);font-size:13.5px;white-space:nowrap}
+  .contact-card dd{margin:0;font-size:13.5px;font-weight:500}
+  footer.page{
+    margin-top:44px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    text-align:center;
+    font-size:12.5px;
+    color:var(--ink-faint);
+  }
+  [hidden]{display:none!important}
+  @media (max-width:420px){
+    h1{font-size:22px}
+    .wrap{padding:20px 16px 48px}
+    .contact-card dl{grid-template-columns:1fr;gap:2px}
+    .contact-card dt{margin-top:8px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page">
+    <div class="brand">Bible Journaling</div>
+    <h1 data-i18n-ko="개인정보처리방침" data-i18n-en="Privacy Policy">개인정보처리방침</h1>
+    <p class="meta">
+      <span data-i18n-ko="시행일: 2026년 10월 10일" data-i18n-en="Effective date: October 10, 2026">시행일: 2026년 10월 10일</span>
+    </p>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="ko" aria-pressed="true">한국어</button>
+      <button type="button" data-lang="en" aria-pressed="false">English</button>
+    </div>
+  </header>
+
+  <!-- ===================== 한국어 ===================== -->
+  <main id="doc-ko">
+    <div class="intro">
+      <p><strong>말씀 묵상 저널</strong>(Bible Journaling, 이하 "서비스")은 이용자의 개인정보를 소중히 다루며 「개인정보 보호법」 등 관련 법령을 준수합니다.</p>
+      <p>본 개인정보처리방침은 서비스가 어떤 개인정보를 수집하고, 무엇을 위해 이용하며, 어떻게 보관하고 파기하는지, 그리고 이용자가 자신의 정보에 대해 어떤 권리를 행사할 수 있는지를 안내합니다.</p>
+    </div>
+
+    <h2>1. 수집하는 개인정보 항목 및 수집 방법</h2>
+    <p>서비스는 회원가입과 서비스 이용 과정에서 아래와 같은 개인정보를 수집합니다.</p>
+
+    <h3>가. 회원가입 시 수집 항목</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>구분</th><th>수집 항목</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>이메일 회원가입<br>(필수)</td>
+            <td>이름, 생년월일, 이메일 주소(아이디), 닉네임, 비밀번호</td>
+          </tr>
+          <tr>
+            <td>소셜 로그인<br>(Google · Kakao)</td>
+            <td>해당 서비스가 제공하는 이메일 주소, 이름 또는 닉네임, 프로필 사진, 계정 고유 식별자</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">비밀번호는 Google Firebase Authentication을 통해 암호화되어 저장되며, 서비스 운영자는 이용자의 비밀번호 원문을 확인할 수 없습니다.</p>
+
+    <h3>나. 서비스 이용 과정에서 생성·저장되는 정보</h3>
+    <ul>
+      <li><strong>묵상 기록</strong>: 내용 질문·묵상 질문에 대한 답변, 자유 메모, 기록한 성경 권·장 정보</li>
+      <li><strong>기록 통계</strong>: 묵상 기록을 남긴 장(章)의 개수</li>
+      <li><strong>프로필</strong>: 닉네임, 프로필 사진</li>
+      <li><strong>함께 나누기(그룹)</strong>: 참여 중인 채팅방 정보, 채팅방에 작성한 메시지, 채팅방 대표 사진(방장이 등록한 경우), 채팅방에 직접 공유한 묵상 기록</li>
+      <li><strong>알림</strong>: 푸시 알림 설정값, 알림 전송에 필요한 브라우저 기기 토큰(FCM 등록 토큰)</li>
+      <li><strong>동의 이력</strong>: 이용약관 및 개인정보 수집·이용 동의 여부와 동의 시각</li>
+    </ul>
+
+    <h3>다. 자동으로 수집되는 정보</h3>
+    <ul>
+      <li>가입 일시, 최근 로그인 일시, 정보 수정 일시</li>
+      <li>서비스 제공 과정에서 생성되는 접속 로그 및 오류 기록</li>
+    </ul>
+    <p>서비스는 이용자가 직접 입력한 정보, 소셜 로그인 공급자가 전달하는 정보, 그리고 서비스 이용 과정에서 자동으로 생성되는 정보만 수집합니다. 주민등록번호 등 고유식별정보, 결제 카드 정보, 위치정보는 수집하지 않습니다.</p>
+
+    <h2>2. 개인정보의 수집 및 이용 목적</h2>
+    <ul>
+      <li><strong>회원 식별 및 로그인</strong>: 가입 의사 확인, 본인 계정 확인, 로그인 상태 유지</li>
+      <li><strong>서비스 제공</strong>: 묵상 기록의 저장·조회·동기화, 기록 통계 표시, 언어·글자 크기·테마 등 개인 설정 반영</li>
+      <li><strong>함께 나누기 기능 제공</strong>: 채팅방 참여, 메시지 전달, 같은 방 구성원에게 닉네임·프로필 사진·기록 개수 표시</li>
+      <li><strong>알림 발송</strong>: 이용자가 설정한 묵상 알림 및 서비스 관련 안내 전달</li>
+      <li><strong>문의 응대</strong>: 이용자 문의 및 불편 사항 확인과 답변</li>
+      <li><strong>서비스 운영·개선</strong>: 오류 원인 분석, 부정 이용 방지, 안정적인 서비스 운영</li>
+    </ul>
+
+    <h2>3. 개인정보의 보유 및 이용 기간</h2>
+    <p>서비스는 원칙적으로 <strong>회원 탈퇴 시 또는 수집·이용 목적이 달성된 때</strong> 개인정보를 지체 없이 파기합니다. 다만 관련 법령에 따라 보존이 필요한 경우에는 해당 법령이 정한 기간 동안 보관합니다.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>항목</th><th>보유 기간</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>회원 정보(이름, 생년월일, 이메일, 닉네임, 프로필 사진)</td><td>회원 탈퇴 시까지</td></tr>
+          <tr><td>묵상 기록 및 기록 통계</td><td>회원 탈퇴 시까지(이용자가 직접 삭제한 기록은 즉시 파기)</td></tr>
+          <tr><td>채팅방 메시지</td><td>채팅방 삭제 시까지(이미 다른 구성원에게 전달된 메시지는 탈퇴 후에도 해당 방에 남을 수 있음)</td></tr>
+          <tr><td>푸시 알림 토큰</td><td>알림 해제 또는 회원 탈퇴 시까지</td></tr>
+          <tr><td>동의 이력</td><td>회원 탈퇴 시까지</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>4. 개인정보의 제3자 제공</h2>
+    <p>서비스는 이용자의 개인정보를 제3자에게 판매하거나 제공하지 않습니다. 다만 아래의 경우는 예외로 합니다.</p>
+    <ul>
+      <li>이용자가 사전에 명확히 동의한 경우</li>
+      <li>법령에 특별한 규정이 있거나, 수사기관이 법령에 정한 절차와 방법에 따라 요청한 경우</li>
+    </ul>
+    <p class="note">이용자가 '함께 나누기' 채팅방에 참여하거나 묵상 기록을 공유하면, 해당 채팅방의 구성원에게 닉네임·프로필 사진·기록 개수와 직접 공유한 내용이 표시됩니다. 이는 이용자의 선택에 따른 기능 이용이며 제3자 제공이 아닙니다. 공유하지 않은 개인 묵상 기록은 본인만 열람할 수 있습니다.</p>
+
+    <h2>5. 개인정보 처리의 위탁 및 국외 이전</h2>
+    <p>서비스는 안정적인 운영을 위해 아래와 같이 개인정보 처리 업무를 위탁하고 있으며, 해당 업체의 서버가 국외에 위치할 수 있습니다.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>수탁 업체</th><th>위탁 업무</th><th>이전 항목 · 국가</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google LLC<br>(Firebase)</td>
+            <td>회원 인증, 데이터베이스 보관, 이미지 저장, 푸시 알림 발송</td>
+            <td>본 방침 1항의 수집 항목 전부 / 미국 등 Google 데이터센터 소재 국가</td>
+          </tr>
+          <tr>
+            <td>Vercel Inc.</td>
+            <td>웹 서비스 호스팅 및 전송</td>
+            <td>접속 로그(IP 주소, 브라우저 정보 등) / 미국</td>
+          </tr>
+          <tr>
+            <td>Kakao Corp.</td>
+            <td>카카오 계정 로그인 연동(이용자가 해당 로그인을 선택한 경우)</td>
+            <td>계정 식별자, 이메일, 닉네임, 프로필 사진 / 대한민국</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>이전 시기 및 방법은 서비스 이용 시 네트워크를 통한 수시 전송이며, 수탁 업체는 위탁 업무를 수행하는 기간 동안 해당 정보를 보유합니다. 이용자는 국외 이전을 거부할 수 있으나, 거부하는 경우 서비스 이용이 제한될 수 있습니다.</p>
+
+    <h2>6. 쿠키 및 기기 내 저장 데이터</h2>
+    <p>서비스는 로그인 상태 유지와 개인 설정 저장을 위해 브라우저의 로컬 저장소(localStorage) 및 쿠키를 사용합니다. 저장되는 항목은 다음과 같습니다.</p>
+    <ul>
+      <li>로그인 세션 정보(Firebase Authentication이 발급한 인증 토큰)</li>
+      <li>선택한 언어, 글자 크기, 다크 모드 설정</li>
+      <li>화면 상태 등 이용 편의를 위한 임시 값</li>
+    </ul>
+    <p>이용자는 브라우저 설정에서 쿠키 및 사이트 데이터 저장을 거부하거나 삭제할 수 있습니다. 다만 이 경우 로그인 유지 등 일부 기능이 정상적으로 동작하지 않을 수 있습니다. 서비스는 광고 또는 행태정보 분석을 위한 제3자 추적 쿠키를 사용하지 않습니다.</p>
+
+    <h2>7. 푸시 알림</h2>
+    <p>묵상 알림은 이용자가 브라우저의 알림 권한을 허용하고 서비스 내에서 알림을 설정한 경우에만 발송됩니다. 알림 권한은 브라우저 설정에서 언제든지 철회할 수 있으며, 서비스 내 알림 설정을 끄면 관련 기기 토큰의 이용이 중단됩니다.</p>
+
+    <h2>8. 이용자 및 법정대리인의 권리와 행사 방법</h2>
+    <p>이용자는 언제든지 자신의 개인정보에 대해 다음 권리를 행사할 수 있습니다.</p>
+    <ul>
+      <li><strong>열람·정정</strong>: 서비스 내 프로필 화면에서 닉네임·프로필 사진 등을 직접 확인하고 수정할 수 있습니다.</li>
+      <li><strong>삭제</strong>: 개별 묵상 기록은 서비스 내에서 직접 삭제할 수 있으며, 계정 전체 삭제(회원 탈퇴)는 아래 문의처로 요청하시면 처리합니다.</li>
+      <li><strong>처리 정지 및 동의 철회</strong>: 개인정보 처리에 대한 동의를 철회하거나 처리 정지를 요구할 수 있습니다.</li>
+    </ul>
+    <p>권리 행사는 서비스 내 기능 또는 아래 문의처를 통한 서면·이메일로 가능하며, 서비스는 요청을 확인한 후 지체 없이 조치합니다. 만 14세 미만 아동의 경우 법정대리인이 해당 권리를 행사할 수 있습니다.</p>
+
+    <h2>9. 개인정보의 파기 절차 및 방법</h2>
+    <ul>
+      <li>보유 기간이 경과하거나 처리 목적이 달성된 개인정보는 지체 없이 파기합니다.</li>
+      <li>전자적 파일 형태의 정보는 복구·재생할 수 없는 기술적 방법으로 삭제하며, 클라우드 데이터베이스 및 저장소에서 해당 레코드와 파일을 제거합니다.</li>
+      <li>종이에 출력된 정보가 있는 경우 분쇄하거나 소각하여 파기합니다.</li>
+    </ul>
+
+    <h2>10. 개인정보의 안전성 확보 조치</h2>
+    <ul>
+      <li><strong>전송 구간 암호화</strong>: 모든 통신은 HTTPS(TLS)로 암호화하여 전송합니다.</li>
+      <li><strong>비밀번호 보호</strong>: 비밀번호는 Firebase Authentication을 통해 암호화되어 저장되며 운영자도 확인할 수 없습니다.</li>
+      <li><strong>접근 권한 통제</strong>: 데이터베이스와 파일 저장소에 보안 규칙을 적용하여, 개인 묵상 기록은 본인만 읽고 쓸 수 있도록 제한하고 채팅방 데이터는 해당 방 구성원만 접근할 수 있도록 통제합니다.</li>
+      <li><strong>최소 수집 원칙</strong>: 서비스 제공에 필요한 최소한의 정보만 수집합니다.</li>
+      <li><strong>취급자 최소화</strong>: 개인정보를 취급하는 담당자를 최소한으로 제한합니다.</li>
+    </ul>
+
+    <h2>11. 만 14세 미만 아동의 개인정보</h2>
+    <p>서비스는 만 14세 미만 아동의 개인정보를 수집할 때 법정대리인의 동의를 받아야 하며, 동의 없이 수집된 사실이 확인되면 해당 정보를 지체 없이 파기합니다. 만 14세 미만 아동의 보호자께서 자녀의 개인정보 열람·정정·삭제를 원하시는 경우 아래 문의처로 연락해 주시기 바랍니다.</p>
+
+    <h2>12. 개인정보 보호책임자 및 문의처</h2>
+    <p>개인정보 처리에 관한 문의, 불만 처리, 피해 구제는 아래로 연락해 주시면 신속하게 답변드립니다.</p>
+    <div class="contact-card">
+      <dl>
+        <dt>서비스명</dt><dd>말씀 묵상 저널 (Bible Journaling)</dd>
+        <dt>개인정보 보호책임자</dt><dd>말씀 묵상 저널 운영자</dd>
+        <dt>이메일</dt><dd><a href="mailto:biblejournalingjoa@gmail.com">biblejournalingjoa@gmail.com</a></dd>
+      </dl>
+    </div>
+    <p>개인정보 침해에 대한 신고나 상담이 필요한 경우 아래 기관에 문의하실 수 있습니다.</p>
+    <ul>
+      <li>개인정보분쟁조정위원회 (1833-6972, <a href="https://www.kopico.go.kr" target="_blank" rel="noopener noreferrer">www.kopico.go.kr</a>)</li>
+      <li>개인정보침해 신고센터 (118, <a href="https://privacy.kisa.or.kr" target="_blank" rel="noopener noreferrer">privacy.kisa.or.kr</a>)</li>
+      <li>대검찰청 사이버수사과 (1301, <a href="https://www.spo.go.kr" target="_blank" rel="noopener noreferrer">www.spo.go.kr</a>)</li>
+      <li>경찰청 사이버수사국 (182, <a href="https://ecrm.police.go.kr" target="_blank" rel="noopener noreferrer">ecrm.police.go.kr</a>)</li>
+    </ul>
+
+    <h2>13. 개인정보처리방침의 변경</h2>
+    <p>본 방침의 내용이 추가·삭제 또는 수정되는 경우, 변경 사항을 시행 최소 7일 전부터 서비스 내 공지 또는 본 페이지를 통해 안내합니다. 다만 이용자 권리에 중대한 변경이 있는 경우에는 최소 30일 전에 안내합니다.</p>
+    <ul>
+      <li>시행일: 2026년 10월 10일</li>
+      <li>최초 작성일: 2026년 10월 10일</li>
+    </ul>
+  </main>
+
+  <!-- ===================== English ===================== -->
+  <main id="doc-en" hidden>
+    <div class="intro">
+      <p><strong>Bible Journaling</strong> ("the Service") respects your privacy and complies with the Personal Information Protection Act of the Republic of Korea and other applicable laws.</p>
+      <p>This Privacy Policy explains what personal information the Service collects, why it is used, how long it is kept and how it is destroyed, and what rights you have over your own information.</p>
+    </div>
+
+    <h2>1. Information We Collect and How</h2>
+    <p>The Service collects the following personal information when you sign up and while you use the Service.</p>
+
+    <h3>a. Collected at sign-up</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Method</th><th>Items collected</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Email sign-up<br>(required)</td>
+            <td>Name, date of birth, email address (used as the account ID), nickname, password</td>
+          </tr>
+          <tr>
+            <td>Social login<br>(Google · Kakao)</td>
+            <td>Email address, name or nickname, profile image and account identifier provided by that service</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Passwords are stored in encrypted form by Google Firebase Authentication. The Service operator cannot see your plaintext password.</p>
+
+    <h3>b. Created while using the Service</h3>
+    <ul>
+      <li><strong>Journal entries</strong>: your answers to the content and reflection questions, free-form notes, and the Bible book and chapter each entry belongs to</li>
+      <li><strong>Entry statistics</strong>: the number of chapters you have journaled</li>
+      <li><strong>Profile</strong>: nickname and profile image</li>
+      <li><strong>Groups (sharing rooms)</strong>: the rooms you belong to, messages you post in them, the room's cover image (if the room owner uploads one), and journal entries you choose to share there</li>
+      <li><strong>Notifications</strong>: your notification settings and the browser device token (FCM registration token) required to deliver push messages</li>
+      <li><strong>Consent records</strong>: whether you agreed to the Terms of Service and to the collection and use of personal information, and when you agreed</li>
+    </ul>
+
+    <h3>c. Collected automatically</h3>
+    <ul>
+      <li>Sign-up date, last sign-in time, last update time</li>
+      <li>Access logs and error records generated while providing the Service</li>
+    </ul>
+    <p>The Service collects only what you enter yourself, what a social login provider passes to us, and what is generated automatically while you use the Service. We do not collect national identification numbers, payment card details or location data.</p>
+
+    <h2>2. Purposes of Use</h2>
+    <ul>
+      <li><strong>Account identification and login</strong>: confirming sign-up, verifying your account, keeping you signed in</li>
+      <li><strong>Providing the Service</strong>: saving, retrieving and syncing journal entries, showing entry statistics, applying your language, text size and theme preferences</li>
+      <li><strong>Group sharing</strong>: joining rooms, delivering messages, showing your nickname, profile image and entry count to members of the same room</li>
+      <li><strong>Notifications</strong>: sending the reflection reminders you set up and Service announcements</li>
+      <li><strong>Support</strong>: responding to your questions and reported problems</li>
+      <li><strong>Operation and improvement</strong>: analyzing errors, preventing abuse, keeping the Service stable</li>
+    </ul>
+
+    <h2>3. Retention Period</h2>
+    <p>As a rule, your personal information is destroyed without delay <strong>when you delete your account or when the purpose of collection has been fulfilled</strong>. Where a law requires us to keep certain records, we retain them for the period that law prescribes.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Item</th><th>Retention period</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Account information (name, date of birth, email, nickname, profile image)</td><td>Until account deletion</td></tr>
+          <tr><td>Journal entries and entry statistics</td><td>Until account deletion; destroyed immediately when you delete an entry</td></tr>
+          <tr><td>Room messages</td><td>Until the room is deleted; messages already delivered to other members may remain in that room after you leave</td></tr>
+          <tr><td>Push notification token</td><td>Until notifications are turned off or the account is deleted</td></tr>
+          <tr><td>Consent records</td><td>Until account deletion</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>4. Sharing With Third Parties</h2>
+    <p>We do not sell or otherwise provide your personal information to third parties, except:</p>
+    <ul>
+      <li>when you have given clear prior consent; or</li>
+      <li>when a law specifically requires it, or an investigative authority requests it through the procedure and in the manner set out by law.</li>
+    </ul>
+    <p class="note">When you join a sharing room or share a journal entry, your nickname, profile image, entry count and the content you chose to share become visible to the members of that room. This is a feature you choose to use, not disclosure to a third party. Journal entries you have not shared are readable only by you.</p>
+
+    <h2>5. Processors and Overseas Transfer</h2>
+    <p>To operate the Service reliably we entrust parts of personal information processing to the providers below, whose servers may be located outside the Republic of Korea.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Processor</th><th>Entrusted work</th><th>Items · Country</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google LLC<br>(Firebase)</td>
+            <td>Authentication, database storage, image storage, push notification delivery</td>
+            <td>All items listed in Section 1 / United States and other countries hosting Google data centers</td>
+          </tr>
+          <tr>
+            <td>Vercel Inc.</td>
+            <td>Web hosting and delivery</td>
+            <td>Access logs (IP address, browser information, etc.) / United States</td>
+          </tr>
+          <tr>
+            <td>Kakao Corp.</td>
+            <td>Kakao account sign-in, when you choose that login method</td>
+            <td>Account identifier, email, nickname, profile image / Republic of Korea</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Transfers happen over the network as you use the Service, and each processor retains the information for as long as it performs the entrusted work. You may refuse the overseas transfer, but the Service may then be unavailable to you.</p>
+
+    <h2>6. Cookies and On-Device Storage</h2>
+    <p>The Service uses your browser's local storage and cookies to keep you signed in and to remember your preferences:</p>
+    <ul>
+      <li>sign-in session data (authentication tokens issued by Firebase Authentication)</li>
+      <li>your chosen language, text size and dark mode setting</li>
+      <li>temporary view state kept for convenience</li>
+    </ul>
+    <p>You can refuse or delete cookies and site data in your browser settings; some features, such as staying signed in, may then stop working. The Service uses no third-party advertising or behavioral tracking cookies.</p>
+
+    <h2>7. Push Notifications</h2>
+    <p>Reminders are sent only if you grant your browser's notification permission and turn notifications on inside the Service. You can withdraw that permission in your browser settings at any time, and turning notifications off in the Service stops the use of the related device token.</p>
+
+    <h2>8. Your Rights and How to Exercise Them</h2>
+    <p>You may exercise the following rights over your personal information at any time:</p>
+    <ul>
+      <li><strong>Access and correction</strong>: review and edit your nickname, profile image and other details on the profile screen in the Service.</li>
+      <li><strong>Deletion</strong>: delete individual journal entries in the Service; to delete your entire account, contact us at the address below and we will process the request.</li>
+      <li><strong>Suspension of processing and withdrawal of consent</strong>: withdraw your consent to the processing of your personal information or ask us to stop processing it.</li>
+    </ul>
+    <p>You can exercise these rights through the Service itself or in writing or by email to the contact below, and we act on confirmed requests without delay. For a child under 14, these rights may be exercised by their legal guardian.</p>
+
+    <h2>9. How Information Is Destroyed</h2>
+    <ul>
+      <li>Personal information whose retention period has passed, or whose purpose has been fulfilled, is destroyed without delay.</li>
+      <li>Electronic records are deleted by technical means that make recovery impossible, and the corresponding records and files are removed from our cloud database and storage.</li>
+      <li>Any information printed on paper is shredded or incinerated.</li>
+    </ul>
+
+    <h2>10. Security Measures</h2>
+    <ul>
+      <li><strong>Encryption in transit</strong>: all traffic is encrypted with HTTPS (TLS).</li>
+      <li><strong>Password protection</strong>: passwords are stored encrypted by Firebase Authentication and are not visible even to the operator.</li>
+      <li><strong>Access control</strong>: security rules on the database and file storage restrict personal journal entries so that only their author can read or write them, and limit room data to the members of that room.</li>
+      <li><strong>Data minimization</strong>: we collect only what the Service needs to work.</li>
+      <li><strong>Limited handling</strong>: the number of people who handle personal information is kept to a minimum.</li>
+    </ul>
+
+    <h2>11. Children Under 14</h2>
+    <p>Where the Service collects personal information from a child under 14, the consent of their legal guardian is required; if we learn that such information was collected without consent, we destroy it without delay. Guardians who wish to access, correct or delete their child's personal information may contact us below.</p>
+
+    <h2>12. Privacy Officer and Contact</h2>
+    <p>For questions, complaints or remedies concerning the handling of personal information, please contact us and we will respond promptly.</p>
+    <div class="contact-card">
+      <dl>
+        <dt>Service</dt><dd>Bible Journaling (말씀 묵상 저널)</dd>
+        <dt>Privacy officer</dt><dd>Bible Journaling operator</dd>
+        <dt>Email</dt><dd><a href="mailto:biblejournalingjoa@gmail.com">biblejournalingjoa@gmail.com</a></dd>
+      </dl>
+    </div>
+    <p>You may also report a privacy concern or seek advice from these Korean authorities:</p>
+    <ul>
+      <li>Personal Information Dispute Mediation Committee (1833-6972, <a href="https://www.kopico.go.kr" target="_blank" rel="noopener noreferrer">www.kopico.go.kr</a>)</li>
+      <li>Korea Internet &amp; Security Agency Privacy Report Center (118, <a href="https://privacy.kisa.or.kr" target="_blank" rel="noopener noreferrer">privacy.kisa.or.kr</a>)</li>
+      <li>Supreme Prosecutors' Office Cyber Investigation Division (1301, <a href="https://www.spo.go.kr" target="_blank" rel="noopener noreferrer">www.spo.go.kr</a>)</li>
+      <li>National Police Agency Cyber Bureau (182, <a href="https://ecrm.police.go.kr" target="_blank" rel="noopener noreferrer">ecrm.police.go.kr</a>)</li>
+    </ul>
+
+    <h2>13. Changes to This Policy</h2>
+    <p>If this Policy is added to, removed from or amended, we will announce the change in the Service or on this page at least 7 days before it takes effect — at least 30 days before, where the change materially affects your rights.</p>
+    <ul>
+      <li>Effective date: October 10, 2026</li>
+      <li>First published: October 10, 2026</li>
+    </ul>
+  </main>
+
+  <footer class="page">
+    <p data-i18n-ko="말씀 묵상 저널 · Bible Journaling" data-i18n-en="Bible Journaling · 말씀 묵상 저널">말씀 묵상 저널 · Bible Journaling</p>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var LANGS = ['ko', 'en'];
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('.lang-toggle button'));
+
+    function apply(lang) {
+      if (LANGS.indexOf(lang) === -1) lang = 'ko';
+      LANGS.forEach(function (code) {
+        var doc = document.getElementById('doc-' + code);
+        if (doc) doc.hidden = (code !== lang);
+      });
+      buttons.forEach(function (btn) {
+        btn.setAttribute('aria-pressed', String(btn.getAttribute('data-lang') === lang));
+      });
+      Array.prototype.slice.call(document.querySelectorAll('[data-i18n-' + lang + ']')).forEach(function (el) {
+        el.textContent = el.getAttribute('data-i18n-' + lang);
+      });
+      document.documentElement.lang = lang;
+      try { localStorage.setItem('privacyLang', lang); } catch (e) {}
+    }
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () { apply(btn.getAttribute('data-lang')); });
+    });
+
+    var initial = '';
+    var params = new URLSearchParams(location.search);
+    initial = params.get('lang') || (location.hash || '').replace('#', '');
+    if (!initial) {
+      try { initial = localStorage.getItem('privacyLang') || ''; } catch (e) {}
+    }
+    if (!initial) {
+      initial = (navigator.language || 'ko').toLowerCase().indexOf('ko') === 0 ? 'ko' : 'en';
+    }
+    apply(initial);
+  })();
+</script>
+</body>
+</html>
