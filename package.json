@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "i18n:check": "node scripts/i18n-check.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy:rules": "firebase deploy --only firestore:rules,firestore:indexes,storage:rules"
   },
