@@ -330,6 +330,13 @@ let state = {
   // 입력값이 여기 state에 없으면 DOM의 input이 통째로 새로 만들어지면서
   // 그동안 입력한 내용이 사라집니다. 그래서 keystroke마다 여기로 동기화해 둡니다.
   signupForm:{ name:'', email:'', birth:'', username:'', password:'', nickname:'' },
+  // go-signup에서 매번 새로 생성되는 난수값. 가입 입력란들의 name 속성에
+  // "signup-email-<이값>"처럼 섞어 넣어, 로그인 화면에서 쓰던 저장된 자격 증명이
+  // 브라우저 자동완성으로 이 화면 입력란에 채워지지 않게 합니다. Chrome은
+  // type="password"/흔한 username 패턴 input에는 autocomplete="off"를 사실상
+  // 무시하고도 자동완성을 시도하는 경우가 많아서, name 자체를 매번 다르게
+  // 만들어 "이전에 본 적 없는 필드"로 보이게 하는 게 실질적으로 더 확실합니다.
+  signupFormInstanceId:'',
   prevScreen:'main',        // where to return to when leaving settings
   loadingCount:0,           // >0 while any global async op (auth/Firestore/etc) is in flight
   nicknameModal:false,      // whether the nickname-edit modal (on the profile screen) is open
@@ -1792,11 +1799,11 @@ function renderLogin(){
       </div>
       <div class="field">
         <label>${T('emailLabel')}</label>
-        <input type="text" id="login-email" placeholder="${T('emailPh')}">
+        <input type="text" id="login-email" name="login-email" placeholder="${T('emailPh')}" autocomplete="username">
       </div>
       <div class="field">
         <label>${T('pwLabel')}</label>
-        <input type="password" id="login-password" placeholder="${T('pwPh')}">
+        <input type="password" id="login-password" name="login-password" placeholder="${T('pwPh')}" autocomplete="current-password">
       </div>
       <button class="btn btn-primary" data-action="do-email-login">${T('loginBtn')}</button>
       <div class="divider">${T('or')}</div>
@@ -1826,27 +1833,27 @@ function renderSignupScreen(){
 
       <div class="field">
         <label>${T('nameLabel')}</label>
-        <input type="text" id="signup-name" data-signup-field="name" placeholder="${T('namePh')}" value="${escapeHtml(state.signupForm.name)}">
+        <input type="text" id="signup-name" name="signup-name-${state.signupFormInstanceId}" data-signup-field="name" placeholder="${T('namePh')}" value="${escapeHtml(state.signupForm.name)}" autocomplete="off">
       </div>
       <div class="field">
         <label>${T('emailLabel')}</label>
-        <input type="email" id="signup-email" data-signup-field="email" placeholder="${T('emailPh')}" value="${escapeHtml(state.signupForm.email)}">
+        <input type="email" id="signup-email" name="signup-email-${state.signupFormInstanceId}" data-signup-field="email" placeholder="${T('emailPh')}" value="${escapeHtml(state.signupForm.email)}" autocomplete="off">
       </div>
       <div class="field">
         <label>${T('birthLabel')}</label>
-        <input type="date" id="signup-birth" data-signup-field="birth" placeholder="${T('birthPh')}" value="${escapeHtml(state.signupForm.birth)}">
+        <input type="date" id="signup-birth" name="signup-birth-${state.signupFormInstanceId}" data-signup-field="birth" placeholder="${T('birthPh')}" value="${escapeHtml(state.signupForm.birth)}" autocomplete="off">
       </div>
       <div class="field">
         <label>${T('usernameLabel')}</label>
-        <input type="text" id="signup-username" data-signup-field="username" placeholder="${T('usernamePh')}" value="${escapeHtml(state.signupForm.username)}">
+        <input type="text" id="signup-username" name="signup-username-${state.signupFormInstanceId}" data-signup-field="username" placeholder="${T('usernamePh')}" value="${escapeHtml(state.signupForm.username)}" autocomplete="off">
       </div>
       <div class="field">
         <label>${T('pwLabel')}</label>
-        <input type="password" id="signup-password" data-signup-field="password" placeholder="${T('pwPh')}" value="${escapeHtml(state.signupForm.password)}">
+        <input type="password" id="signup-password" name="signup-password-${state.signupFormInstanceId}" data-signup-field="password" placeholder="${T('pwPh')}" value="${escapeHtml(state.signupForm.password)}" autocomplete="new-password">
       </div>
       <div class="field">
         <label>${T('nicknameLabel')}</label>
-        <input type="text" id="signup-nickname" data-signup-field="nickname" placeholder="${T('nicknamePh')}" value="${escapeHtml(state.signupForm.nickname)}">
+        <input type="text" id="signup-nickname" name="signup-nickname-${state.signupFormInstanceId}" data-signup-field="nickname" placeholder="${T('nicknamePh')}" value="${escapeHtml(state.signupForm.nickname)}" autocomplete="off">
       </div>
 
       <div class="consent-box">
@@ -2024,7 +2031,7 @@ function renderDeleteAccountModal(){
       ${isPasswordProvider ? `
       <div class="field" style="margin-bottom:16px;">
         <label>${T('deleteAccountPasswordLabel')}</label>
-        <input type="password" id="delete-account-password" data-delete-account-field="password" placeholder="${T('deleteAccountPasswordPh')}" value="${escapeHtml(m.password)}" ${m.busy?'disabled':''}>
+        <input type="password" id="delete-account-password" name="delete-account-password" data-delete-account-field="password" placeholder="${T('deleteAccountPasswordPh')}" value="${escapeHtml(m.password)}" autocomplete="current-password" ${m.busy?'disabled':''}>
       </div>` : ''}
       <div class="modal-actions">
         <button type="button" class="btn btn-cancel" data-action="close-delete-account" ${m.busy?'disabled':''}>${T('cancel')}</button>
@@ -3280,7 +3287,11 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     state.signupTermsConsentOpen = false;
     state.signupConsent = false;
     state.signupConsentOpen = false;
+    // 폼 state를 전부 빈 문자열로 되돌리고(React로 치면 "컴포넌트 마운트" 시점의
+    // 초기화), name 속성에 섞어 넣을 난수도 새로 뽑습니다 — 로그인 화면에서 입력했던
+    // 값이 브라우저 자동완성으로 이 화면에 그대로 채워지는 문제를 막기 위함입니다.
     state.signupForm = { name:'', email:'', birth:'', username:'', password:'', nickname:'' };
+    state.signupFormInstanceId = Date.now().toString(36) + Math.random().toString(36).slice(2,8);
     state.screen = 'signup';
     render();
   }
