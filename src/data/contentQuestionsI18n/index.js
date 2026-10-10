@@ -22,27 +22,35 @@ import enNumbers from './en/numbers.js';
 import jaNumbers from './ja/numbers.js';
 import thNumbers from './th/numbers.js';
 import zhNumbers from './zh/numbers.js';
+import enDeuteronomy from './en/deuteronomy.js';
+import jaDeuteronomy from './ja/deuteronomy.js';
+import thDeuteronomy from './th/deuteronomy.js';
+import zhDeuteronomy from './zh/deuteronomy.js';
 
 export const CONTENT_QUESTION_TRANSLATIONS = {
   en: {
+    deuteronomy: enDeuteronomy,
     numbers: enNumbers,
     leviticus: enLeviticus,
     exodus: enExodus,
     genesis: enGenesis,
   },
   ja: {
+    deuteronomy: jaDeuteronomy,
     numbers: jaNumbers,
     leviticus: jaLeviticus,
     exodus: jaExodus,
     genesis: jaGenesis,
   },
   th: {
+    deuteronomy: thDeuteronomy,
     numbers: thNumbers,
     leviticus: thLeviticus,
     exodus: thExodus,
     genesis: thGenesis,
   },
   zh: {
+    deuteronomy: zhDeuteronomy,
     numbers: zhNumbers,
     leviticus: zhLeviticus,
     exodus: zhExodus,
