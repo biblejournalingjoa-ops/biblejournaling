@@ -31,6 +31,23 @@ export function registerServiceWorker() {
 }
 
 /**
+ * Registers the service worker (if needed) and tells it the app's current UI
+ * language, so a push that arrives without its own title/body text falls back
+ * to text in that language (see public/sw.js). Called on startup and on every
+ * language change; failures are ignored — the worker then falls back to Korean.
+ */
+export function sendLanguageToServiceWorker(lang) {
+  registerServiceWorker()
+    .then((registration) => (registration ? navigator.serviceWorker.ready : null))
+    .then((registration) => {
+      if (registration && registration.active) {
+        registration.active.postMessage({ type: 'set-lang', lang });
+      }
+    })
+    .catch(() => {});
+}
+
+/**
  * Requests Notification permission (no-ops if the user already answered that
  * prompt before — the browser just returns the stored decision) and, if
  * granted and a VAPID key is configured, fetches an FCM token for this browser.

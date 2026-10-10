@@ -9,7 +9,7 @@ import koNumbersData from './data/ko_numbers.json';
 import koDeuteronomyData from './data/ko_deuteronomy.json';
 import { getBibleInfo } from './data/bibleInfo.js';
 import { getContentQuestions } from './data/contentQuestions.js';
-import { ensurePushRegistration } from './push.js';
+import { ensurePushRegistration, sendLanguageToServiceWorker } from './push.js';
 import { STRINGS } from './i18n/strings.js';
 
 /* ---------------- data ---------------- */
@@ -1102,6 +1102,12 @@ async function loadAll(){
     const up = await window.storage.get('user-profile');
     if(up && up.value) state.user = Object.assign({}, JSON.parse(up.value), state.user);
   }catch(e){}
+  // Loaded before subscribing to auth so the login-time reconcile with the
+  // Firestore notificationSettings never gets overwritten by this cached copy.
+  try{
+    const nf = await window.storage.get('notif-settings');
+    if(nf) notifSettings = Object.assign(notifSettings, JSON.parse(nf.value));
+  }catch(e){}
   subscribeToAuthUser();
   try{
     const g = await window.storage.get('groups-data');
@@ -1120,13 +1126,10 @@ async function loadAll(){
       if(parsed.theme) state.theme = parsed.theme;
     }
   }catch(e){}
-  try{
-    const nf = await window.storage.get('notif-settings');
-    if(nf) notifSettings = Object.assign(notifSettings, JSON.parse(nf.value));
-  }catch(e){}
   groupsLoaded = true;
   hideLoading();
   openTodayJournalIfRequested();
+  sendLanguageToServiceWorker(state.lang);
 }
 // A push notification click (see public/sw.js) opens a fresh tab at
 // /?openToday=1 when no existing tab was found to focus+postMessage instead.
@@ -1176,6 +1179,26 @@ function syncNotificationSettingsToFirestore(){
   if(!uid || !(window.__firebaseDB && window.__firebaseDB.ready)) return;
   window.__firebaseDB.updateNotificationSettings(uid, notifSettingsForFirestore())
     .catch(err=>console.error('[notif] Firestore notificationSettings save failed:', err));
+}
+// Runs at login with the Firestore users/{uid} doc. The doc's
+// notificationSettings win over this browser's cached copy, so a change made on
+// another device (or before a reinstall) shows up here; if the doc has none
+// yet, the local settings are uploaded instead. When permission was already
+// granted and a day is on, the FCM token is refreshed without prompting.
+function reconcileNotificationSettings(remote){
+  const hasRemote = !!remote && NOTIF_DAYS.some(d=>remote[d] && typeof remote[d]==='object');
+  if(hasRemote){
+    NOTIF_DAYS.forEach(d=>{
+      const r = remote[d];
+      notifSettings[d] = r && r.active ? (r.time || '07:00') : null;
+    });
+    saveNotifSettings();
+  } else if(NOTIF_DAYS.some(d=>notifSettings[d])){
+    syncNotificationSettingsToFirestore();
+  }
+  if(typeof Notification!=='undefined' && Notification.permission==='granted' && NOTIF_DAYS.some(d=>notifSettings[d])){
+    registerPushForCurrentUser();
+  }
 }
 // Requests notification permission + an FCM token for this browser and, if a
 // user is logged in, saves the token to their Firestore profile. Safe to call
@@ -1262,9 +1285,11 @@ function subscribeToAuthUser(){
   window.__firebaseAuth.onChange(async (profile)=>{
     if(!profile) return;
     let merged = { ...state.user, ...profile };
+    let remoteDoc = null;
     if(window.__firebaseDB && window.__firebaseDB.ready){
       try{
         const doc = await withLoading(window.__firebaseDB.getUserProfile(profile.uid));
+        remoteDoc = doc;
         if(doc){
           merged = { ...merged, ...doc };
           merged.uid = profile.uid;
@@ -1279,6 +1304,7 @@ function subscribeToAuthUser(){
     window.storage.set('user-profile', JSON.stringify(state.user), false).catch(()=>{});
     saveAuth();
     syncStreakToFirestore();
+    reconcileNotificationSettings(remoteDoc && remoteDoc.notificationSettings);
     if(groupsLoaded) render();
   });
 }
@@ -3308,7 +3334,7 @@ document.getElementById('shell').addEventListener('click', (e)=>{
   else if(action==='set-fontsize'){ state.fontSize = el.dataset.size; savePrefs(); render(); }
   else if(action==='open-language'){ state.languageModal=true; render(); }
   else if(action==='close-language'){ state.languageModal=false; render(); }
-  else if(action==='set-lang'){ state.lang = el.dataset.lang; savePrefs(); state.languageModal=false; render(); }
+  else if(action==='set-lang'){ state.lang = el.dataset.lang; savePrefs(); state.languageModal=false; render(); sendLanguageToServiceWorker(state.lang); }
   else if(action==='set-theme'){ state.theme = el.dataset.theme; savePrefs(); render(); }
   else if(action==='go-today'){ goToTodayJournal(); }
   else if(action==='open-purchase'){ state.purchaseModal = Number(el.dataset.month); state.selectedPlan='year'; render(); }
