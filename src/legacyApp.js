@@ -3130,10 +3130,22 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       render();
       showToast(T('toastSignupDone'));
     }).catch(err=>{
-      console.error('Email sign-up failed:', err);
-      if(err && err.code==='auth/email-already-in-use') showToast(T('toastEmailInUse'));
-      else if(err && err.code==='auth/weak-password') showToast(T('toastWeakPassword'));
-      else showToast(T('toastSignupFailed'));
+      // Firestore(users/{uid}) 쓰기 실패는 firebaseBridge.js의 saveUserOnAuth가 자체
+      // try/catch로 삼키고 로그만 남기므로(가입 자체를 막지 않도록), 여기 catch로
+      // 들어온다는 건 거의 항상 createUserWithEmailAndPassword 자체가 실패했다는
+      // 뜻입니다. code/message를 그대로 남겨서 Firebase 콘솔의 Authentication
+      // 설정(이메일/비밀번호 로그인 활성화 여부, 승인된 도메인 등)이나 .env의
+      // VITE_FIREBASE_* 값을 바로 점검할 수 있게 합니다.
+      const code = err && err.code;
+      const message = err && err.message;
+      console.error('[Signup] Email sign-up failed. code:', code, 'message:', message, err);
+      if(code==='auth/email-already-in-use') showToast(T('toastEmailInUse'));
+      else if(code==='auth/weak-password') showToast(T('toastWeakPassword'));
+      else if(code==='auth/invalid-email') showToast(T('toastInvalidEmail'));
+      // 그 외(예: auth/operation-not-allowed, auth/network-request-failed,
+      // auth/invalid-api-key 등)는 안내 문구로 뭉개지 않고 실제 에러 메시지를
+      // 그대로 보여줘서 원인을 바로 알 수 있게 합니다.
+      else showToast(message || T('toastSignupFailed'));
     });
   }
   else if(action==='do-logout'){

@@ -39,7 +39,11 @@
       }
       await upsertUser(profile.uid, payload);
     }catch(err){
-      console.error('Firestore user save failed:', err);
+      // Auth 계정 생성/로그인 자체는 이미 끝난 상태라 여기서 던지지 않고 로그만
+      // 남깁니다(회원가입/로그인 흐름을 막지 않기 위함). err.code가
+      // 'permission-denied'이면 firestore.rules의 users/{uid} allow create/update
+      // 조건(uid 일치, createdAt 불변 등)을 확인하세요.
+      console.error('[Firestore] users/{uid} 저장 실패. code:', err && err.code, 'message:', err && err.message, err);
     }
   }
 
