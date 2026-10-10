@@ -42,7 +42,9 @@ service cloud.firestore {
       allow update: if isOwner(uid) &&
         request.resource.data.uid == uid &&
         request.resource.data.createdAt == resource.data.createdAt;
-      allow delete: if false;
+      // 회원 탈퇴(계정 삭제) 시 본인 프로필 문서만 지울 수 있습니다. 다른 유저의
+      // 문서는 isOwner(uid)가 걸러 삭제할 수 없습니다.
+      allow delete: if isOwner(uid);
 
       // users/{uid}/journals/{book_chapter} : 본인의 묵상 기록만 접근 가능
       match /journals/{entryId} {

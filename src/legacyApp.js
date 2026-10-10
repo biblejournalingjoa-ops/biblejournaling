@@ -333,6 +333,10 @@ let state = {
   donateModal:false,        // whether the donation/support-us modal is open
   donateCopied:false,       // true briefly after the account number was copied, to flip the button label
   languageModal:false,      // whether the language-picker modal is open
+  // 회원 탈퇴 확인 모달. null이면 닫힌 상태. 열리면 { password, busy }:
+  // - password: 이메일/비밀번호 계정일 때만 쓰는 재인증용 입력값(구글/카카오는 팝업 재인증이라 안 씀)
+  // - busy: 삭제 요청이 진행 중이라 버튼을 막아야 하는지
+  deleteAccountModal:null,
   streakCount:0,            // consecutive days (including today) with a completed journal entry
   streakLastDate:null,      // 'YYYY-MM-DD' (local) of the last day the streak was credited
   lastActiveMonth:null,     // book (m) of the most recently opened chapter, for the "continue reading" button
@@ -1621,6 +1625,7 @@ function render(){
   if(state.notifDayOpen) overlays += renderNotifDaySheet();
   if(state.pageShare) overlays += renderPageShareSheet();
   if(state.donateModal) overlays += renderDonateModal();
+  if(state.deleteAccountModal) overlays += renderDeleteAccountModal();
   if(state.languageModal) overlays += renderLanguageModal();
   if(state.leaveConfirmOpen) overlays += renderLeaveConfirmModal();
   if(state.roomPhotoModal) overlays += renderRoomPhotoModal();
@@ -1965,8 +1970,40 @@ function renderSettingsScreen(){
           <div class="setting-item" data-action="open-privacy-policy">${T('privacyPolicy')} <span class="arrow">${ICON.chevRight}</span></div>
         </div>
       </div>
+
+      ${state.loggedIn && state.user ? `
+      <div class="settings-group">
+        <div class="settings-list">
+          <div class="setting-item danger" data-action="open-delete-account">${T('deleteAccount')} <span class="arrow">${ICON.chevRight}</span></div>
+        </div>
+      </div>` : ''}
     </div>
   `;
+}
+
+/* ---------------- 회원 탈퇴 확인 모달 ---------------- */
+function renderDeleteAccountModal(){
+  const m = state.deleteAccountModal;
+  if(!m || !state.user) return '';
+  // 이메일/비밀번호 계정만 비밀번호 입력으로 재인증합니다. 구글/카카오 계정은
+  // "탈퇴하기"를 누르면 firebaseBridge.js가 알아서 팝업으로 재인증을 띄웁니다.
+  const isPasswordProvider = state.user.provider === 'password';
+  return `
+  <div class="overlay center" data-action="close-delete-account">
+    <div class="modal-card" data-action="noop">
+      <div class="modal-title">${T('deleteAccountConfirmTitle')}</div>
+      <p class="modal-sub">${T('deleteAccountConfirmBody')}</p>
+      ${isPasswordProvider ? `
+      <div class="field" style="margin-bottom:16px;">
+        <label>${T('deleteAccountPasswordLabel')}</label>
+        <input type="password" id="delete-account-password" data-delete-account-field="password" placeholder="${T('deleteAccountPasswordPh')}" value="${escapeHtml(m.password)}" ${m.busy?'disabled':''}>
+      </div>` : ''}
+      <div class="modal-actions">
+        <button type="button" class="btn btn-cancel" data-action="close-delete-account" ${m.busy?'disabled':''}>${T('cancel')}</button>
+        <button type="button" class="btn btn-danger" data-action="confirm-delete-account" ${m.busy?'disabled':''}>${m.busy?T('deleteAccountInProgress'):T('deleteAccountConfirmBtn')}</button>
+      </div>
+    </div>
+  </div>`;
 }
 
 /* ---------------- language picker modal ---------------- */
@@ -3187,6 +3224,64 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       finishLogout();
     }
   }
+  else if(action==='open-delete-account'){
+    if(!(state.loggedIn && state.user)) return;
+    state.deleteAccountModal = { password:'', busy:false };
+    render();
+  }
+  else if(action==='close-delete-account'){
+    if(state.deleteAccountModal && state.deleteAccountModal.busy) return;
+    state.deleteAccountModal = null;
+    render();
+  }
+  else if(action==='confirm-delete-account'){
+    const m = state.deleteAccountModal;
+    if(!m || m.busy) return;
+    if(!(window.__firebaseAuth && window.__firebaseAuth.ready)){
+      showToast(T('toastFirebaseNotSet'));
+      return;
+    }
+    // 이메일/비밀번호 계정만 비밀번호로 재인증합니다. 구글/카카오 계정은
+    // firebaseBridge.js의 deleteAccount()가 알아서 팝업으로 재인증을 띄우므로
+    // password는 그냥 무시됩니다.
+    const isPasswordProvider = state.user && state.user.provider === 'password';
+    const password = m.password.trim();
+    if(isPasswordProvider && !password){
+      showToast(T('toastDeleteAccountNeedPassword'));
+      return;
+    }
+    m.busy = true;
+    render();
+    withLoading(window.__firebaseAuth.deleteAccount(password)).then(()=>{
+      // 삭제 자체는 재인증 → Firestore/Storage 데이터 삭제 → Auth 계정 삭제 순서로
+      // firebaseBridge.js가 전부 처리합니다. 여기서는 로컬에 남아있던 이 계정의
+      // 묵상/채팅방 캐시를 비우고(모든 데이터가 삭제된다는 안내와 일치시키기 위해)
+      // 로그인 화면으로 이동합니다. (initAuthGate의 onAuthStateChanged 구독도 곧
+      // 같은 로그아웃 상태를 반영하지만, 토스트와 화면 전환은 여기서 바로 처리합니다.)
+      journalData = {};
+      groups = [];
+      saveGroups();
+      window.storage.set('journal-entries', JSON.stringify(journalData), false).catch(()=>{});
+      state.deleteAccountModal = null;
+      state.loggedIn = false;
+      state.user = null;
+      lastPushedStreak = null;
+      saveAuth();
+      state.screen = 'login';
+      render();
+      showToast(T('toastDeleteAccountDone'));
+    }).catch(err=>{
+      const code = err && err.code;
+      const message = err && err.message;
+      console.error('[탈퇴] 계정 삭제 실패. code:', code, 'message:', message, err);
+      if(state.deleteAccountModal) state.deleteAccountModal.busy = false;
+      if(code==='auth/wrong-password' || code==='auth/invalid-credential') showToast(T('toastDeleteAccountWrongPassword'));
+      else if(code==='auth/popup-closed-by-user' || code==='auth/cancelled-popup-request') showToast(T('toastReauthCancelled'));
+      else if(code==='auth/network-request-failed') showToast(T('toastNetworkError'));
+      else showToast(message || T('toastDeleteAccountFailed'));
+      render();
+    });
+  }
   else if(action==='pick-avatar'){
     const input = document.getElementById('avatar-file-input');
     if(input) input.click();
@@ -3839,6 +3934,11 @@ document.getElementById('shell').addEventListener('input', (e)=>{
     // render()가 호출될 때는 이 state 값이 value 속성으로 복원되어 입력값이
     // 유지됩니다.
     state.signupForm[t.dataset.signupField] = t.value;
+    return;
+  }
+  if(t.dataset.deleteAccountField && state.deleteAccountModal){
+    // 회원 탈퇴 모달의 비밀번호 입력도 같은 이유로 render() 없이 state만 갱신합니다.
+    state.deleteAccountModal[t.dataset.deleteAccountField] = t.value;
     return;
   }
   const kind = t.dataset.kind;

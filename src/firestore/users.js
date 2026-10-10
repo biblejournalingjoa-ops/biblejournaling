@@ -1,6 +1,6 @@
 // users 컬렉션: 로그인/회원가입 성공 시 유저 정보를 자동 저장 및 업데이트합니다.
 // 문서 경로: users/{uid}
-import { doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase.js";
 
 /**
@@ -93,4 +93,11 @@ export async function updateFcmToken(uid, fcmToken) {
     { fcmToken, updatedAt: serverTimestamp() },
     { merge: true }
   );
+}
+
+/** 회원 탈퇴 시 users/{uid} 프로필 문서를 삭제합니다. 서브컬렉션(journals)은 Firestore가
+ *  자동으로 함께 지우지 않으므로 deleteAllJournalEntries로 별도 삭제해야 합니다. */
+export async function deleteUserDoc(uid) {
+  if (!uid) throw new Error("deleteUserDoc: uid is required");
+  await deleteDoc(doc(db, "users", uid));
 }
