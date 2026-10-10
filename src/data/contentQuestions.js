@@ -22,6 +22,10 @@
  * language is added, only a new top-level language key inserted.
  */
 
+// en/ja/th/zh translations live in ./contentQuestionsI18n/ and are applied
+// per chapter on top of the Korean data in getContentQuestions().
+import { CONTENT_QUESTION_TRANSLATIONS } from './contentQuestionsI18n/index.js';
+
 export const CONTENT_QUESTIONS_META = {
   genesis: { bookName: '창세기', bookNameEn: 'Genesis', translation: '킹제임스흠정역' },
   exodus: { bookName: '출애굽기', bookNameEn: 'Exodus', translation: '킹제임스흠정역' },
@@ -1503,7 +1507,11 @@ export const CONTENT_QUESTIONS_BY_BOOK = {
 export function getContentQuestions(bookId, chapter, lang) {
   const byBook = CONTENT_QUESTIONS_BY_BOOK[lang] || CONTENT_QUESTIONS_BY_BOOK.ko;
   const book = bookId && byBook[bookId];
-  const questions = book && book[chapter];
+  let questions = book && book[chapter];
   if (!questions) return null;
+  const translated = CONTENT_QUESTION_TRANSLATIONS[lang]?.[bookId]?.[chapter];
+  if (lang !== 'ko' && translated && translated.length === questions.length) {
+    questions = questions.map((q, i) => ({ questionNumber: q.questionNumber, question: translated[i] }));
+  }
   return { meta: CONTENT_QUESTIONS_META[bookId] || null, chapter, questions };
 }
