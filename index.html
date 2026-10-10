@@ -727,6 +727,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .msg-row.them{align-self:flex-start;align-items:flex-start;}
 .msg-sender{font-size:calc(10.5px * var(--fs-scale));color:var(--ink-faint);margin-bottom:3px;padding:0 3px;}
 .msg-line{display:flex;align-items:flex-end;gap:5px;}
+/* my messages open the delete sheet on long-press: keep iOS text-selection/image callouts out of the way */
+.msg-line[data-mine-msg]{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
+.msg-line[data-mine-msg] [data-action="open-msg-menu"]{cursor:pointer;}
 .msg-unread{
   font-size:calc(10.5px * var(--fs-scale));font-weight:700;color:#E8791E;flex-shrink:0;
   margin-bottom:3px;white-space:nowrap;

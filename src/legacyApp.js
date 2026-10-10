@@ -278,6 +278,7 @@ const ICON = {
   message:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="13" rx="3"/><path d="M3 7l9 6 9-6"/></svg>`,
   chatBubble:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12a7.5 7.5 0 01-11 6.6L4 20l1.4-4.5A7.5 7.5 0 1120 12z"/></svg>`,
   copy:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M5 15.5H4a1 1 0 01-1-1V4a1 1 0 011-1h10.5a1 1 0 011 1v1"/></svg>`,
+  trash:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l1 12.5h9l1-12.5M10 11v5M14 11v5"/></svg>`,
   menu:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`,
 };
 
@@ -299,6 +300,9 @@ let state = {
   groupInfoError:false,     // true if the participant list failed to load from Firestore
   leaveConfirmOpen:false,   // whether the "leave chat room" confirm dialog is open
   leaveBusy:false,          // true while a leave-room request is in flight
+  msgActionMenu:null,       // { groupId, msgId } my chat message whose action sheet (삭제하기) is open
+  msgDeleteConfirm:null,    // { groupId, msgId } my chat message awaiting delete confirmation
+  msgDeleteBusy:false,      // true while a message delete request is in flight
   groupManageDoc:null,      // { id, name, photoUrl, ownerUid, closed, ... } the live Firestore doc for the open group-manage/group-room screen
   groupNameEditOpen:false,  // whether the room-name edit field is showing on the manage screen
   groupNameSaving:false,    // true while a room-name save is in flight
@@ -617,6 +621,8 @@ function subscribeToMessagesFeed(groupId){
     }, 50, (err)=>{
       console.error('Message subscription failed:', err);
       showToast(T('toastMessagesLoadFailed'));
+    }, (removedId)=>{
+      applyRemovedRemoteMessage(groupId, removedId);
     });
   }).catch(err=>{
     console.error('ensureGroup before message subscription failed:', err);
@@ -631,6 +637,8 @@ function unsubscribeMessagesFeed(){
    로컬에만 있는 메시지 타입은 건드리지 않고, 텍스트 메시지만 다룹니다. 내가 보낸 메시지는
    clientId로 매칭해 이미 낙관적으로 그려둔 말풍선에 원격 id만 붙이고(중복 추가 안 함),
    그 외(다른 멤버가 보낸, 또는 다른 기기에서 내가 보낸) 메시지만 새로 추가합니다. */
+// Remote ids whose deferred (deleted-before-upload) delete is already in flight.
+const pendingDeferredDeletes = new Set();
 function applyRemoteMessages(groupId, remoteMsgs){
   const g = getGroup(groupId);
   if(!g || !Array.isArray(remoteMsgs)) return;
@@ -641,9 +649,27 @@ function applyRemoteMessages(groupId, remoteMsgs){
   // 메시지들은 clientId로 못 찾으므로, 내용이 같은 것끼리 순서대로 1:1 매칭해 처음 켤 때
   // 내 과거 메시지가 중복으로 나타나지 않게 합니다.
   const unmatchedMine = (g.messages||[]).filter(m=>m.isMe && m.type==='text' && !m._remoteId);
+  // 업로드가 끝나기 전에 내가 삭제한 메시지(clientId 기록)가 뒤늦게 내려오면, 화면에
+  // 다시 띄우지 않고 Firestore에서도 지웁니다. 삭제가 끝나면 기록도 정리합니다.
+  const deletedClientIds = new Set(g.deletedClientIds||[]);
+  const fdbForDelete = window.__firebaseDB;
   let changed = false;
   remoteMsgs.forEach(rm=>{
     if(seenRemoteIds.has(rm.id)) return;
+    if(rm.uid===myUid && rm.clientId && deletedClientIds.has(rm.clientId)){
+      if(!pendingDeferredDeletes.has(rm.id) && fdbForDelete && fdbForDelete.ready && typeof fdbForDelete.deleteMessage === 'function'){
+        pendingDeferredDeletes.add(rm.id);
+        fdbForDelete.deleteMessage(groupId, rm.id).then(()=>{
+          const gNow = getGroup(groupId);
+          if(gNow && gNow.deletedClientIds){
+            gNow.deletedClientIds = gNow.deletedClientIds.filter(id=>id!==rm.clientId);
+            saveGroups();
+          }
+        }).catch(err=>console.error('Deferred message delete failed:', err))
+          .finally(()=>pendingDeferredDeletes.delete(rm.id));
+      }
+      return;
+    }
     const clientMatch = rm.clientId && localByClientId.get(rm.clientId);
     if(clientMatch && !clientMatch._remoteId){
       clientMatch._remoteId = rm.id;
@@ -1628,6 +1654,8 @@ function render(){
   if(state.deleteAccountModal) overlays += renderDeleteAccountModal();
   if(state.languageModal) overlays += renderLanguageModal();
   if(state.leaveConfirmOpen) overlays += renderLeaveConfirmModal();
+  if(state.msgActionMenu) overlays += renderMsgActionSheet();
+  if(state.msgDeleteConfirm) overlays += renderMsgDeleteConfirmModal();
   if(state.roomPhotoModal) overlays += renderRoomPhotoModal();
   if(state.memberProfileUid) overlays += renderMemberProfileSheet();
 
@@ -2506,6 +2534,117 @@ function renderLeaveConfirmModal(){
   </div>`;
 }
 
+/* ---------------- my-message delete (action sheet + confirm) ---------------- */
+// Same bottom-sheet look as the verse long-press copy sheet, with a single 삭제하기 item.
+function renderMsgActionSheet(){
+  return `
+  <div class="overlay" data-action="close-msg-menu">
+    <div class="sheet verse-action-sheet" data-action="noop">
+      <div class="sheet-handle"></div>
+      <button class="verse-action-btn" data-action="open-msg-delete-confirm">
+        <span class="va-icon">${ICON.trash}</span>
+        <span>${T('msgDeleteBtn')}</span>
+      </button>
+    </div>
+  </div>`;
+}
+function renderMsgDeleteConfirmModal(){
+  const busy = state.msgDeleteBusy;
+  return `
+  <div class="overlay center" data-action="close-msg-delete-confirm">
+    <div class="modal-card" data-action="noop">
+      <div class="modal-title">${T('msgDeleteConfirmTitle')}</div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" data-action="close-msg-delete-confirm" ${busy?'disabled':''}>${T('cancel')}</button>
+        <button class="btn btn-danger" data-action="confirm-msg-delete" ${busy?'disabled':''}>${T('msgDeleteConfirmBtn')}</button>
+      </div>
+    </div>
+  </div>`;
+}
+// Looks up a message only if it is mine and deletable (not a system notice). Used both
+// when opening the menu and again right before deleting, so a message that turned out not
+// to be mine (or vanished meanwhile) can never be deleted from the client side.
+function findMyDeletableMessage(groupId, msgId){
+  const g = getGroup(groupId);
+  const msg = g && (g.messages||[]).find(m=>m.id===msgId);
+  if(!msg || !msg.isMe || msg.type==='system') return null;
+  return { g, msg };
+}
+function removeLocalMessage(g, msgId){
+  const before = g.messages.length;
+  g.messages = g.messages.filter(m=>m.id!==msgId);
+  if(g.messages.length!==before) saveGroups();
+}
+function closeMsgDeleteUi(){
+  state.msgActionMenu = null;
+  state.msgDeleteConfirm = null;
+  state.msgDeleteBusy = false;
+}
+// Deletes one of my messages. Text messages mirrored to Firestore are deleted there
+// (firestore.rules re-checks that I am the author), and the other members' realtime
+// subscriptions then drop it. A text message whose upload hasn't come back yet is
+// remembered by clientId so the copy is deleted as soon as it arrives. Images and
+// shared journal cards only ever live on this device, so they are removed locally.
+function deleteMyMessage(groupId, msgId){
+  const found = findMyDeletableMessage(groupId, msgId);
+  if(!found){
+    closeMsgDeleteUi();
+    render();
+    showToast(T('toastMsgDeleteNoPermission'));
+    return;
+  }
+  const { g, msg } = found;
+  if(!msg._remoteId){
+    if(msg.type==='text'){
+      g.deletedClientIds = Array.from(new Set([...(g.deletedClientIds||[]), msg.id]));
+    }
+    removeLocalMessage(g, msg.id);
+    closeMsgDeleteUi();
+    render();
+    return;
+  }
+  const fdb = window.__firebaseDB;
+  if(!fdb || !fdb.ready || typeof fdb.deleteMessage !== 'function'){
+    closeMsgDeleteUi();
+    render();
+    showToast(T('toastMsgDeleteFailed'));
+    return;
+  }
+  // An offline deleteDoc() only resolves once the device reconnects, which would leave
+  // the confirm dialog stuck in its busy state - so ask the user to reconnect instead.
+  if(navigator.onLine === false){
+    closeMsgDeleteUi();
+    render();
+    showToast(T('toastNetworkError'));
+    return;
+  }
+  state.msgDeleteBusy = true;
+  render();
+  fdb.deleteMessage(groupId, msg._remoteId).then(()=>{
+    const gNow = getGroup(groupId);
+    if(gNow) removeLocalMessage(gNow, msg.id);
+    closeMsgDeleteUi();
+    render();
+  }).catch(err=>{
+    console.error('Message delete failed:', err);
+    closeMsgDeleteUi();
+    render();
+    showToast(T(err && err.code==='permission-denied' ? 'toastMsgDeleteNoPermission' : 'toastMsgDeleteFailed'));
+  });
+}
+// Another member (or my other device) deleted a message: drop the local copy, and close
+// the delete menu/confirm if it was open for that very message.
+function applyRemovedRemoteMessage(groupId, remoteId){
+  const g = getGroup(groupId);
+  if(!g) return;
+  const msg = (g.messages||[]).find(m=>m._remoteId===remoteId);
+  if(!msg) return;
+  removeLocalMessage(g, msg.id);
+  const open = state.msgDeleteConfirm || state.msgActionMenu;
+  if(open && open.groupId===groupId && open.msgId===msg.id && !state.msgDeleteBusy) closeMsgDeleteUi();
+  if(state.screen==='group-room' && state.activeGroupId===groupId) render();
+}
+
 /* ---------------- group chat room ---------------- */
 function renderGroupRoom(){
   const g = getGroup(state.activeGroupId);
@@ -2514,6 +2653,10 @@ function renderGroupRoom(){
   }
   const bubbles = g.messages.map(m=>{
     const badge = (m.isMe && m.unread>0) ? `<span class="msg-unread">${m.unread}</span>` : '';
+    // Only my own messages get the delete-menu hooks: a click (PC) on the bubble or a
+    // long-press (touch) anywhere on the line opens the 삭제하기 sheet.
+    const mineLine = m.isMe ? ` data-mine-msg="${escapeHtml(m.id)}"` : '';
+    const menuAttr = m.isMe ? ` data-action="open-msg-menu" data-msgid="${escapeHtml(m.id)}"` : '';
     if(m.type==='system'){
       return `<div class="msg-row system"><div class="msg-bubble">${m.textKey ? T(m.textKey) : m.text}</div></div>`;
     }
@@ -2521,9 +2664,9 @@ function renderGroupRoom(){
       return `
       <div class="msg-row ${m.isMe?'me':'them'}">
         ${!m.isMe ? `<div class="msg-sender">${escapeHtml(m.from)}</div>` : ''}
-        <div class="msg-line">
+        <div class="msg-line"${mineLine}>
           ${badge}
-          <div class="journal-card">
+          <div class="journal-card"${menuAttr}>
             <div class="jc-cap">${T('sharedMeditationCap')} · ${m.dateLabel}</div>
             <div class="jc-title">${m.jTitle}</div>
             <div class="jc-text">${m.jText}</div>
@@ -2535,9 +2678,9 @@ function renderGroupRoom(){
       return `
       <div class="msg-row ${m.isMe?'me':'them'}">
         ${!m.isMe ? `<div class="msg-sender">${escapeHtml(m.from)}</div>` : ''}
-        <div class="msg-line">
+        <div class="msg-line"${mineLine}>
           ${badge}
-          <div class="snap-img-wrap">
+          <div class="snap-img-wrap"${menuAttr}>
             <img class="shared-snap-img" src="${m.imageData}" alt="${m.jTitle||''}" data-action="open-image-viewer" data-msgid="${m.id}" data-index="0">
             <div class="snap-img-cap">${m.jTitle||''}</div>
           </div>
@@ -2548,9 +2691,9 @@ function renderGroupRoom(){
       return `
       <div class="msg-row ${m.isMe?'me':'them'}">
         ${!m.isMe ? `<div class="msg-sender">${escapeHtml(m.from)}</div>` : ''}
-        <div class="msg-line">
+        <div class="msg-line"${mineLine}>
           ${badge}
-          <div class="snap-img-pair-wrap">
+          <div class="snap-img-pair-wrap"${menuAttr}>
             <div class="snap-img-pair">
               ${m.images.map((img,i)=>`
                 <img class="shared-snap-img-half" src="${img.dataUrl}" alt="${img.cap||''}" data-action="open-image-viewer" data-msgid="${m.id}" data-index="${i}">
@@ -2564,9 +2707,9 @@ function renderGroupRoom(){
     return `
       <div class="msg-row ${m.isMe?'me':'them'}">
         ${!m.isMe ? `<div class="msg-sender">${escapeHtml(m.from)}</div>` : ''}
-        <div class="msg-line">
+        <div class="msg-line"${mineLine}>
           ${badge}
-          <div class="msg-bubble">${nl2br(escapeHtml(m.text))}</div>
+          <div class="msg-bubble"${menuAttr}>${nl2br(escapeHtml(m.text))}</div>
         </div>
       </div>`;
   }).join('');
@@ -3066,6 +3209,9 @@ function renderThoughtTab(ds){
 
 /* ---------------- events ---------------- */
 document.getElementById('shell').addEventListener('click', (e)=>{
+  // The finger lift that ends a message long-press would otherwise land as a click on
+  // the sheet's backdrop and close it immediately.
+  if(Date.now() < suppressClickUntil){ suppressClickUntil = 0; return; }
   const el = e.target.closest('[data-action]');
   if(!el) return;
   const action = el.dataset.action;
@@ -3602,6 +3748,38 @@ document.getElementById('shell').addEventListener('click', (e)=>{
     state.memberProfileUid = null;
     render();
   }
+  else if(action==='open-msg-menu'){
+    // PC opens the menu with a click; on touch screens the long-press handler opens it,
+    // so a plain tap on a bubble keeps doing nothing (as before).
+    if(lastPointerType && lastPointerType!=='mouse') return;
+    const groupId = state.activeGroupId;
+    const msgId = el.dataset.msgid;
+    if(!findMyDeletableMessage(groupId, msgId)) return;
+    state.msgActionMenu = { groupId, msgId };
+    render();
+  }
+  else if(action==='close-msg-menu'){
+    state.msgActionMenu = null;
+    render();
+  }
+  else if(action==='open-msg-delete-confirm'){
+    const target = state.msgActionMenu;
+    if(!target) return;
+    state.msgActionMenu = null;
+    state.msgDeleteConfirm = target;
+    render();
+  }
+  else if(action==='close-msg-delete-confirm'){
+    if(state.msgDeleteBusy) return;
+    state.msgDeleteConfirm = null;
+    render();
+  }
+  else if(action==='confirm-msg-delete'){
+    if(state.msgDeleteBusy) return;
+    const target = state.msgDeleteConfirm;
+    if(!target) return;
+    deleteMyMessage(target.groupId, target.msgId);
+  }
   else if(action==='open-leave-confirm'){
     state.leaveConfirmOpen = true;
     render();
@@ -3989,7 +4167,46 @@ document.getElementById('shell').addEventListener('pointerup', cancelVersePress)
 document.getElementById('shell').addEventListener('pointercancel', cancelVersePress);
 document.getElementById('shell').addEventListener('contextmenu', (e)=>{
   if(e.target.closest('.verse')) e.preventDefault();
+  if(state.screen==='group-room' && e.target.closest('[data-mine-msg]')) e.preventDefault();
 });
+
+/* ---------------- my chat message long-press → delete sheet ---------------- */
+// Touch/pen only: with a mouse the bubble's click opens the same sheet (open-msg-menu).
+const MSG_LONGPRESS_MS = 450;
+let lastPointerType = null;
+let msgPressTimer = null;
+let msgPressStart = null;
+let suppressClickUntil = 0;
+function cancelMsgPress(){
+  clearTimeout(msgPressTimer);
+  msgPressTimer = null;
+  msgPressStart = null;
+}
+document.getElementById('shell').addEventListener('pointerdown', (e)=>{
+  lastPointerType = e.pointerType;
+  if(e.pointerType==='mouse') return;
+  const line = e.target.closest('[data-mine-msg]');
+  if(!line || state.screen!=='group-room' || state.msgActionMenu || state.msgDeleteConfirm) return;
+  const groupId = state.activeGroupId;
+  const msgId = line.dataset.mineMsg;
+  if(!findMyDeletableMessage(groupId, msgId)) return;
+  msgPressStart = { x:e.clientX, y:e.clientY };
+  clearTimeout(msgPressTimer);
+  msgPressTimer = setTimeout(()=>{
+    msgPressTimer = null;
+    if(navigator.vibrate){ try{ navigator.vibrate(10); }catch(err){} }
+    suppressClickUntil = Date.now() + 700;
+    state.msgActionMenu = { groupId, msgId };
+    render();
+  }, MSG_LONGPRESS_MS);
+});
+document.getElementById('shell').addEventListener('pointermove', (e)=>{
+  if(!msgPressTimer || !msgPressStart) return;
+  const dx = e.clientX - msgPressStart.x, dy = e.clientY - msgPressStart.y;
+  if(Math.hypot(dx, dy) > VERSE_LONGPRESS_MOVE_TOLERANCE) cancelMsgPress();
+});
+document.getElementById('shell').addEventListener('pointerup', cancelMsgPress);
+document.getElementById('shell').addEventListener('pointercancel', cancelMsgPress);
 
 initAuthGate();
 loadAll();

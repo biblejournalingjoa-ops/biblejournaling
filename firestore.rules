@@ -88,13 +88,15 @@ service cloud.firestore {
       // groups/{groupId}/messages/{messageId} : 해당 그룹 멤버만 읽고 쓸 수 있음.
       // (메시지는 그룹이 이미 존재해야만 생길 수 있으므로, groups/{groupId} 자체의 read와
       // 달리 문서 없음(resource==null)을 따로 봐줄 필요가 없어 isGroupMember()를 그대로
-      // 씁니다.) 메시지는 본인 uid로만 작성 가능하고, 작성 후 수정/삭제는 막습니다(대화 기록
-      // 보존). 방장이 채팅방을 폭파(closed=true)한 뒤에는 새 메시지를 쓸 수 없습니다.
+      // 씁니다.) 메시지는 본인 uid로만 작성 가능하고, 작성 후 수정은 막습니다. 삭제는 그 방
+      // 멤버인 작성자 본인(저장된 uid == 요청자)만 가능합니다 - 다른 사람의 메시지는 방장이라도
+      // 지울 수 없습니다. 방장이 채팅방을 폭파(closed=true)한 뒤에는 새 메시지를 쓸 수 없습니다.
       match /messages/{messageId} {
         allow read: if isGroupMember(groupId);
         allow create: if isGroupMember(groupId) && request.resource.data.uid == request.auth.uid &&
           !groupIsClosed(groupId);
-        allow update, delete: if false;
+        allow update: if false;
+        allow delete: if isGroupMember(groupId) && resource.data.uid == request.auth.uid;
       }
     }
 
