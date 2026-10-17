@@ -92,11 +92,35 @@
     }
   }
 
+  /** Firestore 쓰기는 서버 응답을 받을 때까지 resolve되지 않고(오프라인이면 무한 대기),
+   *  재인증 팝업도 브라우저 환경에 따라 닫힘 감지가 안 돼 영원히 pending일 수 있습니다.
+   *  그러면 호출부의 로딩 오버레이가 끝나지 않으므로, 탈퇴의 각 단계를 제한 시간으로 감싸
+   *  시간 초과 시 code 'deleteAccount/timeout' 에러로 실패시킵니다. 실패한 단계 이름은
+   *  err.step에 담아 콘솔 로깅에 사용합니다. */
+  function runStep(step, ms, fn){
+    let timer;
+    const timeout = new Promise((_, reject)=>{
+      timer = setTimeout(()=>{
+        const err = new Error(`[탈퇴] '${step}' 단계가 ${ms / 1000}초 안에 끝나지 않았습니다.`);
+        err.code = 'deleteAccount/timeout';
+        reject(err);
+      }, ms);
+    });
+    return Promise.race([fn(), timeout])
+      .catch(err=>{
+        if(err && typeof err === 'object' && !err.step) err.step = step;
+        console.error(`[탈퇴] '${step}' 단계 실패. code:`, err && err.code, 'message:', err && err.message, err);
+        throw err;
+      })
+      .finally(()=> clearTimeout(timer));
+  }
+
   async function deleteAllUserData(uid){
-    await leaveAllGroups(uid);
-    await deleteAllJournalEntries(uid);
-    await deleteUserDoc(uid);
-    await cleanupProfileStorage(uid);
+    await runStep('leaveAllGroups', 20000, ()=> leaveAllGroups(uid));
+    await runStep('deleteAllJournalEntries', 30000, ()=> deleteAllJournalEntries(uid));
+    await runStep('deleteUserDoc', 20000, ()=> deleteUserDoc(uid));
+    // Storage 정리는 best-effort라 시간 초과돼도 탈퇴를 막지 않습니다.
+    await runStep('cleanupProfileStorage', 15000, ()=> cleanupProfileStorage(uid)).catch(()=>{});
   }
 
   /** 가입 수단에 맞는 방식으로 Firebase Auth 세션을 재인증합니다. deleteAccount()가
@@ -234,10 +258,12 @@
     // 그대로 실패하므로 안전하게 재시도할 수 있습니다.
     deleteAccount: async (password)=>{
       if(!auth || !auth.currentUser) throw new Error('firebase-not-configured');
-      await reauthenticateCurrentUser(password);
-      const uid = auth.currentUser.uid;
-      await deleteAllUserData(uid);
-      await deleteAuthUser(auth.currentUser);
+      // 팝업 재인증은 사용자가 계정을 고르는 시간까지 포함하므로 넉넉하게 잡습니다.
+      await runStep('reauthenticate', 120000, ()=> reauthenticateCurrentUser(password));
+      const user = auth.currentUser;
+      if(!user) throw new Error('firebase-not-configured');
+      await deleteAllUserData(user.uid);
+      await runStep('deleteUser', 20000, ()=> deleteAuthUser(user));
     },
   };
 

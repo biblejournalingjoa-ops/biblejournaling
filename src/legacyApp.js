@@ -3407,37 +3407,49 @@ document.getElementById('shell').addEventListener('click', (e)=>{
       showToast(T('toastDeleteAccountNeedPassword'));
       return;
     }
-    m.busy = true;
-    render();
-    withLoading(window.__firebaseAuth.deleteAccount(password)).then(()=>{
-      // 삭제 자체는 재인증 → Firestore/Storage 데이터 삭제 → Auth 계정 삭제 순서로
-      // firebaseBridge.js가 전부 처리합니다. 여기서는 로컬에 남아있던 이 계정의
-      // 묵상/채팅방 캐시를 비우고(모든 데이터가 삭제된다는 안내와 일치시키기 위해)
-      // 로그인 화면으로 이동합니다. (initAuthGate의 onAuthStateChanged 구독도 곧
-      // 같은 로그아웃 상태를 반영하지만, 토스트와 화면 전환은 여기서 바로 처리합니다.)
-      journalData = {};
-      groups = [];
-      saveGroups();
-      window.storage.set('journal-entries', JSON.stringify(journalData), false).catch(()=>{});
-      state.deleteAccountModal = null;
-      state.loggedIn = false;
-      state.user = null;
-      lastPushedStreak = null;
-      saveAuth();
-      state.screen = 'login';
-      render();
-      showToast(T('toastDeleteAccountDone'));
-    }).catch(err=>{
-      const code = err && err.code;
-      const message = err && err.message;
-      console.error('[탈퇴] 계정 삭제 실패. code:', code, 'message:', message, err);
-      if(state.deleteAccountModal) state.deleteAccountModal.busy = false;
-      if(code==='auth/wrong-password' || code==='auth/invalid-credential') showToast(T('toastDeleteAccountWrongPassword'));
-      else if(code==='auth/popup-closed-by-user' || code==='auth/cancelled-popup-request') showToast(T('toastReauthCancelled'));
-      else if(code==='auth/network-request-failed') showToast(T('toastNetworkError'));
-      else showToast(message || T('toastDeleteAccountFailed'));
-      render();
-    });
+    // 성공/실패와 관계없이 finally에서 반드시 로딩 오버레이와 busy 상태를 해제합니다.
+    // (각 단계의 무한 대기는 firebaseBridge.js의 runStep 제한 시간이 에러로 바꿔 줍니다.)
+    (async ()=>{
+      m.busy = true;
+      showLoading();
+      try{
+        await window.__firebaseAuth.deleteAccount(password);
+        // 삭제 자체는 재인증 → Firestore/Storage 데이터 삭제 → Auth 계정 삭제 순서로
+        // firebaseBridge.js가 전부 처리합니다. 여기서는 로컬에 남아있던 이 계정의
+        // 묵상/채팅방 캐시를 비우고(모든 데이터가 삭제된다는 안내와 일치시키기 위해)
+        // 로그인 화면으로 이동합니다. (initAuthGate의 onAuthStateChanged 구독도 곧
+        // 같은 로그아웃 상태를 반영하지만, 토스트와 화면 전환은 여기서 바로 처리합니다.)
+        journalData = {};
+        groups = [];
+        saveGroups();
+        window.storage.set('journal-entries', JSON.stringify(journalData), false).catch(()=>{});
+        state.deleteAccountModal = null;
+        state.loggedIn = false;
+        state.user = null;
+        lastPushedStreak = null;
+        saveAuth();
+        state.screen = 'login';
+        showToast(T('toastDeleteAccountDone'));
+      }catch(err){
+        const code = err && err.code;
+        const message = err && err.message;
+        console.error('[탈퇴] 계정 삭제 실패. step:', err && err.step, 'code:', code, 'message:', message, err);
+        if(code==='auth/requires-recent-login' || code==='auth/user-token-expired'){
+          // 세션이 너무 오래돼 재인증으로도 삭제가 거부된 경우 — 모달을 닫고 다시
+          // 로그인하도록 안내합니다(데이터 삭제 단계는 멱등이라 재시도해도 안전).
+          state.deleteAccountModal = null;
+          showToast(T('toastDeleteAccountRecentLogin'));
+        }
+        else if(code==='auth/wrong-password' || code==='auth/invalid-credential') showToast(T('toastDeleteAccountWrongPassword'));
+        else if(code==='auth/popup-closed-by-user' || code==='auth/cancelled-popup-request' || code==='auth/popup-blocked') showToast(T('toastReauthCancelled'));
+        else if(code==='auth/network-request-failed' || code==='unavailable') showToast(T('toastNetworkError'));
+        else if(code==='deleteAccount/timeout' || code==='deadline-exceeded') showToast(T('toastDeleteAccountTimeout'));
+        else showToast(T('toastDeleteAccountFailed'));
+      }finally{
+        if(state.deleteAccountModal) state.deleteAccountModal.busy = false;
+        hideLoading(); // render() 포함
+      }
+    })();
   }
   else if(action==='pick-avatar'){
     const input = document.getElementById('avatar-file-input');
