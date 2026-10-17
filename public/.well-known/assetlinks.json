@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.biblejournaling.app",
+    "sha256_cert_fingerprints": [
+      "32:98:7F:E4:60:9B:7A:6E:B5:41:50:05:22:2F:2E:D2:30:60:D4:66:01:69:7F:57:CC:ED:21:C3:59:FC:28:D5"
+    ]
+  }
+}]
