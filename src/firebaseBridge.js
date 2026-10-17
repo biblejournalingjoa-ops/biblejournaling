@@ -6,13 +6,11 @@
     OAuthProvider, signInWithPopup, getAdditionalUserInfo,
     createUserWithEmailAndPassword, signInWithEmailAndPassword,
     updateProfile, onAuthStateChanged, signOut,
-    EmailAuthProvider, reauthenticateWithCredential, reauthenticateWithPopup,
-    deleteUser as deleteAuthUser,
   } from "firebase/auth";
-  import { ref as storageRef, listAll, deleteObject } from "firebase/storage";
   import { auth, db, storage, googleProvider } from "./firebase.js";
   import * as firestoreApi from "./firestore/index.js";
-  const { upsertUser, getUser, listMyGroups, removeGroupMember, deleteAllJournalEntries, deleteUserDoc } = firestoreApi;
+  import { deleteCurrentAccount } from "./accountDeletion.js";
+  const { upsertUser, getUser } = firestoreApi;
 
   function toProfile(u){
     return { uid:u.uid, name:u.displayName, email:u.email, photoUrl:u.photoURL };
@@ -47,105 +45,6 @@
       // 'permission-denied'이면 firestore.rules의 users/{uid} allow create/update
       // 조건(uid 일치, createdAt 불변 등)을 확인하세요.
       console.error('[Firestore] users/{uid} 저장 실패. code:', err && err.code, 'message:', err && err.message, err);
-    }
-  }
-
-  // ---- 회원 탈퇴 ----
-  // Auth 계정을 지우고 나면(onAuthStateChanged가 즉시 로그아웃 처리) 더 이상 본인
-  // 인증으로 Firestore를 쓸 수 없으므로, 반드시 Auth 계정 삭제보다 먼저 Firestore/
-  // Storage 쪽 데이터를 전부 지워야 합니다. 아래 두 함수는 모두 멱등(idempotent)하게
-  // 작성되어 있어 — 이미 지워진 문서를 다시 지우거나, 비어 있는 컬렉션/폴더를 다시
-  // 조회해도 에러 없이 조용히 넘어갑니다 — deleteAccount()가 auth/requires-recent-login로
-  // 중간에 실패해 재인증 후 통째로 재시도되더라도 안전합니다.
-
-  /** 내가 속한 모든 채팅방에서 나갑니다. 메시지 자체는 다른 멤버와 공유된 대화 기록이라
-   *  보존하고, members 배열에서 내 uid만 제거합니다(기존 "채팅방 나가기"와 동일 동작). */
-  async function leaveAllGroups(uid){
-    let myGroups = [];
-    try{
-      myGroups = await listMyGroups(uid);
-    }catch(err){
-      console.error('[탈퇴] 가입된 채팅방 목록 조회 실패. code:', err && err.code, err);
-      return;
-    }
-    await Promise.all(myGroups.map(g =>
-      removeGroupMember(g.id, uid).catch(err=>{
-        console.error(`[탈퇴] 채팅방(${g.id}) 멤버 제거 실패. code:`, err && err.code, err);
-      })
-    ));
-  }
-
-  /** profile-images/{uid}/ 아래에 남아있을 수 있는 프로필 사진을 best-effort로 지웁니다.
-   *  현재 프로필 사진은 Storage를 거치지 않고 Firestore에 Base64로 저장되므로(위 주석
-   *  참고) 보통은 지울 파일이 없지만, storage.rules가 이 경로를 유저 소유로 정의하고
-   *  있어 혹시 과거/다른 경로로 올라간 파일이 있다면 함께 정리합니다. 실패해도 탈퇴
-   *  흐름 자체는 막지 않습니다.
-   */
-  async function cleanupProfileStorage(uid){
-    if(!storage) return;
-    try{
-      const folder = storageRef(storage, `profile-images/${uid}`);
-      const list = await listAll(folder);
-      await Promise.all(list.items.map(item => deleteObject(item).catch(()=>{})));
-    }catch(err){
-      // 폴더가 없는 경우(storage/object-not-found)를 포함해 전부 무시합니다.
-    }
-  }
-
-  /** Firestore 쓰기는 서버 응답을 받을 때까지 resolve되지 않고(오프라인이면 무한 대기),
-   *  재인증 팝업도 브라우저 환경에 따라 닫힘 감지가 안 돼 영원히 pending일 수 있습니다.
-   *  그러면 호출부의 로딩 오버레이가 끝나지 않으므로, 탈퇴의 각 단계를 제한 시간으로 감싸
-   *  시간 초과 시 code 'deleteAccount/timeout' 에러로 실패시킵니다. 실패한 단계 이름은
-   *  err.step에 담아 콘솔 로깅에 사용합니다. */
-  function runStep(step, ms, fn){
-    let timer;
-    const timeout = new Promise((_, reject)=>{
-      timer = setTimeout(()=>{
-        const err = new Error(`[탈퇴] '${step}' 단계가 ${ms / 1000}초 안에 끝나지 않았습니다.`);
-        err.code = 'deleteAccount/timeout';
-        reject(err);
-      }, ms);
-    });
-    return Promise.race([fn(), timeout])
-      .catch(err=>{
-        if(err && typeof err === 'object' && !err.step) err.step = step;
-        console.error(`[탈퇴] '${step}' 단계 실패. code:`, err && err.code, 'message:', err && err.message, err);
-        throw err;
-      })
-      .finally(()=> clearTimeout(timer));
-  }
-
-  async function deleteAllUserData(uid){
-    await runStep('leaveAllGroups', 20000, ()=> leaveAllGroups(uid));
-    await runStep('deleteAllJournalEntries', 30000, ()=> deleteAllJournalEntries(uid));
-    await runStep('deleteUserDoc', 20000, ()=> deleteUserDoc(uid));
-    // Storage 정리는 best-effort라 시간 초과돼도 탈퇴를 막지 않습니다.
-    await runStep('cleanupProfileStorage', 15000, ()=> cleanupProfileStorage(uid)).catch(()=>{});
-  }
-
-  /** 가입 수단에 맞는 방식으로 Firebase Auth 세션을 재인증합니다. deleteAccount()가
-   *  Firestore/Storage 데이터를 지우기 전에 매번 먼저 호출해, 세션이 오래돼
-   *  deleteUser()가 auth/requires-recent-login으로 실패하는 상황 자체를 피합니다.
-   *  @param {string} [password] - 이메일/비밀번호 계정일 때만 필요합니다.
-   */
-  async function reauthenticateCurrentUser(password){
-    if(!auth || !auth.currentUser) throw new Error('firebase-not-configured');
-    const user = auth.currentUser;
-    const providerId = (user.providerData[0] && user.providerData[0].providerId) || '';
-    if(providerId === 'password'){
-      if(!password) throw new Error('reauthenticate-password-required');
-      const credential = EmailAuthProvider.credential(user.email, password);
-      await reauthenticateWithCredential(user, credential);
-    } else if(providerId === 'google.com'){
-      await reauthenticateWithPopup(user, googleProvider);
-    } else if(providerId === 'oidc.kakao'){
-      const provider = new OAuthProvider('oidc.kakao');
-      provider.addScope('profile_nickname');
-      provider.addScope('profile_image');
-      await reauthenticateWithPopup(user, provider);
-    } else {
-      // 알 수 없는 제공업체면 재인증 없이 바로 재시도해 본 뒤, 그래도 실패하면
-      // 호출부에서 일반 에러로 처리합니다.
     }
   }
 
@@ -250,21 +149,13 @@
       if(photoURL !== undefined) patch.photoURL = photoURL;
       await updateProfile(auth.currentUser, patch);
     },
-    // 회원 탈퇴. 삭제는 보안상 "최근 로그인"을 요구하므로(auth/requires-recent-login)
-    // 매번 먼저 재인증부터 한 뒤 — 이메일/비밀번호 계정은 password 인자가 필요하고,
-    // Google/Kakao 계정은 팝업으로 재인증하므로 password는 무시됩니다 — Firestore(묵상
-    // 기록/프로필/채팅방 멤버십) + Storage 데이터를 전부 지우고, 마지막에 Auth 계정을
-    // 삭제합니다. 재인증을 취소하거나 비밀번호가 틀리면 아무 데이터도 건드리지 않고
-    // 그대로 실패하므로 안전하게 재시도할 수 있습니다.
-    deleteAccount: async (password)=>{
-      if(!auth || !auth.currentUser) throw new Error('firebase-not-configured');
-      // 팝업 재인증은 사용자가 계정을 고르는 시간까지 포함하므로 넉넉하게 잡습니다.
-      await runStep('reauthenticate', 120000, ()=> reauthenticateCurrentUser(password));
-      const user = auth.currentUser;
-      if(!user) throw new Error('firebase-not-configured');
-      await deleteAllUserData(user.uid);
-      await runStep('deleteUser', 20000, ()=> deleteAuthUser(user));
-    },
+    // 회원 탈퇴. 재인증 → Firestore/Storage 데이터 삭제 → Auth 계정 삭제 순서와
+    // 타임아웃/중복 실행 방지는 accountDeletion.js가 처리합니다. 이메일/비밀번호 계정만
+    // password가 필요하고, Google/Kakao 계정은 팝업으로 재인증하므로 password는 무시됩니다.
+    // 실제 Firebase 로그인 수단(password / google.com / oidc.kakao). 로컬 캐시의
+    // state.user.provider가 비어 있어도 탈퇴 모달이 비밀번호 입력란을 올바르게 띄우도록 씁니다.
+    getProviderId: ()=> (auth && auth.currentUser && auth.currentUser.providerData[0] && auth.currentUser.providerData[0].providerId) || '',
+    deleteAccount: (password)=> deleteCurrentAccount({ auth, db, storage, googleProvider, password }),
   };
 
   // Firestore 전체 API를 window에도 노출합니다 (레거시 스크립트에서 사용).
